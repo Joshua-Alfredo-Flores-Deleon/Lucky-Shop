@@ -3,10 +3,10 @@ Proyect for Lucky Shop
 
 Integrantes:
 
-Coordinador: David Jose Rivera Avelar
-SubCoordinador: Andrea Michelle Serrano Menjivar
-Secretario:  Joshua Alfredo Flores Deleón
-Tesorero: Brando Alejandro Cubiaz Fuentes
+Coordinador: David Jose Rivera Avelar,
+SubCoordinador: Andrea Michelle Serrano Menjivar,
+Secretario:  Joshua Alfredo Flores Deleón,
+Tesorero: Brando Alejandro Cubiaz Fuentes,
 Vocal: Diego Gabriel Hernandez Colorado
 
 Descripción del proyecto:
@@ -15,12 +15,12 @@ Lucky Shop es una empresa en dessarrollo administrada por Leslie, en Lucky Shop 
 
 Tecnologias:
 
-MongoDB
-Express
-React
-Node
-JavaScript
-html
+MongoDB,
+Express,
+React,
+Node,
+JavaScript,
+html,
 css
 
 
