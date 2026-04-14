@@ -4,7 +4,7 @@ Proyect for Lucky Shop
 Integrantes:
 
 Coordinador: David Jose Rivera Avelar,
-SubCoordinador: Andrea Michelle Serrano Menjivar,
+Subcoordinador: Andrea Michelle Serrano Menjivar,
 Secretario:  Joshua Alfredo Flores Deleón,
 Tesorero: Brando Alejandro Cubiaz Fuentes,
 Vocal: Diego Gabriel Hernandez Colorado
