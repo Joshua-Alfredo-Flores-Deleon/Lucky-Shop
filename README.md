@@ -8,7 +8,7 @@
 ## Información del Proyecto
 
 ### Contexto Corporativo
-**Lucky Shop** es un emprendimiento dedicado a la venta de accesorios presentados en "bolsitas de la suerte" tanto para dama como para caballero. Ante la necesidad de profesionalizar el negocio, hemos desarrollado un sistema integral que migra la gestión manual (basada en WhatsApp, TikTok y cuadernos) hacia una plataforma tecnológica unificada, permitiendo escalar el emprendimiento de forma organizada.
+**Lucky Shop** es un emprendimiento dedicado a la venta de accesorios pres, ademas de sus especiales "bolsitas de la suerte" donde es un toque de suerte las joyas que te salgan. Ante la necesidad de profesionalizar el negocio, hemos desarrollado un sistema integral que migra la gestión manual (basada en WhatsApp, TikTok y cuadernos) hacia una plataforma tecnológica unificada, permitiendo escalar el emprendimiento de forma organizada.
 
 ### Propuesta de Valor
 Nuestra plataforma automatiza los procesos clave del negocio para eliminar la ineficiencia operativa mediante:
