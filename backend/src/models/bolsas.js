@@ -6,7 +6,7 @@
 
 import mongoose, {Schema, model} from "mongoose"
 
-const Bolsas = new Schema({
+const bolsas = new Schema({
     bolsas: [{
         idProducto: {  
             type: mongoose.Schema.Types.ObjectId,
@@ -18,4 +18,4 @@ const Bolsas = new Schema({
     strict: false
 })
 
-export default model("Bolsas", Bolsas)
+export default model("Bolsas", bolsas)

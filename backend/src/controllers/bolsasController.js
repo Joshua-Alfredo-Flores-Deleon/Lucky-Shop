@@ -4,30 +4,52 @@ const bolsasController = {};
 import bolsasModel from "../models/bolsas.js";
 
 
-//SELECT
+//SELECT 
 bolsasController.getBolsas = async (req, res) => {
-  const bolsas = await bolsasModel.find();
-  res.json(bolsas);
-};
+    try {
+        const bolsas = await bolsasModel.find()
+        return res.status(200).json(bolsas)
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
 
-//INSERTAR
-bolsasController.insertbolsas = async (req, res) => {
-  //#1- Solicito los datos a guardar
-  const { bolsas } = req.body;
+//INSERT
+bolsasController.insertBolsas = async (req, res) => {
+    try {
+        
+        const { bolsas } = req.body;
 
-  //#2- Llenar el modelo con estos datos
-  const newBolsas = new bolsasModel({ bolsas });
+        const newBolsas = new bolsasModel({
+            bolsas
+        })
 
-  //#3- Guardar todo en la base de datos
-  await newBolsas.save();
+        await newBolsas.save()
 
-  res.json({ message: "Bolsa saved" });
-};
+        return res.status(200).json({message: "bolsas Saved"})
 
-//DELETE
-bolsasController.deletebolsas = async (req, res) => {
-  await bolsasModel.findByIdAndDelete(req.params.id);
-  res.json({ message: "Bolsas deleted" });
-};
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
+//ELIMINAR
+bolsasController.deleteBolsas = async (req, res) => {
+    try {
+    const bolsasDeleted = await bolsasModel.findByIdAndDelete(req.params.id)
+
+        if(!bolsasDeleted){
+            return res.status(404).json({message: "Bolsas not found"})
+        }
+
+        return res.status(200).json({message: "Bolsas deleted"})
+
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
 
 export default bolsasController;

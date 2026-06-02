@@ -9,10 +9,10 @@ const router = express.Router();
 router
   .route("/")
   .get(bolsasController.getBolsas)
-  .post(bolsasController.insertbolsas);
+  .post(bolsasController.insertBolsas);
 
 router
   .route("/:id")
-  .delete(bolsasController.deletebolsas);
+  .delete(bolsasController.deleteBolsas);
 
 export default router;
