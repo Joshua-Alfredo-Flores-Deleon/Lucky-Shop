@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: "LuckyShop",
-        allowed_formats: ["jpg", "png", "jpeg", "gif"]
+        allowed_formats: ["jpg", "png", "jpeg", "gif", "mp3", "mp4", "mp5", "mov", "avi", "mkv"]
     }
 })
 

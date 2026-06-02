@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import limiter from "./src/middlewares/limiter.js"
+import bolsas from "./src/routes/bolsasRoute.js"
 //Creo una constante que guarde Express
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(
 app.use(limiter)
 
 app.use(cookieParser());
+
+app.use("/api/bolsas", bolsas)
 
 //Que acepte los json desde postman
 app.use(express.json());
