@@ -18,4 +18,4 @@ const bolsas = new Schema({
     strict: false
 })
 
-export default model("Bolsas", bolsas)
+export default model("bolsas", bolsas)
