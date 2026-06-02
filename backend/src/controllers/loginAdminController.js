@@ -68,4 +68,4 @@ loginAdminController.login = async (req, res) => {
   }
 };
 
-export default loginAdminController;
+export default loginAdminController; 
