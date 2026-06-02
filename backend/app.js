@@ -2,6 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import limiter from "./src/middlewares/limiter.js"
+import loginAdminRoutes from "./src/routes/loginAdmin.js";
+import loginClientesRoutes from "./src/routes/loginClientes.js";
 //Creo una constante que guarde Express
 const app = express();
 
@@ -19,5 +21,7 @@ app.use(cookieParser());
 
 //Que acepte los json desde postman
 app.use(express.json());
+app.use ("/api/loginAdmin", loginAdminRoutes);
+app.use ("/api/loginClientes", loginClientesRoutes);
 
 export default app;
