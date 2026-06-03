@@ -9,6 +9,9 @@ import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
 import gastosRoutes from "./src/routes/gastos.js"
 import gananciasRoutes from "./src/routes/ganancias.js";
 
+
+import ventaRoutes from "./src/models/venta.js";
+
 //Creo una constante que guarde Express
 const app = express();
 
@@ -33,5 +36,7 @@ app.use("/api/clientes", clientesRoutes);
 app.use("/api/registerClientes", registerClientesRoutes);
 app.use("/api/gastos", gastosRoutes)
 app.use("/api/ganancias", gananciasRoutes)
+app.use("/api/venta", ventaRoutes)
+
 
 export default app;
