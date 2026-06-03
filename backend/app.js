@@ -8,6 +8,7 @@ import clientesRoutes from "./src/routes/clientes.js"
 import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
 import gastosRoutes from "./src/routes/gastos.js"
 import gananciasRoutes from "./src/routes/ganancias.js";
+import productosRoutes from "./src/routes/productosRoutes.js";
 
 
 import ventaRoutes from "./src/models/venta.js";
@@ -37,6 +38,7 @@ app.use("/api/registerClientes", registerClientesRoutes);
 app.use("/api/gastos", gastosRoutes)
 app.use("/api/ganancias", gananciasRoutes)
 app.use("/api/venta", ventaRoutes)
+app.use("/api/productos", productosRoutes)
 
 
 export default app;
