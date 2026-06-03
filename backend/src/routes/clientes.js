@@ -13,6 +13,6 @@ router
 router
   .route("/:id")
   .put(clientesController.updateClients)
-  .delete(bolsasController.deleteBolsas);
+  .delete(clientesController.deleteClient);
 
 export default router;

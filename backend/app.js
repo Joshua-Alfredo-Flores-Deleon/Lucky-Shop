@@ -5,10 +5,10 @@ import limiter from "./src/middlewares/limiter.js"
 import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
 import clientesRoutes from "./src/routes/clientes.js"
-import registerClientesRoutes from "./routes/registerClientesRoute.js";
+import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
 import gastosRoutes from "./src/routes/gastos.js"
 import gananciasRoutes from "./src/routes/ganancias.js";
-import ganancias from "./src/models/ganancias.js";
+
 //Creo una constante que guarde Express
 const app = express();
 
