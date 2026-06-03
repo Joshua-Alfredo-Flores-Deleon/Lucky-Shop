@@ -4,6 +4,11 @@ import cors from "cors";
 import limiter from "./src/middlewares/limiter.js"
 import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
+import clientesRoutes from "./src/routes/clientes.js"
+import registerClientesRoutes from "./routes/registerClientesRoute.js";
+import gastosRoutes from "./src/routes/gastos.js"
+import gananciasRoutes from "./src/routes/ganancias.js";
+import ganancias from "./src/models/ganancias.js";
 //Creo una constante que guarde Express
 const app = express();
 
@@ -23,5 +28,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use ("/api/loginAdmin", loginAdminRoutes);
 app.use ("/api/loginClientes", loginClientesRoutes);
+
+app.use("/api/clientes", clientesRoutes);
+app.use("/api/registerClientes", registerClientesRoutes);
+app.use("/api/gastos", gastosRoutes)
+app.use("/api/ganancias", gananciasRoutes)
 
 export default app;

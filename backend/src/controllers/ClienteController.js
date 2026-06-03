@@ -82,7 +82,7 @@ clientesController.deleteClient = async (req, res) => {
    return res.status(200).json({message: "Client deleted"});
   }catch(error){
      console.log("error" + error);
-     return res.status(500).json({message: " Internal server error"});
+     return res.status(500).json({message: "Internal server error"});
   }
 };
 
