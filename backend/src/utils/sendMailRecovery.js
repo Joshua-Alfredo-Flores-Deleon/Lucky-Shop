@@ -2,12 +2,12 @@ const HTMLRecoveryEmail = (code) => {
   return `
     <div style="font-family: 'Poppins', Arial, sans-serif; background-color: #ffffff; color: #222; text-align: center; padding: 30px; border: 1px solid #e0e0e0; border-radius: 10px; max-width: 500px; margin: 0 auto;">
       
-      <!-- Logo -->
-      <img src="https://kommodo.ai/i/3TkdZ4QKNDDCJptJfJH2" alt="Luckyshop by Ruby" style="width: 160px; margin-bottom: 10px;">
+      
+      <img src="" alt="Luckyshop" style="width: 160px; margin-bottom: 10px;">
       
       <hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
       
-      <!-- Título -->
+      <!-- Titulo -->
       <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Recuperación de contraseña</h2>
       
       <!-- Texto principal -->

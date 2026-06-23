@@ -14,6 +14,7 @@ import Carrito from './pages/Carrito.jsx'
 import Historial from './pages/Historial.jsx'
 import Register from './pages/Register.jsx'
 import BolsasSuerte from './pages/BolsasSuerte.jsx'
+import LoginCliente from './pages/LoginCliente.jsx'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 
           {/* ── Cliente público ── */}
           <Route path="/inicio"            element={<HomeCliente />} />
+          <Route path="/login"             element={<LoginCliente />} />
           <Route path="/categoria/:cat"    element={<Categoria />} />
           <Route path="/producto/:id"      element={<ProductoDetalle />} />
           <Route path="/carrito"           element={<Carrito />} />
