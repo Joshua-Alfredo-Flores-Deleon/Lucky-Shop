@@ -41,10 +41,6 @@ El proyecto se divide en capas estratégicas para garantizar escalabilidad y un 
     <td>Vite</td>
     <td><b>Vite:</b> Entorno de desarrollo rápido para optimizar React.</td>
   </tr>
-  <tr>
-    <td>Bootstrap</td>
-    <td><b>Bootstrap:</b> Framework de estilos para un diseño responsivo.</td>
-  </tr>
 </table>
 
 ### Backend (Lógica y Base de Datos)
