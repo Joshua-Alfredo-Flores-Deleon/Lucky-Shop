@@ -15,6 +15,7 @@ import Historial from './pages/Historial.jsx'
 import Register from './pages/Register.jsx'
 import BolsasSuerte from './pages/BolsasSuerte.jsx'
 import LoginCliente from './pages/LoginCliente.jsx'
+import RecuperarPassword from './pages/RecuperarPassword.jsx'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/carrito"           element={<Carrito />} />
           <Route path="/historial"         element={<Historial />} />
           <Route path="/register"          element={<Register />} />
+          <Route path="/recuperar-password" element={<RecuperarPassword />} />
           <Route path="/bolsas-suerte"     element={<BolsasSuerte />} />
         </Routes>
       </Router>
