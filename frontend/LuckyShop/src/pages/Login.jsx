@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// Credenciales del administrador (en producción vendrían del backend)
-const ADMIN_USERS = [
-  { id: 1, email: 'admin@luckyshop.com', password: 'lucky2026', nombre: 'Admin' },
-  { id: 2, email: 'dueña@luckyshop.com', password: 'luckyshop', nombre: 'Dueña' },
-]
+const BASE_URL = 'http://localhost:4000/api'
 
 const Login = () => {
   const [email, setEmail]           = useState('')
@@ -32,16 +28,24 @@ const Login = () => {
     setLoading(true)
 
     try {
-      const user = ADMIN_USERS.find(
-        (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
-      )
+      const res = await fetch(`${BASE_URL}/loginAdmin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // necesario para que el backend pueda setear la cookie authCookie
+        body: JSON.stringify({ email: email.trim(), password }),
+      })
 
-      if (!user) throw new Error('Email o contraseña incorrectos.')
+      const data = await res.json()
 
-      const token   = `luckyshop-token-${user.id}-${Date.now()}`
+      if (!res.ok) {
+        throw new Error(data.message || 'Email o contraseña incorrectos.')
+      }
+
+      // El backend ya dejó la sesión en una cookie httpOnly (authCookie).
+      // Aquí solo guardamos un indicador local para que la UI sepa que hay sesión activa.
       const storage = rememberMe ? localStorage : sessionStorage
-      storage.setItem('luckyshop_token', token)
-      storage.setItem('luckyshop_user', user.nombre)
+      storage.setItem('luckyshop_token', 'session-active')
+      storage.setItem('luckyshop_user', email.trim())
 
       navigate('/home')
     } catch (err) {
@@ -114,12 +118,6 @@ const Login = () => {
               {loading ? 'Ingresando...' : 'Iniciar sesión'}
             </button>
           </form>
-
-          {/* Credenciales de prueba */}
-          <div className="mt-5 rounded-2xl bg-pink-50 px-4 py-3 text-xs text-pink-600">
-            <p className="font-semibold mb-1">Credenciales de prueba:</p>
-            <p>admin@luckyshop.com / lucky2026</p>
-          </div>
         </div>
       </div>
     </div>
