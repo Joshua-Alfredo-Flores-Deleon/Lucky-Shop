@@ -26,12 +26,12 @@ clientesController.updateClients = async (req, res)=>{
             password,
             isVerified,
             loginAttemps,
-            tiemOut,
+            timeOut,
         } = req.body
 
         //validaciones
         name = name?.trim()
-        name = email?.trim()
+        email = email?.trim()
 
         //valores requeridos
         if(!name || !email || !password){
@@ -45,7 +45,7 @@ clientesController.updateClients = async (req, res)=>{
 
         
         const clientUpdated = await clientsModel.findByIdAndUpdate(
-            req.param.id,
+            req.params.id,
             {
             name,
             lastName,
@@ -54,7 +54,7 @@ clientesController.updateClients = async (req, res)=>{
             password,
             isVerified,
             loginAttemps,
-            tiemOut, 
+            timeOut,
             },
             {new : true },
         );
@@ -73,10 +73,10 @@ clientesController.updateClients = async (req, res)=>{
 //ELIMINAR
 clientesController.deleteClient = async (req, res) => {
   try{
-   const deleteClient = clientsModel.findByIdAndDelete(req.params.id);
+   const deleteClient = await clientsModel.findByIdAndDelete(req.params.id);
 
    //si no se elimina es ´porque no encontro el id
-   if(!deleteCustomer){
+   if(!deleteClient){
     return res.status(404).json({message: "Client not found"});
    }
    return res.status(200).json({message: "Client deleted"});

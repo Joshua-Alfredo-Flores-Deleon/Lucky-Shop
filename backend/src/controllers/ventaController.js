@@ -8,8 +8,8 @@ ventaController.getVenta = async (req, res) => {
 };
 
 ventaController.insertVenta = async (req, res) => {
-  const { IdCarrito, direcion, referencia, metodoPago, statusPago, telefono, fecha, estado  } = req.body;
-  const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, telefono, fecha, estado });
+  const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status  } = req.body;
+  const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status });
   await newVenta.save();
 
   res.json({ message: "Venta saved" });
@@ -21,18 +21,18 @@ ventaController.deleteVenta = async (req, res) => {
 };
 
 ventaController.updateVenta = async (req, res) => {
-  const { IdCarrito, direcion, referencia, metodoPago, statusPago, telefono, fecha, estado } = req.body;
+  const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
   await ventaModel.findByIdAndUpdate(
     req.params.id,
     {
       IdCarrito,
       direcion,
       referencia,
-      metodoPago, 
-      statusPago, 
-      telefono, 
-      fecha, 
-      estado
+      metodoPago,
+      statusPago,
+      phone,
+      fecha,
+      status
     },
     { new: true },
   );
@@ -55,10 +55,10 @@ ventaController.getVentaById = async (req, res) => {
 
 ventaController.searchByName = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { referencia } = req.body;
 
     const venta = await ventaModel.find({
-      name: {$regex: name, $options: "i"}
+      referencia: {$regex: referencia, $options: "i"}
     })
 
     if(!venta){

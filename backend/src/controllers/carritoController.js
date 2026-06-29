@@ -19,10 +19,13 @@ carritoController.getCarrito = async (req, res) => {
 carritoController.insertCarrito = async (req, res) => {
     try {
         
-        const { carrito } = req.body;
+        const { idCliente, productos, total, estado } = req.body;
 
         const newCarrito = new carritoModel({
-            carrito
+            idCliente,
+            productos,
+            total,
+            estado,
         })
 
         await newCarrito.save()

@@ -6,6 +6,7 @@ import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
 import clientesRoutes from "./src/routes/clientes.js"
 import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
+import logoutRoutes from "./src/routes/logout.js";
 import gastosRoutes from "./src/routes/gastos.js"
 import gananciasRoutes from "./src/routes/ganancias.js";
 import productosRoutes from "./src/routes/productosRoutes.js";
@@ -14,6 +15,8 @@ import carritoRoutes from "./src/routes/carritoRoutes.js";
 import bolsasRoutes from "./src/routes/bolsasRoute.js";
 import combosCompradosRoutes from "./src/routes/combosCompradosRoutes.js";
 import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
+import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
+import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 
 const app = express();
 
@@ -30,6 +33,9 @@ app.use("/api/loginAdmin", loginAdminRoutes);
 app.use("/api/loginClientes", loginClientesRoutes);
 app.use("/api/clientes", clientesRoutes);
 app.use("/api/registerClientes", registerClientesRoutes);
+app.use("/api/logout", logoutRoutes);
+app.use("/api/recoveryPassword", recoveryPasswordRoutes);
+app.use("/api/recoveryPasswordAdmin", recoveryPasswordAdminRoutes);
 app.use("/api/gastos", gastosRoutes);
 app.use("/api/ganancias", gananciasRoutes);
 app.use("/api/venta", ventaRoutes);

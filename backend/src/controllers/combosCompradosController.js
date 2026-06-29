@@ -25,6 +25,10 @@ combosCompradosController.insertcombosComprados = async (req, res) => {
                 status
             } = req.body;
 
+        if (!req.file) {
+            return res.status(400).json({ message: "Video file is required" });
+        }
+
         const newComboComprados = new combosCompradosModel({
             idCombo,
             idCliente,
@@ -48,13 +52,13 @@ combosCompradosController.deletecombosComprados = async (req, res) => {
     try {
         const ComboCompradosFound = await combosCompradosModel.findById(req.params.id)
 
+        if (!ComboCompradosFound) {
+            return res.status(404).json({ message: "ComboComprados not found" })
+        }
+
         await cloudinary.uploader.destroy(ComboCompradosFound.public_id)
 
-        const ComboCompradosDeleted = await combosCompradosModel.findByIdAndDelete(req.params.id)
-
-        if(!ComboCompradosDeleted){
-            return res.status(404).json({message: "ComboComprados not found"})
-        }
+        await combosCompradosModel.findByIdAndDelete(req.params.id)
 
         return res.status(200).json({message: "ComboComprados deleted"})
 
@@ -71,6 +75,10 @@ combosCompradosController.updatecombosComprados = async (req, res) => {
         const {idCombo, idCliente, status} = req.body;
 
         const ComboCompradosFound = await combosCompradosModel.findById(req.params.id)
+
+        if (!ComboCompradosFound) {
+            return res.status(404).json({ message: "ComboComprados not found" })
+        }
 
         const updatedData = {
             idCombo, idCliente, status

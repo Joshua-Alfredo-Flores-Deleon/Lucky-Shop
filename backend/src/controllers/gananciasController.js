@@ -16,10 +16,10 @@ gananciasController.getAllGanancias = async (req, res) => {
 gananciasController.insertGanancias = async (req, res) => {
 
   //solicito los datos a guardar
-  const { idVentas, idGastos, fechaMes, totalGanancias } = req.body;
+  const { ventas, gastos, fechaMes, totalGanancias } = req.body;
 
   //lleno una instancia de mi squema
-  const newGanancia = new gananciasModel({  idVentas, idGastos, fechaMes, totalGanancias });
+  const newGanancia = new gananciasModel({ ventas, gastos, fechaMes, totalGanancias });
 
   //guardo en la base de datos
   await newGanancia.save();
@@ -38,14 +38,14 @@ gananciasController.deleteGanancia = async (req, res) => {
 //ACTUALIZAR
 gananciasController.updateGanancia = async (req, res) => {
   //pido los nuevos datos
-  const {  idVentas, idGastos, fechaMes, totalGanancias } = req.body;
-  
+  const { ventas, gastos, fechaMes, totalGanancias } = req.body;
+
   //actualizo los datos
   await gananciasModel.findByIdAndUpdate(
     req.params.id,
-    { idVentas, 
-        idGastos, 
-        fechaMes, 
+    { ventas,
+        gastos,
+        fechaMes,
         totalGanancias },
     { new: true },
   );

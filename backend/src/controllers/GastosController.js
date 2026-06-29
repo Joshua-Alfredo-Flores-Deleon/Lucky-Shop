@@ -19,7 +19,7 @@ gastosController.insertGastos = async (req, res) => {
   const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
 
   //lleno una instancia de mi squema
-  const newGasto = new gastosModel({ name, description, price, stock });
+  const newGasto = new gastosModel({ cantidadGasto, descripcionGasto, fechaGasto });
 
   //guardo en la base de datos
   await newGasto.save();
@@ -30,7 +30,7 @@ gastosController.insertGastos = async (req, res) => {
 //DELETE
 //ELIMINAR
 gastosController.deleteGastos = async (req, res) => {
-  await gastosModel.findByIdAndDelete(req.paramas.id);
+  await gastosModel.findByIdAndDelete(req.params.id);
   res.json({ message: "gasto deleted" });
 };
 
