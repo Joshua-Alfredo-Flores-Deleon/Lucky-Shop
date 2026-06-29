@@ -14,6 +14,9 @@ import carritoRoutes from "./src/routes/carritoRoutes.js";
 import bolsasRoutes from "./src/routes/bolsasRoute.js";
 import combosCompradosRoutes from "./src/routes/combosCompradosRoutes.js";
 import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
+import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
+import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
+import logoutRoutes from "./src/routes/logout.js";
 
 const app = express();
 
@@ -38,5 +41,8 @@ app.use("/api/bolsas", bolsasRoutes);
 app.use("/api/comboSuerte", comboSuerteRoutes);
 app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
+app.use("/api/recoveryPassword", recoveryPasswordRoutes);
+app.use("/api/recoveryPasswordAdmin", recoveryPasswordAdminRoutes);
+app.use("/api/logout", logoutRoutes);
 
 export default app;

@@ -1,10 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom'
 
+const BASE_URL = 'http://localhost:4000/api'
+
 const Nav = () => {
   const navigate = useNavigate()
   const user = localStorage.getItem('luckyshop_user') || sessionStorage.getItem('luckyshop_user') || ''
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include', // necesario para que el backend pueda limpiar authCookie
+      })
+    } catch {
+      // si el backend no responde, igual limpiamos el lado del cliente
+    }
+
     localStorage.removeItem('luckyshop_token')
     localStorage.removeItem('luckyshop_user')
     sessionStorage.removeItem('luckyshop_token')

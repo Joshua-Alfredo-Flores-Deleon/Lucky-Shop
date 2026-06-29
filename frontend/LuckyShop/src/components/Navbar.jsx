@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
 
 const CATEGORIAS = [
-  { label: 'Inicio',          path: '/' },
+  { label: 'Inicio',          path: '/Home' },
   { label: 'Anillos',         path: '/categoria/anillos' },
   { label: 'Pulseras',        path: '/categoria/pulseras' },
   { label: 'Pendientes',      path: '/categoria/pendientes' },
   { label: 'Collares',        path: '/categoria/collares' },
   { label: 'Bolsas de la suerte', path: '/bolsas-suerte' },
-  { label: 'Acerca de',       path: '/#acerca' },
+  { label: 'Acerca de',       path: '/AcercaDe' },
   { label: 'Otros',           path: '/categoria/otros' },
 ]
 
@@ -40,7 +40,7 @@ const Navbar = () => {
           {/* Search */}
           <div className="flex-1 max-w-xl">
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></span>
               <input
                 type="text"
                 placeholder="Buscar"
@@ -52,11 +52,11 @@ const Navbar = () => {
           {/* Icons */}
           <div className="flex items-center gap-4">
             {/* Favoritos */}
-            <button className="text-gray-500 hover:text-pink-500 transition-colors text-xl">♡</button>
+            <button className="text-gray-500 hover:text-pink-500 transition-colors text-xl"></button>
 
             {/* Carrito */}
             <Link to="/carrito" className="relative text-gray-500 hover:text-pink-500 transition-colors text-xl">
-              🛒
+              
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 w-5 h-5 bg-pink-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {totalItems}
@@ -71,7 +71,7 @@ const Navbar = () => {
                 <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-red-500">Salir</button>
               </div>
             ) : (
-              <Link to="/login" className="text-gray-500 hover:text-pink-500 transition-colors text-xl">👤</Link>
+              <Link to="/login" className="text-gray-500 hover:text-pink-500 transition-colors text-xl"></Link>
             )}
           </div>
         </div>

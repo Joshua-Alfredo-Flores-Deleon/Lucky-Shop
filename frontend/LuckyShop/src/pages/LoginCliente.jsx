@@ -76,6 +76,12 @@ const Login = () => {
                 />
               </div>
 
+              <div className="flex items-center justify-end">
+                <Link to="/recovery-password-cliente" className="text-sm text-pink-500 font-medium hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
+
               {error && (
                 <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>
               )}
