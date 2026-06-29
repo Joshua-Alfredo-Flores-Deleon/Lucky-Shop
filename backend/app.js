@@ -12,6 +12,8 @@ import productosRoutes from "./src/routes/productosRoutes.js";
 import ventaRoutes from "./src/routes/venta.js";
 import carritoRoutes from "./src/routes/carritoRoutes.js";
 import bolsasRoutes from "./src/routes/bolsasRoute.js";
+import combosCompradosRoutes from "./src/routes/combosCompradosRoutes.js";
+import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
 
 const app = express();
 
@@ -33,6 +35,8 @@ app.use("/api/ganancias", gananciasRoutes);
 app.use("/api/venta", ventaRoutes);
 app.use("/api/carrito", carritoRoutes);
 app.use("/api/bolsas", bolsasRoutes);
+app.use("/api/comboSuerte", comboSuerteRoutes);
+app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
 
 export default app;

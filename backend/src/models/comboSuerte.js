@@ -4,9 +4,9 @@
     }
 */
 
-import {Schema, model} from "mongoose"
+import mongoose, {Schema, model} from "mongoose"
 
-const comboSuerte = new Schema({
+const ComboSuerte = new Schema({
     bolsas: [{
         idBolsa: {  
             type: mongoose.Schema.Types.ObjectId,
@@ -18,4 +18,4 @@ const comboSuerte = new Schema({
     strict: false
 })
 
-export default model("comboSuerte", comboSuerte)
+export default model("ComboSuerte", ComboSuerte, "ComboSuerte")

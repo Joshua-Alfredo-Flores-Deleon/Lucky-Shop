@@ -3,6 +3,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../../config.js";
 
+
 //#1- Configuramos cloudinary con nuestras credenciales
 cloudinary.config({
     cloud_name: config.cloudinary.cloudinary_name,
@@ -15,6 +16,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: "LuckyShop",
+        resource_type: "auto",
         allowed_formats: ["jpg", "png", "jpeg", "gif", "mp3", "mp4", "mp5", "mov", "avi", "mkv"]
     }
 })

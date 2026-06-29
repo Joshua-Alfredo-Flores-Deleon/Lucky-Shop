@@ -5,12 +5,12 @@
     status
 */
 
-import {Schema, model} from "mongoose"
+import mongoose, {Schema, model} from "mongoose"
 
-const comboComprados = new Schema({
+const combosComprados = new Schema({
     idCombo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "comboSuerte",
+      ref: "ComboSuerte",
     },
     idCliente: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,4 +24,4 @@ const comboComprados = new Schema({
     strict: false
 })
 
-export default model("comboComprados", comboComprados)
+export default model("combosComprados", combosComprados, "combosComprados")
