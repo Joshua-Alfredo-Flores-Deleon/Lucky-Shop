@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -102,6 +102,9 @@ const Login = () => {
                 />
                 Recordar sesión
               </label>
+              <Link to="/recovery-password" className="text-sm text-pink-500 font-medium hover:underline">
+                ¿Olvidaste tu contraseña?
+              </Link>
             </div>
 
             {error && (

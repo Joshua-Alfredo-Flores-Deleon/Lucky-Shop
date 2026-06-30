@@ -76,9 +76,9 @@ const Login = () => {
                 />
               </div>
 
-              <div className="flex justify-end">
-                <Link to="/recuperar-password" className="text-xs text-pink-500 hover:underline">
-                  ¿Olvidaste la contraseña?
+              <div className="flex items-center justify-end">
+                <Link to="/recovery-password-cliente" className="text-sm text-pink-500 font-medium hover:underline">
+                  ¿Olvidaste tu contraseña?
                 </Link>
               </div>
 

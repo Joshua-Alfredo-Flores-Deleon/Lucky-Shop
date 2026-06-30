@@ -2,8 +2,8 @@
 // Fetch directo en la página, sin services, mismo patrón del proyecto de referencia
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Nav from '../components/Nav'
-import ProductoForm from '../components/ProductoForm'
+import Nav from '../../../../frontend-privada/LuckyShopPrivada/src/components/Nav'
+import ProductoForm from '../../../../frontend-privada/LuckyShopPrivada/src/components/ProductoForm'
 import ConfirmModal from '../components/ConfirmModal'
 
 const BASE_URL = 'http://localhost:4000/api/productos'

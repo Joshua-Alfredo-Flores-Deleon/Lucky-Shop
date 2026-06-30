@@ -68,4 +68,34 @@ loginClientesController.login = async (req, res) => {
   }
 };
 
+// Verifica si hay una sesión de cliente activa (usado por el frontend para proteger rutas)
+loginClientesController.checkSession = async (req, res) => {
+  try {
+    const token = req.cookies.authCookie;
+
+    if (!token) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+
+    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
+
+    if (decoded.userType !== "Clientes") {
+      return res.status(403).json({ message: "No autorizado" });
+    }
+
+    const clienteFound = await cleintesModel.findById(decoded.id).select("-password");
+
+    if (!clienteFound) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+
+    return res.status(200).json({
+      message: "Sesión activa",
+      cliente: { email: clienteFound.email, name: clienteFound.name },
+    });
+  } catch (error) {
+    return res.status(401).json({ message: "Token inválido o expirado" });
+  }
+};
+
 export default loginClientesController;

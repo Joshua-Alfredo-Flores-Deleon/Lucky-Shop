@@ -68,4 +68,34 @@ loginAdminController.login = async (req, res) => {
   }
 };
 
+// Verifica si hay una sesión de admin activa (usado por el frontend para proteger rutas)
+loginAdminController.checkSession = async (req, res) => {
+  try {
+    const token = req.cookies.authCookie;
+
+    if (!token) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+
+    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
+
+    if (decoded.userType !== "Admin") {
+      return res.status(403).json({ message: "No autorizado" });
+    }
+
+    const adminFound = await adminModel.findById(decoded.id).select("-password");
+
+    if (!adminFound) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+
+    return res.status(200).json({
+      message: "Sesión activa",
+      admin: { email: adminFound.email, name: adminFound.name },
+    });
+  } catch (error) {
+    return res.status(401).json({ message: "Token inválido o expirado" });
+  }
+};
+
 export default loginAdminController; 
