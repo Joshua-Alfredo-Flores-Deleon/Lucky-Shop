@@ -32,7 +32,7 @@ const Login = () => {
       // Si el backend devuelve el id del cliente, guardarlo
       if (data.cliente?._id) sessionStorage.setItem('luckyshop_cliente_id', data.cliente._id)
 
-      navigate('/inicio')
+      navigate('/login')
     } catch (err) {
       setError(err.message)
     } finally {

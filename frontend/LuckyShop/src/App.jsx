@@ -21,7 +21,7 @@ function App() {
         <Routes>
 
           {/* ── Cliente público ── */}
-          <Route path="/inicio"            element={<HomeCliente />} />
+          <Route path="/"            element={<HomeCliente />} />
           <Route path="/login"             element={<LoginCliente />} />
           <Route path="/recovery-password-cliente" element={<RecoveryPasswordCliente />} />
           <Route path="/categoria/:cat"    element={<Categoria />} />
