@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ConfirmModal from '../components/ConfirmModal'
 import Navbar from '../components/Navbar'
 import AnillosCart from '../components/AnillosCart'
 
