@@ -1,55 +1,186 @@
-//Creo un array de funciones
-const bolsasController = {};
-//importo la colección que voy a utilizar
 import bolsasModel from "../models/bolsas.js";
+import { v2 as cloudinary } from "cloudinary";
 
+const bolsasController = {};
 
-//SELECT 
+// GET ALL
 bolsasController.getBolsas = async (req, res) => {
-    try {
-        const bolsas = await bolsasModel.find()
-        return res.status(200).json(bolsas)
-    } catch (error) {
-        console.log("error"+error)
-        return res.status(500).json({message: "Internal Server Error"})
-    }
-}
+  try {
+    const { estado, search } = req.query;
+    const filter = {};
 
-//INSERT
+    if (estado) filter.estado = estado;
+    if (search) filter.nombre = { $regex: search, $options: "i" };
+
+    const bolsas = await bolsasModel.find(filter).sort({ createdAt: -1 });
+    return res.status(200).json(bolsas);
+  } catch (error) {
+    console.error("getBolsas error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// GET BY ID
+bolsasController.getBolsaById = async (req, res) => {
+  try {
+    const bolsa = await bolsasModel.findById(req.params.id);
+    if (!bolsa) {
+      return res.status(404).json({ message: "Bolsa no encontrada" });
+    }
+    return res.status(200).json(bolsa);
+  } catch (error) {
+    console.error("getBolsaById error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// INSERT
 bolsasController.insertBolsas = async (req, res) => {
-    try {
-        
-        const { bolsas } = req.body;
+  try {
+    let { nombre, precio, stock, descripcion, estado } = req.body;
 
-        const newBolsas = new bolsasModel({
-            bolsas
-        })
-
-        await newBolsas.save()
-
-        return res.status(200).json({message: "bolsas Saved"})
-
-    } catch (error) {
-        console.log("error"+error)
-        return res.status(500).json({message: "Internal Server Error"})
+    nombre = nombre?.trim();
+    if (!nombre || precio === undefined || stock === undefined) {
+      return res
+        .status(400)
+        .json({ message: "Nombre, precio y stock son requeridos" });
     }
-}
 
-//ELIMINAR
+    if (isNaN(precio) || precio < 0) {
+      return res.status(400).json({ message: "Precio inválido" });
+    }
+
+    if (isNaN(stock) || stock < 0) {
+      return res.status(400).json({ message: "Stock inválido" });
+    }
+
+    // Procesar imágenes subidas con multer + cloudinary
+    const imagenes = [];
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        imagenes.push(file.path);
+      });
+    }
+
+    const imagenPresentacion = imagenes[0] || "";
+
+    const newBolsa = new bolsasModel({
+      nombre,
+      precio: Number(precio),
+      stock: Number(stock),
+      descripcion,
+      imagenes,
+      imagenPresentacion,
+      estado: estado || "activo",
+    });
+
+    await newBolsa.save();
+    return res
+      .status(201)
+      .json({ message: "Bolsa guardada exitosamente", bolsa: newBolsa });
+  } catch (error) {
+    console.error("insertBolsas error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// UPDATE
+bolsasController.updateBolsas = async (req, res) => {
+  try {
+    let {
+      nombre,
+      precio,
+      stock,
+      descripcion,
+      estado,
+      imagenesExistentes, // URLs que ya existen y el usuario quiere conservar
+    } = req.body;
+
+    nombre = nombre?.trim();
+
+    if (!nombre || precio === undefined || stock === undefined) {
+      return res
+        .status(400)
+        .json({ message: "Nombre, precio y stock son requeridos" });
+    }
+
+    if (isNaN(precio) || precio < 0) {
+      return res.status(400).json({ message: "Precio inválido" });
+    }
+
+    // Combinar imágenes existentes conservadas + nuevas subidas
+    let imagenes = [];
+    if (imagenesExistentes) {
+      imagenes = Array.isArray(imagenesExistentes)
+        ? imagenesExistentes
+        : [imagenesExistentes];
+    }
+
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        imagenes.push(file.path);
+      });
+    }
+
+    const updateData = {
+      nombre,
+      precio: Number(precio),
+      stock: Number(stock),
+      descripcion,
+      estado,
+    };
+
+    if (imagenes.length > 0) {
+      updateData.imagenes = imagenes;
+      updateData.imagenPresentacion = imagenes[0];
+    }
+
+    const bolsaActualizada = await bolsasModel.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!bolsaActualizada) {
+      return res.status(404).json({ message: "Bolsa no encontrada" });
+    }
+
+    return res.status(200).json({
+      message: "Bolsa actualizada exitosamente",
+      bolsa: bolsaActualizada,
+    });
+  } catch (error) {
+    console.error("updateBolsas error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// DELETE
 bolsasController.deleteBolsas = async (req, res) => {
-    try {
-    const bolsasDeleted = await bolsasModel.findByIdAndDelete(req.params.id)
+  try {
+    const bolsa = await bolsasModel.findById(req.params.id);
 
-        if(!bolsasDeleted){
-            return res.status(404).json({message: "Bolsas not found"})
-        }
-
-        return res.status(200).json({message: "Bolsas deleted"})
-
-    } catch (error) {
-        console.log("error"+error)
-        return res.status(500).json({message: "Internal Server Error"})
+    if (!bolsa) {
+      return res.status(404).json({ message: "Bolsa no encontrada" });
     }
-}
+
+    // Eliminar imágenes de Cloudinary
+    if (bolsa.imagenes && bolsa.imagenes.length > 0) {
+      const deletePromises = bolsa.imagenes.map((url) => {
+        const parts = url.split("/");
+        const filename = parts[parts.length - 1];
+        const publicId = `LuckyShop/${filename.split(".")[0]}`;
+        return cloudinary.uploader.destroy(publicId).catch(() => {}); // No fallar si la imagen ya no existe
+      });
+      await Promise.all(deletePromises);
+    }
+
+    await bolsasModel.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: "Bolsa eliminada exitosamente" });
+  } catch (error) {
+    console.error("deleteBolsas error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 export default bolsasController;
