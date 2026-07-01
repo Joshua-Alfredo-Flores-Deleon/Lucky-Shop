@@ -13,6 +13,7 @@ import LoginCliente from './pages/LoginCliente.jsx'
 import RecuperarPassword from './pages/RecuperarPassword.jsx'
 import RecoveryPasswordCliente from './pages/RecoveryPasswordCliente.jsx'
 import Anillos from './pages/Anillos.jsx'
+import AcercaDe from './pages/AcercaDe.jsx'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/register"          element={<Register />} />
           <Route path="/recuperar-password" element={<RecuperarPassword />} />
           <Route path="/bolsas-suerte"     element={<BolsasSuerte />} />
+          <Route path="/acercaDe"     element={<AcercaDe />} />
         </Routes>
       </Router>
     </CartProvider>
