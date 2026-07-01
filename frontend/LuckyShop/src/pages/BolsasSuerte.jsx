@@ -1,13 +1,18 @@
 // BolsasSuerte.jsx — página de bolsas de la suerte
 import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const BolsasSuerte = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
   const { addItem } = useCart()
+  const { isAuthenticated } = useAuth()
   const [bolsas,  setBolsas]  = useState([])
   const [loading, setLoading] = useState(true)
   const [toast,   setToast]   = useState(false)
@@ -28,6 +33,10 @@ const BolsasSuerte = () => {
   }, [])
 
   const handleAgregar = (bolsa) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: location } })
+      return
+    }
     addItem(bolsa, 1)
     setToast(true)
     setTimeout(() => setToast(false), 2500)

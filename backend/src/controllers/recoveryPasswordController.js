@@ -13,7 +13,7 @@ const recoveryPasswordController = {};
 
 recoveryPasswordController.requestCode = async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
 
     const userFound = await clientesModel.findOne({ email });
 

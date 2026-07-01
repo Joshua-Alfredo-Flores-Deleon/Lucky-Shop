@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { CartProvider } from './context/CartContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
+import PrivateRoute from './components/PrivateRoute.jsx'
 
 // Cliente
 import HomeCliente from './pages/HomeCliente.jsx'
@@ -16,25 +18,31 @@ import Anillos from './pages/Anillos.jsx'
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <Routes>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
 
-          {/* ── Cliente público ── */}
-          <Route path="/"            element={<HomeCliente />} />
-          <Route path="/login"             element={<LoginCliente />} />
-          <Route path="/recovery-password-cliente" element={<RecoveryPasswordCliente />} />
-          <Route path="/categoria/:cat"    element={<Categoria />} />
-          <Route path="/producto/:id"      element={<ProductoDetalle />} />
-          <Route path="/anillos"           element={<Anillos />} />
-          <Route path="/carrito"           element={<Carrito />} />
-          <Route path="/historial"         element={<Historial />} />
-          <Route path="/register"          element={<Register />} />
-          <Route path="/recuperar-password" element={<RecuperarPassword />} />
-          <Route path="/bolsas-suerte"     element={<BolsasSuerte />} />
-        </Routes>
-      </Router>
-    </CartProvider>
+            {/* ── Rutas públicas: catálogo navegable sin sesión ── */}
+            <Route path="/login"                      element={<LoginCliente />} />
+            <Route path="/register"                    element={<Register />} />
+            <Route path="/recuperar-password"           element={<RecuperarPassword />} />
+            <Route path="/recovery-password-cliente"    element={<RecoveryPasswordCliente />} />
+            <Route path="/"                element={<HomeCliente />} />
+            <Route path="/categoria/:cat"  element={<Categoria />} />
+            <Route path="/producto/:id"    element={<ProductoDetalle />} />
+            <Route path="/anillos"         element={<Anillos />} />
+            <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
+
+            {/* ── Requieren sesión: comprar / ver historial ── */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/carrito"         element={<Carrito />} />
+              <Route path="/historial"       element={<Historial />} />
+            </Route>
+          </Routes>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   )
 }
 

@@ -1,17 +1,23 @@
 // Login.jsx — login de clientes Lucky Shop
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState('')
   const [loading,  setLoading]  = useState(false)
+
+  // Si veníamos redirigidos desde una ruta privada, regresamos ahí; si no, al inicio.
+  const from = location.state?.from?.pathname || '/'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -27,12 +33,13 @@ const Login = () => {
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Error al iniciar sesión')
 
-      // Guardar datos del cliente
-      sessionStorage.setItem('luckyshop_cliente', email.split('@')[0])
-      // Si el backend devuelve el id del cliente, guardarlo
-      if (data.cliente?._id) sessionStorage.setItem('luckyshop_cliente_id', data.cliente._id)
+      // El backend ya dejó la cookie httpOnly seteada; refrescamos el estado
+      // de autenticación (nombre/email del cliente) contra checkSession.
+      await login()
 
-      navigate('/login')
+      // Redirige a la página principal (o a la ruta que el usuario intentaba visitar)
+      // con el usuario ya iniciado.
+      navigate(from, { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {

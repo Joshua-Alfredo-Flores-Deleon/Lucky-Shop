@@ -1,38 +1,49 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import ProtectedRoute from './components/ProtectedRoute.jsx'
+import { CartProvider } from './context/CartContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
+import PrivateRoute from './components/PrivateRoute.jsx'
 
-import Login from './pages/Login.jsx'
-import Home from './pages/Home.jsx'
-import Productos from './pages/Productos.jsx'
-import Clientes from './pages/Clientes.jsx'
-import RecoveryPasswordAdmin from './pages/RecoveryPasswordAdmin.jsx'
+// Cliente
+import HomeCliente from './pages/HomeCliente.jsx'
+import Categoria from './pages/Categoria.jsx'
+import ProductoDetalle from './pages/ProductoDetalle.jsx'
+import Carrito from './pages/Carrito.jsx'
+import Historial from './pages/Historial.jsx'
+import Register from './pages/Register.jsx'
+import BolsasSuerte from './pages/BolsasSuerte.jsx'
+import LoginCliente from './pages/LoginCliente.jsx'
+import RecuperarPassword from './pages/RecuperarPassword.jsx'
+import RecoveryPasswordCliente from './pages/RecoveryPasswordCliente.jsx'
+import Anillos from './pages/Anillos.jsx'
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/recovery-password" element={<RecoveryPasswordAdmin />} />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute userType="admin">
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/productos"
-          element={
-            <ProtectedRoute userType="admin">
-              <Productos />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/clientes" element={<Clientes />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
+
+            {/* ── Rutas públicas (sin sesión) ── */}
+            <Route path="/login"                      element={<LoginCliente />} />
+            <Route path="/register"                    element={<Register />} />
+            <Route path="/recuperar-password"           element={<RecuperarPassword />} />
+            <Route path="/recovery-password-cliente"    element={<RecoveryPasswordCliente />} />
+
+            {/* ── Cliente (requieren sesión iniciada) ── */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/"                element={<HomeCliente />} />
+              <Route path="/categoria/:cat"  element={<Categoria />} />
+              <Route path="/producto/:id"    element={<ProductoDetalle />} />
+              <Route path="/anillos"         element={<Anillos />} />
+              <Route path="/carrito"         element={<Carrito />} />
+              <Route path="/historial"       element={<Historial />} />
+              <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
+            </Route>
+          </Routes>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   )
 }
 
-export default App
+export default App;

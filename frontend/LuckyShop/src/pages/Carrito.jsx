@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const Carrito = () => {
   const { items, removeItem, updateCantidad, total, clearCart } = useCart()
-  const navigate  = useNavigate()
+  const { cliente } = useAuth()
   const [loading, setLoading]  = useState(false)
   const [error,   setError]    = useState('')
   const [success, setSuccess]  = useState(false)
@@ -17,9 +18,11 @@ const Carrito = () => {
   const totalFinal  = total + COSTO_ENVIO
 
   const handleComprar = async () => {
-    const clienteId = sessionStorage.getItem('luckyshop_cliente_id') || localStorage.getItem('luckyshop_cliente_id')
+    // No debería ocurrir: esta página ya está protegida por PrivateRoute,
+    // pero validamos igual antes de golpear el backend.
+    const clienteId = cliente?._id
     if (!clienteId) {
-      navigate('/login')
+      setError('Debes iniciar sesión para completar la compra')
       return
     }
 

@@ -1,21 +1,21 @@
 // Historial.jsx — historial de compras del cliente
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const Historial = () => {
-  const navigate = useNavigate()
+  const { cliente } = useAuth()
   const [ventas,   setVentas]   = useState([])
   const [loading,  setLoading]  = useState(true)
   const [detalle,  setDetalle]  = useState(null)
 
-  const clienteId = sessionStorage.getItem('luckyshop_cliente_id') || localStorage.getItem('luckyshop_cliente_id')
+  const clienteId = cliente?._id
 
   useEffect(() => {
-    if (!clienteId) { navigate('/login'); return }
+    if (!clienteId) return
 
     const fetchVentas = async () => {
       try {
@@ -30,7 +30,7 @@ const Historial = () => {
       }
     }
     fetchVentas()
-  }, [clienteId, navigate])
+  }, [clienteId])
 
   const formatFecha = (fecha) => {
     if (!fecha) return '—'

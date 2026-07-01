@@ -1,17 +1,20 @@
 // ProductoDetalle.jsx — detalle de producto con agregar al carrito
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const ProductoDetalle = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { addItem } = useCart()
+  const { isAuthenticated } = useAuth()
 
   const [producto,    setProducto]    = useState(null)
   const [relacionados,setRelacionados]= useState([])
@@ -47,6 +50,10 @@ const ProductoDetalle = () => {
 
   const handleAgregar = () => {
     if (!producto) return
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: location } })
+      return
+    }
     addItem(producto, cantidad)
     setToast(true)
     setTimeout(() => setToast(false), 2500)

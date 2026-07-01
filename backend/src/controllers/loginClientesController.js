@@ -8,7 +8,10 @@ import { config } from "../../config.js";
 const loginClientesController = {};
 
 loginClientesController.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  // Normalizamos el correo igual que en el registro (sin espacios, minusculas)
+  // para que coincida sin importar como lo haya escrito el usuario
+  const email = req.body.email?.trim().toLowerCase();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -91,7 +94,7 @@ loginClientesController.checkSession = async (req, res) => {
 
     return res.status(200).json({
       message: "Sesión activa",
-      cliente: { email: clienteFound.email, name: clienteFound.name },
+      cliente: { _id: clienteFound._id, email: clienteFound.email, name: clienteFound.name },
     });
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });

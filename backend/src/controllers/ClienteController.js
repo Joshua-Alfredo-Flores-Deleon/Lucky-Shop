@@ -1,4 +1,5 @@
 import clientsModel from "../models/Clientes.js"
+import bcrypt from "bcryptjs"
 
 
 //array de funciones
@@ -43,7 +44,15 @@ clientesController.updateClients = async (req, res)=>{
             return res.status(400).json({message: "invalid date"})
         }
 
-        
+        // Si el password que llega no es ya un hash de bcrypt (por ejemplo,
+        // el admin escribio una contraseña nueva en texto plano), lo encriptamos.
+        // Si viene sin cambios (el hash que ya estaba guardado), lo dejamos igual
+        // para no romper el login del cliente.
+        const isBcryptHash = /^\$2[aby]?\$\d{2}\$/.test(password)
+        if (!isBcryptHash) {
+            password = await bcrypt.hash(password, 10)
+        }
+
         const clientUpdated = await clientsModel.findByIdAndUpdate(
             req.params.id,
             {

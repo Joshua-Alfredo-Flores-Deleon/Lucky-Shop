@@ -14,10 +14,13 @@ registerClientsController.register = async (req, res) => {
     name,
     lastName,
     birthdate,
-    email,
     password,
     isVerified
   } = req.body;
+
+  // Normalizamos el correo (sin espacios y en minusculas) para que
+  // siempre coincida al buscarlo despues, sin importar como lo haya escrito el usuario
+  const email = req.body.email?.trim().toLowerCase();
  
   try {
  
@@ -136,4 +139,3 @@ registerClientsController.verifyCode = async (req, res) => {
 };
  
 export default registerClientsController;
- 

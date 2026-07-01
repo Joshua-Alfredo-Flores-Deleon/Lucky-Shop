@@ -1,6 +1,7 @@
 // Navbar.jsx — barra de navegación pública de Lucky Shop
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const CATEGORIAS = [
   { label: 'Inicio',          path: '/Home' },
@@ -15,15 +16,12 @@ const CATEGORIAS = [
 
 const Navbar = () => {
   const { totalItems } = useCart()
+  const { cliente, logout } = useAuth()
   const navigate = useNavigate()
-  const cliente = sessionStorage.getItem('luckyshop_cliente') || localStorage.getItem('luckyshop_cliente')
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('luckyshop_cliente')
-    sessionStorage.removeItem('luckyshop_cliente_id')
-    localStorage.removeItem('luckyshop_cliente')
-    localStorage.removeItem('luckyshop_cliente_id')
-    navigate('/')
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login')
   }
 
   return (
@@ -51,27 +49,36 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-4">
-            {/* Favoritos */}
-            <button className="text-gray-500 hover:text-pink-500 transition-colors text-xl"></button>
-
-            {/* Carrito */}
-            <Link to="/carrito" className="relative text-gray-500 hover:text-pink-500 transition-colors text-xl">
-              
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-pink-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
-            {/* Usuario */}
             {cliente ? (
-              <div className="flex items-center gap-2">
-                <Link to="/historial" className="text-sm text-gray-600 hover:text-pink-500 font-medium">{cliente}</Link>
-                <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-red-500">Salir</button>
-              </div>
+              <>
+                {/* Favoritos */}
+                <button className="text-gray-500 hover:text-pink-500 transition-colors text-xl">♡</button>
+
+                {/* Carrito */}
+                <Link to="/carrito" className="relative text-gray-500 hover:text-pink-500 transition-colors text-xl">
+                  🛒
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-pink-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Usuario */}
+                <div className="flex items-center gap-2">
+                  <Link to="/historial" className="text-sm text-gray-600 hover:text-pink-500 font-medium">{cliente.name || cliente.email}</Link>
+                  <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-red-500">Salir</button>
+                </div>
+              </>
             ) : (
-              <Link to="/login" className="text-gray-500 hover:text-pink-500 transition-colors text-xl"></Link>
+              <>
+                <Link to="/login" className="text-sm text-gray-600 hover:text-pink-500 font-medium whitespace-nowrap">
+                  Iniciar sesión
+                </Link>
+                <Link to="/register" className="text-sm bg-pink-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-pink-600 transition-colors whitespace-nowrap">
+                  Registrarse
+                </Link>
+              </>
             )}
           </div>
         </div>
