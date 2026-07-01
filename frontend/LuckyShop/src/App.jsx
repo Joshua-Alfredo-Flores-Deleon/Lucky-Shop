@@ -15,6 +15,7 @@ import LoginCliente from './pages/LoginCliente.jsx'
 import RecuperarPassword from './pages/RecuperarPassword.jsx'
 import RecoveryPasswordCliente from './pages/RecoveryPasswordCliente.jsx'
 import Anillos from './pages/Anillos.jsx'
+import AcercaDe from './pages/AcercaDe.jsx'
 
 function App() {
   return (

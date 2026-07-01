@@ -70,6 +70,12 @@
   margin-top: 6px;
 }
 
+.pm-subtitle {
+  font-size: 0.95rem;
+  color: #5a7464;
+  margin: 10px 0 0;
+}
+
 .pm-header-actions {
   display: flex;
   align-items: center;

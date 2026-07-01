@@ -18,10 +18,6 @@ const Clientes = () => {
   const [clienteEliminar, setClienteEliminar] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchClientes()
-  }, [])
-
   const fetchClientes = async () => {
     try {
       const res = await fetch(`${BASE_URL}/clientes`)
@@ -33,6 +29,10 @@ const Clientes = () => {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchClientes()
+  }, [])
 
   const eliminarCliente = async (id) => {
     try {
