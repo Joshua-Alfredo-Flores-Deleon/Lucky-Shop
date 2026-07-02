@@ -1,4 +1,4 @@
-import "./PagosModales.css";
+//import "./PagosModales.css";
 
 export default function ModalDetallePago({ pago, onCerrar, iniciales }) {
   if (!pago) return null;

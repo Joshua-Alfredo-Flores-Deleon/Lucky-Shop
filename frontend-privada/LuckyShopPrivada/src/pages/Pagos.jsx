@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
-import NotificacionesModal from "../components/NotificacionesModal";
-import { usePagos } from "../hooks/usePagos";
+import NotificacionesModal from "../components/NotificationsModal";
+import { usePagos } from "../hooksP/usePagos";
 import ModalAgregarPago from "../components/ModalAgregarPago";
 import ModalDetallePago from "../components/ModalDetallePago";
 import ConfirmModal from "../components/ConfirmModal";

@@ -1,8 +1,8 @@
-import { useHome } from "../hooks/useHome";
+import { useHome } from "../hooksP/useHome";
 import { useState } from "react";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
-import NotificacionesModal from "../components/NotificacionesModal";
+import NotificacionesModal from "../components/NotificationsModal";
 import "./Home.css";
 
 const formatoMoneda = (n) =>

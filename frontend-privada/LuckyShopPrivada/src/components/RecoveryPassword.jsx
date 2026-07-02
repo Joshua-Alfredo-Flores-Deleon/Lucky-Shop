@@ -1,12 +1,13 @@
-// RecoveryPassword.jsx — flujo compartido de recuperación de contraseña
-// Se usa tanto para Admin como para Cliente, parametrizado por "userType".
+// RecoveryPassword.jsx — flujo de recuperación de contraseña del panel admin
 import { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import AdminLogo from './AdminLogo.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
 
-// userType: 'admin' | 'cliente'
-const RecoveryPassword = ({ userType }) => {
+// userType se mantiene por compatibilidad, pero en este proyecto (frontend-privada)
+// este componente solo se usa para userType="admin".
+const RecoveryPassword = ({ userType = 'admin' }) => {
   const navigate = useNavigate()
 
   const isAdmin = userType === 'admin'
@@ -165,25 +166,32 @@ const RecoveryPassword = ({ userType }) => {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden"
+      style={{
+        background: `
+          radial-gradient(circle at 12% 20%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 22%),
+          radial-gradient(circle at 85% 15%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 25%),
+          radial-gradient(circle at 70% 80%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 20%),
+          radial-gradient(circle at 30% 75%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 18%),
+          linear-gradient(135deg, #1f4d33 0%, #2d6b46 45%, #1a3d29 100%)
+        `,
+      }}
+    >
+      <div className="w-full max-w-md relative z-10">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="text-pink-500">Lucky</span>
-            <span className="text-green-500">shop</span>
-          </h1>
-          <p className="text-gray-400 text-xs mt-1 tracking-wide">BY LESLY</p>
-          <div className="w-full h-px bg-gray-200 mt-4" />
+        <div className="mb-6">
+          <AdminLogo size="lg" />
+          <div className="w-full h-px bg-white/30 mt-4" />
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg shadow-pink-100 p-8 ring-1 ring-pink-100">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
 
           {/* ── Paso 1: pedir correo ── */}
           {step === 'email' && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-1">Recuperación de contraseña</h2>
-              <div className="w-12 h-1 bg-pink-300 rounded-full mb-4" />
+              <div className="w-12 h-1 bg-green-500 rounded-full mb-4" />
               <p className="text-sm text-gray-500 mb-6">
                 Introduce tú correo electrónico. Te enviaremos un código PIN
                 de verificación para que puedas restablecer tú contraseña de
@@ -199,7 +207,7 @@ const RecoveryPassword = ({ userType }) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="usuario@luckyshop.com"
                     required
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
+                    className="w-full rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-green-500 focus:bg-white transition-colors"
                   />
                 </div>
 
@@ -212,7 +220,7 @@ const RecoveryPassword = ({ userType }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-2xl bg-pink-300 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-400 hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-full bg-green-200 py-3 text-sm font-semibold text-green-900 hover:bg-green-300 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? 'Enviando...' : 'Enviar código'}
                 </button>
@@ -224,7 +232,7 @@ const RecoveryPassword = ({ userType }) => {
           {step === 'code' && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-1 text-center">Código de verificación</h2>
-              <div className="w-16 h-1 bg-pink-300 rounded-full mb-4 mx-auto" />
+              <div className="w-16 h-1 bg-green-500 rounded-full mb-4 mx-auto" />
               <p className="text-sm text-gray-500 mb-6 text-center">
                 Código de seguridad enviado a la dirección<br />
                 <span className="font-medium text-gray-700">{maskedEmail}</span>
@@ -243,7 +251,7 @@ const RecoveryPassword = ({ userType }) => {
                         value={digit}
                         onChange={(e) => handleCodeChange(i, e.target.value)}
                         onKeyDown={(e) => handleCodeKeyDown(i, e)}
-                        className="w-12 h-12 text-center text-lg font-semibold rounded-xl border border-gray-200 bg-gray-100 outline-none focus:border-pink-400 focus:bg-white transition-colors"
+                        className="w-12 h-12 text-center text-lg font-semibold rounded-xl border border-gray-200 bg-gray-100 outline-none focus:border-green-500 focus:bg-white transition-colors"
                       />
                     ))}
                   </div>
@@ -258,20 +266,20 @@ const RecoveryPassword = ({ userType }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-2xl bg-pink-400 py-3 text-sm font-semibold text-white hover:bg-pink-500 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-full bg-green-200 py-3 text-sm font-semibold text-green-900 hover:bg-green-300 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {loading ? 'Verificando...' : 'Confirmar'}
+                  {loading ? 'Verificando...' : 'Enviar'}
                 </button>
 
                 <p className="text-center text-xs text-gray-500">
-                  ¿No recibiste código?{' '}
+                  ¿No recibiste el código?{' '}
                   <button
                     type="button"
                     onClick={handleResend}
                     disabled={loading}
-                    className="text-pink-500 font-semibold hover:underline"
+                    className="text-green-700 font-semibold hover:underline"
                   >
-                    Reenviar Pin
+                    Reenviar pin
                   </button>
                 </p>
               </form>
@@ -282,9 +290,9 @@ const RecoveryPassword = ({ userType }) => {
           {step === 'newPassword' && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-1">Reestablecer contraseña</h2>
-              <div className="w-12 h-1 bg-pink-300 rounded-full mb-4" />
+              <div className="w-12 h-1 bg-green-500 rounded-full mb-4" />
               <p className="text-sm text-gray-500 mb-6">
-                Crea una nueva contraseña que sea fácil de recordar
+                Crea una contraseña nueva que sea fácil de recordar
                 pero difícil de adivinar. Te recomendamos usar una
                 combinación de letras y números.
               </p>
@@ -298,20 +306,20 @@ const RecoveryPassword = ({ userType }) => {
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
+                    className="w-full rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-green-500 focus:bg-white transition-colors"
                   />
-                  <p className="text-xs text-gray-400 mt-1">*Mínimo 8 caracteres</p>
+                  <p className="text-xs text-gray-400 mt-1 ml-1">*Mínimo 8 caracteres</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar contraseña</label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
+                    className="w-full rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-green-500 focus:bg-white transition-colors"
                   />
                 </div>
 
@@ -324,7 +332,7 @@ const RecoveryPassword = ({ userType }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-2xl bg-pink-300 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-400 hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-full bg-green-200 py-3 text-sm font-semibold text-green-900 hover:bg-green-300 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? 'Actualizando...' : 'Actualizar contraseña'}
                 </button>
@@ -342,13 +350,12 @@ const RecoveryPassword = ({ userType }) => {
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-2">¡Éxito!</h2>
               <p className="text-sm text-gray-500 mb-6">
-                Tú contraseña ha sido actualizada<br />
-                con éxito,<br />
-                ya puedes disfrutar de luckyshop!
+                Tú contraseña ha sido actualizada correctamente.<br />
+                Ahora puedes acceder a tú panel administrativo.
               </p>
               <button
                 onClick={() => navigate(backToLoginPath)}
-                className="w-full rounded-2xl bg-pink-300 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-400 hover:text-white transition-colors"
+                className="w-full rounded-full bg-green-200 py-3 text-sm font-semibold text-green-900 hover:bg-green-300 transition-colors"
               >
                 Continuar
               </button>
@@ -358,8 +365,8 @@ const RecoveryPassword = ({ userType }) => {
 
         {step !== 'success' && (
           <div className="mt-4">
-            <Link to={backToLoginPath} className="text-sm text-gray-500 hover:text-pink-500 hover:underline">
-              ‹ Regresar a inicio de sesión
+            <Link to={backToLoginPath} className="text-sm text-white/80 hover:text-white hover:underline">
+              ‹ Regresar al inicio de sesión
             </Link>
           </div>
         )}

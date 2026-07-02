@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { CartProvider } from './context/CartContext.jsx'
-import { AuthProvider } from './context/AuthContext.jsx'
-import PrivateRoute from './components/PrivateRoute.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 import Login from './pages/Login.jsx'
 import Home from './pages/Home.jsx'
@@ -50,6 +48,22 @@ function App() {
           element={
             <ProtectedRoute userType="admin">
               <Bolsas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pagos"
+          element={
+            <ProtectedRoute userType="admin">
+              <Pagos />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/finanzas"
+          element={
+            <ProtectedRoute userType="admin">
+              <Finanzas />
             </ProtectedRoute>
           }
         />

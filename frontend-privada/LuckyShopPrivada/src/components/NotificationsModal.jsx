@@ -1,5 +1,5 @@
-import { useNotificaciones } from "../hooks/useNotificaciones";
-import "./NotificacionesModal.css";
+import { useNotificaciones } from "../hooksP/useNotificaciones";
+import "./NotificationModal.css";
 
 export default function NotificacionesModal({ abierto, onCerrar }) {
   const { notificaciones, cargando, error } = useNotificaciones();

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
-import NotificacionesModal from "../components/NotificacionesModal";
-import { usePerfil } from "../hooks/usePerfil";
-import "./Perfil.css";
+import NotificacionesModal from "../components/NotificationsModal";
+import { usePerfil } from "../hooksP/usePerfilP";
+import "./PerfilPriv.css";
 
 
 export default function Perfil() {

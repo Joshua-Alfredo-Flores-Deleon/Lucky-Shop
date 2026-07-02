@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./PagosModales.css";
+import "./PagosModals.css";
 
 const VALORES_INICIALES = {
   cliente: "",
