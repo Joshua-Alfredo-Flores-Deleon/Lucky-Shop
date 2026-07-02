@@ -1,0 +1,100 @@
+/*=========================================
+    CONTENEDOR PRINCIPAL DEL DASHBOARD
+=========================================*/
+
+.dashboard{
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f6fa;
+}
+
+/*=========================================
+    CONTENIDO PRINCIPAL
+=========================================*/
+
+.dashboard-content{
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/*=========================================
+    ENCABEZADO
+=========================================*/
+
+.dashboard-header{
+    margin-top: 25px;
+    margin-bottom: 35px;
+}
+
+.dashboard-header h1{
+    font-size: 32px;
+    color: #1e293b;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.dashboard-header p{
+    font-size: 15px;
+    color: #64748b;
+}
+
+/*=========================================
+    CONTENEDOR DE TARJETAS KPI
+=========================================*/
+
+.kpi-container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+/*=========================================
+    PARTE INFERIOR DEL DASHBOARD
+=========================================*/
+
+.dashboard-body{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/*=========================================
+    RESPONSIVE TABLET
+=========================================*/
+
+@media screen and (max-width: 1024px){
+
+    .kpi-container{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .dashboard-body{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/*=RESPONSIVE CELULAR*/
+    
+@media screen and (max-width:768px){
+
+    .dashboard-content{
+        padding:20px;
+    }
+
+    .dashboard-header h1{
+        font-size:26px;
+    }
+
+    .dashboard-header p{
+        font-size:14px;
+    }
+
+    .kpi-container{
+        grid-template-columns:1fr;
+    }
+
+}
