@@ -1,0 +1,94 @@
+.notif-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px;
+  z-index: 50;
+}
+
+.notif-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 32px;
+  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+.notif-cerrar {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+}
+
+.notif-titulo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0 0 24px;
+}
+
+.notif-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.notif-item {
+  border-left: 4px solid #6b7280;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+  background: #f5f5f4;
+}
+
+.notif-item.exito {
+  border-left-color: #0f6e56;
+  background: #f2f4f2;
+}
+
+.notif-item.advertencia {
+  border-left-color: #efc94b;
+  background: #fdfaea;
+}
+
+.notif-item.critico {
+  border-left-color: #e24b4a;
+  background: #fdeeee;
+}
+
+.notif-item-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0 0 4px;
+}
+
+.notif-item-descripcion {
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.notif-vacio {
+  font-size: 14px;
+  color: #6b7280;
+  padding: 12px 0;
+}
+
+.notif-estado-error {
+  font-size: 14px;
+  color: #dc2626;
+  padding: 12px 0;
+}
