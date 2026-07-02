@@ -26,3 +26,23 @@ function normalizarVenta(venta) {
     estado: venta.estado ?? "Completado",
   };
 }
+
+
+async function solicitar(path, { method = "GET", body } = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    credentials: "include", // manda la cookie authCookie
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (res.status === 204) return null;
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(data?.message || `Error ${res.status} al consultar ${path}`);
+  }
+
+  return data;
+}
