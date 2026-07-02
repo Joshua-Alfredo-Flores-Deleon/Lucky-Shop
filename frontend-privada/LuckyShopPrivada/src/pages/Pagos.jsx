@@ -2,7 +2,7 @@ import { useState } from "react";
 import { usePagos } from "../hooks/usePagos";
 import ModalAgregarPago from "../components/ModalAgregarPago";
 import ModalDetallePago from "../components/ModalDetallePago";
-import ModalConfirmarEliminar from "../components/ModalConfirmarEliminar";
+import ConfirmModal from "../components/ConfirmModal"; // ajusta la ruta a donde realmente lo tengas
 import "./Pagos.css";
 
 export default function Pagos() {
@@ -28,7 +28,7 @@ export default function Pagos() {
   const [errorFormulario, setErrorFormulario] = useState(null);
   const [errorEliminar, setErrorEliminar] = useState(null);
 
-   const manejarAgregarPago = async (datos) => {
+  const manejarAgregarPago = async (datos) => {
     try {
       setErrorFormulario(null);
       await agregarPago(datos);
@@ -44,10 +44,11 @@ export default function Pagos() {
       await eliminarPago(id);
     } catch (err) {
       setErrorEliminar(err.message);
+      alert(err.message); // ConfirmModal no tiene un slot para mostrar error inline
     }
   };
 
-    return (
+  return (
     <div className="pagos-pagina">
       <h1 className="pagos-titulo">Pagos</h1>
       <p className="pagos-subtitulo">Lleva el control de pagos realizados y pendientes</p>
@@ -148,11 +149,12 @@ export default function Pagos() {
 
       <ModalDetallePago pago={pagoSeleccionado} onCerrar={cerrarDetalle} iniciales={iniciales} />
 
-      <ModalConfirmarEliminar
-        pago={pagoAEliminar}
-        onCancelar={cancelarEliminar}
-        onConfirmar={manejarEliminarPago}
-        error={errorEliminar}
+      <ConfirmModal
+        isOpen={!!pagoAEliminar}
+        title="Confirmación"
+        message="¿Estás segura que deseas eliminar este registro de pago?"
+        onConfirm={() => manejarEliminarPago(pagoAEliminar.id)}
+        onCancel={cancelarEliminar}
       />
     </div>
   );
