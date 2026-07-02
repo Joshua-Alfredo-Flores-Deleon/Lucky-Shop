@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
+import Sidebar from "../components/sideBar";
+import Nav from "../components/Nav";
+import NotificacionesModal from "../components/NotificacionesModal";
 import { useFinanzas } from "../hooks/useFinanzas";
 import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
 import ModalExito from "../components/ModalExito";

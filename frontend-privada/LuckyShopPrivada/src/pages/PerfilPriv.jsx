@@ -1,6 +1,10 @@
 import { useState } from "react";
+import Sidebar from "../components/sideBar";
+import Nav from "../components/Nav";
+import NotificacionesModal from "../components/NotificacionesModal";
 import { usePerfil } from "../hooks/usePerfil";
-import "./PerfilPriv.css";
+import "./Perfil.css";
+
 
 export default function Perfil() {
   const { perfil, borrador, editando, cargando, error, guardando, iniciarEdicion, cancelarEdicion, actualizarCampo, guardarPerfil } =

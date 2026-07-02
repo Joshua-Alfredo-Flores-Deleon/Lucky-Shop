@@ -10,6 +10,9 @@ import Clientes from './pages/Clientes.jsx'
 import Bolsas from './pages/Bolsas.jsx'
 import RecoveryPasswordAdmin from './pages/RecoveryPasswordAdmin.jsx'
 import PerfilAdmin from './pages/PerfilPriv.jsx'
+import Finanzas from './pages/Finanzas.jsx'
+import Pagos from './pages/Pagos.jsx'
+
 
 function App() {
   return (

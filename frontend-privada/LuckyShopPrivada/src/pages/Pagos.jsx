@@ -1,9 +1,13 @@
 import { useState } from "react";
+import Sidebar from "../components/sideBar";
+import Nav from "../components/Nav";
+import NotificacionesModal from "../components/NotificacionesModal";
 import { usePagos } from "../hooks/usePagos";
 import ModalAgregarPago from "../components/ModalAgregarPago";
 import ModalDetallePago from "../components/ModalDetallePago";
-import ConfirmModal from "../components/ConfirmModal"; // ajusta la ruta a donde realmente lo tengas
+import ConfirmModal from "../components/ConfirmModal";
 import "./Pagos.css";
+
 
 export default function Pagos() {
   const {
