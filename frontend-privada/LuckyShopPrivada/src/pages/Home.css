@@ -1,100 +1,273 @@
-/*=========================================
-    CONTENEDOR PRINCIPAL DEL DASHBOARD
-=========================================*/
-
-.dashboard{
-    display: flex;
-    min-height: 100vh;
-    background-color: #f5f6fa;
+.home-pagina {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-/*=========================================
-    CONTENIDO PRINCIPAL
-=========================================*/
-
-.dashboard-content{
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto;
+.home-encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
-/*=========================================
-    ENCABEZADO
-=========================================*/
-
-.dashboard-header{
-    margin-top: 25px;
-    margin-bottom: 35px;
+.home-titulo {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0d2818;
 }
 
-.dashboard-header h1{
-    font-size: 32px;
-    color: #1e293b;
-    font-weight: bold;
-    margin-bottom: 8px;
+.home-acciones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.dashboard-header p{
-    font-size: 15px;
-    color: #64748b;
+.home-campana {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
 }
 
-/*=========================================
-    CONTENEDOR DE TARJETAS KPI
-=========================================*/
-
-.kpi-container{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 35px;
+.home-campana-punto {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e24b4a;
 }
 
-/*=========================================
-    PARTE INFERIOR DEL DASHBOARD
-=========================================*/
-
-.dashboard-body{
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
-    align-items: flex-start;
+.home-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #d9d9d9;
 }
 
-/*=========================================
-    RESPONSIVE TABLET
-=========================================*/
-
-@media screen and (max-width: 1024px){
-
-    .kpi-container{
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .dashboard-body{
-        grid-template-columns: 1fr;
-    }
-
+.home-subtitulo {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px;
 }
 
-/*=RESPONSIVE CELULAR*/
-    
-@media screen and (max-width:768px){
+.home-estado {
+  font-size: 14px;
+  color: #6b7280;
+  padding: 24px 0;
+}
 
-    .dashboard-content{
-        padding:20px;
-    }
+.home-estado-error {
+  font-size: 14px;
+  color: #dc2626;
+  padding: 24px 0;
+}
 
-    .dashboard-header h1{
-        font-size:26px;
-    }
+.home-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
 
-    .dashboard-header p{
-        font-size:14px;
-    }
+.home-tarjeta {
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
 
-    .kpi-container{
-        grid-template-columns:1fr;
-    }
+.home-tarjeta-fila {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
 
+.home-tarjeta-titulo {
+  font-size: 14px;
+  color: #374151;
+  margin: 0 0 10px;
+}
+
+.home-tarjeta-valor {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.home-tarjeta-icono {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #e6f1f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #185fa5;
+  flex-shrink: 0;
+}
+
+.home-tarjeta-icono.verde {
+  background: #eaf3de;
+  color: #3b6d11;
+}
+
+.home-tendencia-linea {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #3b6d11;
+  margin: 6px 0 0;
+}
+
+.home-cuerpo {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.home-tarjeta-grafica {
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.home-grafica-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.home-grafica-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.home-toggle {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.home-toggle-boton {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.home-toggle-boton.activo {
+  background: #ffffff;
+  color: #111111;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.home-grafica-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 180px;
+}
+
+.home-barra-columna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.home-barra-globo {
+  background: #111111;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.home-barra {
+  width: 100%;
+  max-width: 42px;
+  border-radius: 6px 6px 0 0;
+  background: #0d2237;
+}
+
+.home-barra.activa {
+  background: #0f6e56;
+}
+
+.home-barra-etiqueta {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 8px;
+}
+
+.home-tarjeta-resumen {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background-color: #3f3f3f;
+  background-size: cover;
+  background-position: center;
+}
+
+.home-tarjeta-resumen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+.home-resumen-titulo {
+  position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+  display: inline-block;
+}
+
+.home-resumen-texto {
+  position: relative;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 12px 0 0;
+}
+
+@media (max-width: 860px) {
+  .home-tarjetas {
+    grid-template-columns: 1fr;
+  }
+  .home-cuerpo {
+    grid-template-columns: 1fr;
+  }
 }
