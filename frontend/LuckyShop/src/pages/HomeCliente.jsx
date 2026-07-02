@@ -8,7 +8,7 @@ import ProductCard from '../components/ProductCard.jsx'
 const BASE_URL = 'http://localhost:4000/api'
 
 const CATEGORIAS_MENU = [
-  { label: 'Anillos',    path: '/categoria/anillos',    icon: '' },
+  { label: 'Anillos',    path: '/anillos',    icon: '' },
   { label: 'Pulseras',   path: '/categoria/pulseras',   icon: '' },
   { label: 'Pendientes', path: '/categoria/pendientes',  icon: '' },
   { label: 'Collares',   path: '/categoria/collares',   icon: '' },
@@ -54,7 +54,7 @@ const HomeCliente = () => {
           <h1 className="text-4xl font-black text-gray-900 mb-2">Lucky Shop</h1>
           <p className="text-gray-600 text-sm max-w-sm mb-6">La suerte en un adorno. Descubre nuestra colección de accesorios y bolsitas sorpresa.</p>
           <Link
-            to="/categoria/anillos"
+            to="/anillos"
             className="inline-block bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors"
           >
             Ver colección
@@ -84,7 +84,7 @@ const HomeCliente = () => {
       <div className="container mx-auto px-6 pb-10">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-xl font-bold text-gray-900">Novedades</h2>
-          <Link to="/categoria/anillos" className="text-sm text-pink-500 hover:underline">Ver todo</Link>
+          <Link to="/anillos" className="text-sm text-pink-500 hover:underline">Ver todo</Link>
         </div>
         {loading ? (
           <div className="flex justify-center py-12">
@@ -105,7 +105,7 @@ const HomeCliente = () => {
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-gray-900">Anillos destacados</h2>
-              <Link to="/categoria/anillos" className="text-sm text-pink-500 hover:underline">Ver todos</Link>
+              <Link to="/anillos" className="text-sm text-pink-500 hover:underline">Ver todos</Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {anillos.map((p) => <ProductCard key={p._id} producto={p} />)}

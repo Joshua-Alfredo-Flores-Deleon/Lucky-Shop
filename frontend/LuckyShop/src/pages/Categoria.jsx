@@ -12,41 +12,23 @@ const CONFIG_CATEGORIAS = {
   anillos: {
     titulo: 'Anillos',
     descripcion: 'Encuentra tu anillo que "nunca me quito" en nuestra selección de anillos, anillos de compromiso, anillos formativos y más. Tu próxima colección de anillos favoritos comienza aquí.',
-    subcategorias: [
-      { value: 'compromiso', label: 'Anillos de Compromiso', icon: '' },
-      { value: 'promesa',    label: 'Anillos Promesa',       icon: '' },
-      { value: 'alianza',    label: 'Anillos Alianza',       icon: '' },
-      { value: 'eternidad',  label: 'Anillos Eternidad',     icon: '' },
-    ],
   },
   pulseras: {
     titulo: 'Pulseras',
     descripcion: 'No es solo una joya, es un recordatorio tangible de que la suerte no ocurre por azar, sino porque llevas contigo la energía necesaria para atraerla; deja que esta pulsera sea el amuleto que sintonice tu destino con tus deseos.',
     subcategorias: [
-      { value: 'rigida',   label: 'Brazaletes Rígidos',   icon: '' },
-      { value: 'cuentas',  label: 'Pulseras de Cuentas',  icon: '' },
-      { value: 'charm',    label: 'Charms',               icon: '' },
-      { value: 'cadena',   label: 'Pulseras de Cadena',   icon: '' },
+      { value: 'Tobilleras',   label: 'Tobileras'},
     ],
   },
   pendientes: {
     titulo: 'Pendientes',
     descripcion: 'La distinción no es una coincidencia, es una elección. Estos pendientes han sido grabados con la firme convicción de que la elegancia es el imán definitivo de la fortuna.',
-    subcategorias: [
-      { value: 'aro',       label: 'Pendientes de Aro',     icon: '' },
-      { value: 'colgante',  label: 'Pendientes Colgantes',  icon: '' },
-      { value: 'piercing',  label: 'Piercings',             icon: '' },
-    ],
   },
   collares: {
     titulo: 'Collares',
     descripcion: 'El destino se rinde ante quienes caminan con seguridad; deja que este collar sea el destello que ilumine tu camino y atraiga hacia ti las sincronías perfectas que el universo tiene preparadas para quienes se atreven a brillar.',
     subcategorias: [
-      { value: 'choker',    label: 'Collares Choker',    icon: '' },
-      { value: 'princesa',  label: 'Collares Princesas', icon: '' },
-      { value: 'matine',    label: 'Collares Matine',    icon: '' },
-      { value: 'opera',     label: 'Collares Opera',     icon: '' },
-      { value: 'cuerda',    label: 'Collares Cuerda',    icon: '' },
+      { value: 'Set',    label: 'Set'},
     ],
   },
   otros: {

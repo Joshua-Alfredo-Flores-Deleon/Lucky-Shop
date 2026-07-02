@@ -6,8 +6,7 @@ import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-
-const BASE_URL = 'http://localhost:4000/api'
+import { useAnillo } from '../hooks/useAnillos.jsx'
 
 const ProductoDetalle = () => {
   const { id } = useParams()
@@ -16,37 +15,22 @@ const ProductoDetalle = () => {
   const { addItem } = useCart()
   const { isAuthenticated } = useAuth()
 
-  const [producto,    setProducto]    = useState(null)
-  const [relacionados,setRelacionados]= useState([])
-  const [loading,     setLoading]     = useState(true)
+  const { anillo: producto, relacionados, loading, error } = useAnillo(id)
+
   const [cantidad,    setCantidad]    = useState(1)
   const [imgActiva,   setImgActiva]   = useState(0)
   const [toast,       setToast]       = useState(false)
 
   useEffect(() => {
-    const fetchProducto = async () => {
-      setLoading(true)
-      try {
-        const res  = await fetch(`${BASE_URL}/productos/${id}`, { credentials: 'include' })
-        if (!res.ok) throw new Error('no encontrado')
-        const data = await res.json()
-        setProducto(data)
-        setImgActiva(0)
-
-        // Relacionados de la misma categoría
-        if (data.idCategoria) {
-          const resRel = await fetch(`${BASE_URL}/productos?categoria=${data.idCategoria}&estado=activo`, { credentials: 'include' })
-          const rel    = await resRel.json()
-          setRelacionados(Array.isArray(rel) ? rel.filter((p) => p._id !== id).slice(0, 4) : [])
-        }
-      } catch {
-        navigate('/')
-      } finally {
-        setLoading(false)
-      }
+    if (error) {
+      navigate('/')
     }
-    fetchProducto()
-  }, [id, navigate])
+  }, [error, navigate])
+
+  useEffect(() => {
+    setImgActiva(0)
+    setCantidad(1)
+  }, [id])
 
   const handleAgregar = () => {
     if (!producto) return

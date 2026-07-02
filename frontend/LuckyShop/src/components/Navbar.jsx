@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 const CATEGORIAS = [
   { label: 'Inicio',          path: '/Home' },
-  { label: 'Anillos',         path: '/categoria/anillos' },
+  { label: 'Anillos',         path: '/anillos' },
   { label: 'Pulseras',        path: '/categoria/pulseras' },
   { label: 'Pendientes',      path: '/categoria/pendientes' },
   { label: 'Collares',        path: '/categoria/collares' },
