@@ -44,12 +44,13 @@
     margin-left: 300px;
     margin-bottom: 50px;
     margin-top: 50px;
+    margin-right: 200px;
 }
 
 .contenedorS{
     display: flex;
     justify-content: space-evenly;
-    background-color: #f3f2f2;
+    background-color: #ebeaea;
     padding-top: 50px;
     padding-bottom: 100px;
 }

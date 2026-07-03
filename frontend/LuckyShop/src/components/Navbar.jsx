@@ -4,13 +4,13 @@ import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const CATEGORIAS = [
-  { label: 'Inicio',          path: '/Home' },
+  { label: 'Inicio',          path: '/home' },
   { label: 'Anillos',         path: '/anillos' },
   { label: 'Pulseras',        path: '/categoria/pulseras' },
   { label: 'Pendientes',      path: '/categoria/pendientes' },
   { label: 'Collares',        path: '/categoria/collares' },
   { label: 'Bolsas de la suerte', path: '/bolsas-suerte' },
-  { label: 'Acerca de',       path: '/AcercaDe' },
+  { label: 'AcercaDe',       path: '/acercaDe' },
   { label: 'Otros',           path: '/categoria/otros' },
 ]
 
@@ -30,7 +30,7 @@ const Navbar = () => {
         {/* Top bar */}
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
+          <Link to="/home" className="flex-shrink-0">
             <span className="text-2xl font-bold text-pink-500 tracking-tight">Luckysh<span className="text-green-500">o</span>p</span>
             <span className="block text-[10px] text-gray-400 text-center -mt-1">by lucky</span>
           </Link>

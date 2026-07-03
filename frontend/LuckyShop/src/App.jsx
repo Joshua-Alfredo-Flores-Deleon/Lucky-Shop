@@ -29,11 +29,12 @@ function App() {
             <Route path="/register"                    element={<Register />} />
             <Route path="/recuperar-password"           element={<RecuperarPassword />} />
             <Route path="/recovery-password-cliente"    element={<RecoveryPasswordCliente />} />
-            <Route path="/"                element={<HomeCliente />} />
+            <Route path="/home"                element={<HomeCliente />} />
             <Route path="/categoria/:cat"  element={<Categoria />} />
             <Route path="/producto/:id"    element={<ProductoDetalle />} />
             <Route path="/anillos"         element={<Anillos />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
+            <Route path="/acercaDe"       element={<AcercaDe />} />
 
             {/* ── Requieren sesión: comprar / ver historial ── */}
             <Route element={<PrivateRoute />}>

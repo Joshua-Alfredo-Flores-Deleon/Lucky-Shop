@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import '../productos.css'
+import { useState } from 'react'
+import '../sideBar.css'
 
 // Importación de imágenes y recursos
 import logosite from '../assets/image-removebg-preview.png' 
@@ -14,8 +15,15 @@ import FinanzasIcon from '../assets/finanza.png'
 import notificacionIcon from '../assets/icons8-recordatorios-de-citas-48.png'
 import PerfilIcon from '../assets/cuales-son-las-razas-de-gatos-mas-populares-en-colombia.jpg'
 
+import NotificacionesModal from './NotificationsModal.jsx'
+import { useNotificaciones } from '../hooksP/useNotificaciones.jsx'
+
 const SideBar = () => {
   const location = useLocation()
+  const [modalAbierto, setModalAbierto] = useState(false)
+  const { notificaciones } = useNotificaciones()
+  const totalNotif = notificaciones?.length || 0
+
   // Función para determinar si una ruta está activa
   const isActive = (path) => {
     return location.pathname === path ? 'active' : ''
@@ -105,10 +113,14 @@ const SideBar = () => {
       {/* Barra de Usuario y Notificaciones (Top-Right) */}
       <div className="header-actions">
         {/* Botón de Notificaciones con Indicador de Alerta */}
-        <Link to="/notificacion" className="notification-btn" aria-label="Notificaciones">
+        <button onClick={() => setModalAbierto(true)} className="notification-btn" aria-label="Notificaciones">
           <img src={notificacionIcon} alt="Notificaciones" />
-          <span className="notification-badge"></span> {/* Pulsing Badge */}
-        </Link>
+          {totalNotif > 0 && (
+            <span className="notification-badge">{totalNotif}</span>
+          )}
+        </button>
+        <NotificacionesModal abierto={modalAbierto} onCerrar={() => setModalAbierto(false)} />
+        
         {/* Perfil del Usuario */}
         <Link to="/perfil" className="profile-btn" aria-label="Ver Perfil">
           <div className="profile-avatar-wrapper">

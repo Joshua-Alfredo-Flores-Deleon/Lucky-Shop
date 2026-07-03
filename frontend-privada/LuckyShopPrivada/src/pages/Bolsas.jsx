@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Sidebar from '../components/sideBar'
-import '../productos.css'
+import '../sideBar.css'
 import '../productosPage.css'
 
 const BASE_URL = 'http://localhost:4000/api'

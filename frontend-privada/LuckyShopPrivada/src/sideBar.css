@@ -249,11 +249,18 @@
   border: 2px solid #060f0b;
   border-radius: 50%;
   box-shadow: 0 0 10px var(--color-primary-pink);
-  height: 12px;
+  min-width: 18px;
+  height: 18px;
   position: absolute;
-  right: 2px;
-  top: 2px;
-  width: 12px;
+  right: -2px;
+  top: -2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
   animation: pulse-badge 1.8s infinite;
 }
 @keyframes pulse-badge {
