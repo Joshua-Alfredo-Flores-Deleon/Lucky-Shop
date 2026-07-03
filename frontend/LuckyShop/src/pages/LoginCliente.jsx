@@ -1,5 +1,6 @@
 // Login.jsx — login de clientes Lucky Shop
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 
@@ -10,17 +11,19 @@ const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  const [email,      setEmail]      = useState('')
-  const [password,   setPassword]   = useState('')
-  const [recordarme, setRecordarme] = useState(false)
-  const [error,      setError]      = useState('')
-  const [loading,    setLoading]    = useState(false)
+  const [error,   setError]   = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur' })
 
   // Si veníamos redirigidos desde una ruta privada, regresamos ahí; si no, al inicio.
   const from = location.state?.from?.pathname || '/home'
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const onSubmit = async ({ email, password }) => {
     setError('')
     setLoading(true)
     try {
@@ -66,36 +69,47 @@ const Login = () => {
             ¡Ingresa tus datos para descubrir tú suerte de hoy!
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Correo eléctronico</label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="correo@ejemplo.com"
-                required
-                className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 shadow-sm transition-colors"
+                {...register('email', {
+                  required: 'El correo es obligatorio.',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Ingresa un correo válido.',
+                  },
+                })}
+                className={`w-full rounded-full border bg-white px-4 py-2.5 text-sm outline-none shadow-sm transition-colors ${
+                  errors.email ? 'border-red-300 focus:border-red-400' : 'border-pink-200 focus:border-pink-400'
+                }`}
               />
+              {errors.email && <p className="text-xs text-red-500 mt-1 ml-1">{errors.email.message}</p>}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                required
-                className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 shadow-sm transition-colors"
+                {...register('password', {
+                  required: 'La contraseña es obligatoria.',
+                  minLength: { value: 6, message: 'Debe tener al menos 6 caracteres.' },
+                })}
+                className={`w-full rounded-full border bg-white px-4 py-2.5 text-sm outline-none shadow-sm transition-colors ${
+                  errors.password ? 'border-red-300 focus:border-red-400' : 'border-pink-200 focus:border-pink-400'
+                }`}
               />
+              {errors.password && <p className="text-xs text-red-500 mt-1 ml-1">{errors.password.message}</p>}
             </div>
 
             <div className="flex items-center justify-between text-xs pt-1">
               <label className="flex items-center gap-1.5 text-gray-500 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={recordarme}
-                  onChange={(e) => setRecordarme(e.target.checked)}
+                  {...register('recordarme')}
                   className="rounded border-gray-300 text-pink-500 focus:ring-pink-400"
                 />
                 Recordarme la contraseña

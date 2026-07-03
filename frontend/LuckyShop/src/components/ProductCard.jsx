@@ -1,18 +1,57 @@
-import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext.jsx'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
+
+const BASE_URL = 'http://localhost:4000/api'
 
 const ProductCard = ({ producto }) => {
-  const { addItem } = useCart()
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [esFavorito, setEsFavorito] = useState(false)
+  const [cargandoFav, setCargandoFav] = useState(false)
+
+  // Si el producto ya trae si es favorito (por ejemplo, listado desde /favoritos), lo respetamos
+  useEffect(() => {
+    if (producto.esFavorito !== undefined) setEsFavorito(producto.esFavorito)
+  }, [producto])
+
+  const handleToggleFavorito = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: location } })
+      return
+    }
+
+    setCargandoFav(true)
+    try {
+      const res = await fetch(`${BASE_URL}/perfilCliente/favoritos/${producto._id}`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (res.ok) setEsFavorito(data.esFavorito)
+    } catch {
+      // si falla, dejamos el estado como estaba
+    } finally {
+      setCargandoFav(false)
+    }
+  }
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 hover:shadow-md transition-shadow overflow-hidden group">
       {/* Imagen */}
       <div className="relative aspect-square bg-gray-50 overflow-hidden">
         <button
-          onClick={() => {}}
-          className="absolute top-3 right-3 z-10 text-gray-300 hover:text-pink-500 transition-colors text-xl"
+          onClick={handleToggleFavorito}
+          disabled={cargandoFav}
+          className={`absolute top-3 right-3 z-10 text-xl transition-colors ${
+            esFavorito ? 'text-pink-500' : 'text-gray-300 hover:text-pink-500'
+          }`}
         >
-          ♡
+          {esFavorito ? '♥' : '♡'}
         </button>
         {producto.imagenPresentacion ? (
           <img
@@ -21,7 +60,7 @@ const ProductCard = ({ producto }) => {
             className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-4xl"></div>
+          <div className="w-full h-full flex items-center justify-center text-4xl">💍</div>
         )}
       </div>
 

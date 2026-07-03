@@ -66,7 +66,7 @@ const Navbar = () => {
 
                 {/* Usuario */}
                 <div className="flex items-center gap-2">
-                  <Link to="/historial" className="text-sm text-gray-600 hover:text-pink-500 font-medium">{cliente.name || cliente.email}</Link>
+                  <Link to="/perfil" className="text-sm text-gray-600 hover:text-pink-500 font-medium">{cliente.name || cliente.email}</Link>
                   <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-red-500">Salir</button>
                 </div>
               </>

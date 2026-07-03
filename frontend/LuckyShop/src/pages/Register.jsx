@@ -1,5 +1,6 @@
 // Register.jsx — registro de clientes con verificación por código
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
 const BASE_URL = 'http://localhost:4000/api'
@@ -7,17 +8,27 @@ const FLATLAY_BG = 'https://images.unsplash.com/photo-1647559709189-a257be60e147
 
 const Register = () => {
   const navigate = useNavigate()
-  const [step,      setStep]      = useState(1) // 1=datos, 2=verificar código
-  const [form,      setForm]      = useState({ name: '', lastName: '', birthdate: '', email: '', password: '' })
-  const [codigo,    setCodigo]    = useState('')
-  const [error,     setError]     = useState('')
-  const [loading,   setLoading]   = useState(false)
-  const [success,   setSuccess]   = useState(false)
+  const [step,    setStep]    = useState(1) // 1=datos, 2=verificar código
+  const [email,   setEmail]   = useState('') // se guarda para mostrarlo en el paso 2
+  const [error,   setError]   = useState('')
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
-  const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  // ── Formulario del paso 1: datos de registro ──
+  const {
+    register: registerDatos,
+    handleSubmit: handleSubmitDatos,
+    formState: { errors: erroresDatos },
+  } = useForm({ mode: 'onBlur' })
 
-  const handleRegister = async (e) => {
-    e.preventDefault()
+  // ── Formulario del paso 2: código de verificación ──
+  const {
+    register: registerCodigo,
+    handleSubmit: handleSubmitCodigo,
+    formState: { errors: erroresCodigo },
+  } = useForm({ mode: 'onBlur' })
+
+  const onSubmitDatos = async (datos) => {
     setError('')
     setLoading(true)
     try {
@@ -25,10 +36,11 @@ const Register = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ ...form, isVerified: false }),
+        body: JSON.stringify({ ...datos, isVerified: false }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Error al registrarse')
+      setEmail(datos.email)
       setStep(2)
     } catch (err) {
       setError(err.message)
@@ -37,8 +49,7 @@ const Register = () => {
     }
   }
 
-  const handleVerify = async (e) => {
-    e.preventDefault()
+  const onSubmitCodigo = async ({ codigo }) => {
     setError('')
     setLoading(true)
     try {
@@ -58,6 +69,11 @@ const Register = () => {
       setLoading(false)
     }
   }
+
+  const inputClass = (hasError) =>
+    `w-full rounded-full border bg-white px-4 py-2.5 text-sm outline-none transition-colors ${
+      hasError ? 'border-red-300 focus:border-red-400' : 'border-pink-200 focus:border-pink-400'
+    }`
 
   return (
     <div
@@ -91,33 +107,76 @@ const Register = () => {
               <h2 className="text-2xl font-semibold text-gray-900 mb-1">Regístrate</h2>
               <div className="w-full h-px bg-gray-200 mb-5" />
 
-              <form onSubmit={handleRegister} className="space-y-4">
+              <form onSubmit={handleSubmitDatos(onSubmitDatos)} noValidate className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                  <input name="name" value={form.name} onChange={handleChange} placeholder="Alberto Fuentes" required
-                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                  <input
+                    placeholder="Alberto Fuentes"
+                    {...registerDatos('name', {
+                      required: 'El nombre es obligatorio.',
+                      minLength: { value: 2, message: 'Debe tener al menos 2 caracteres.' },
+                    })}
+                    className={inputClass(erroresDatos.name)}
+                  />
+                  {erroresDatos.name && <p className="text-xs text-red-500 mt-1 ml-1">{erroresDatos.name.message}</p>}
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
-                  <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="García" required
-                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                  <input
+                    placeholder="García"
+                    {...registerDatos('lastName', {
+                      required: 'El apellido es obligatorio.',
+                      minLength: { value: 2, message: 'Debe tener al menos 2 caracteres.' },
+                    })}
+                    className={inputClass(erroresDatos.lastName)}
+                  />
+                  {erroresDatos.lastName && <p className="text-xs text-red-500 mt-1 ml-1">{erroresDatos.lastName.message}</p>}
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Correo eléctronico</label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="alberto_lj@gmail.com" required
-                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                  <input
+                    type="email"
+                    placeholder="alberto_lj@gmail.com"
+                    {...registerDatos('email', {
+                      required: 'El correo es obligatorio.',
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: 'Ingresa un correo válido.',
+                      },
+                    })}
+                    className={inputClass(erroresDatos.email)}
+                  />
+                  {erroresDatos.email && <p className="text-xs text-red-500 mt-1 ml-1">{erroresDatos.email.message}</p>}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                    <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••••" required minLength={6}
-                      className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      {...registerDatos('password', {
+                        required: 'La contraseña es obligatoria.',
+                        minLength: { value: 6, message: 'Mínimo 6 caracteres.' },
+                      })}
+                      className={inputClass(erroresDatos.password)}
+                    />
+                    {erroresDatos.password && <p className="text-xs text-red-500 mt-1 ml-1">{erroresDatos.password.message}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
-                    <input name="birthdate" type="date" value={form.birthdate} onChange={handleChange} required
-                      className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                    <input
+                      type="date"
+                      {...registerDatos('birthdate', {
+                        required: 'La fecha es obligatoria.',
+                        validate: (value) =>
+                          new Date(value) <= new Date() || 'La fecha no puede ser futura.',
+                      })}
+                      className={inputClass(erroresDatos.birthdate)}
+                    />
+                    {erroresDatos.birthdate && <p className="text-xs text-red-500 mt-1 ml-1">{erroresDatos.birthdate.message}</p>}
                   </div>
                 </div>
 
@@ -135,19 +194,26 @@ const Register = () => {
             <>
               <h2 className="text-2xl font-semibold text-gray-900 mb-1 text-center">Verifica tu correo</h2>
               <div className="w-full h-px bg-gray-200 mb-5" />
-              <form onSubmit={handleVerify} className="space-y-4">
+              <form onSubmit={handleSubmitCodigo(onSubmitCodigo)} noValidate className="space-y-4">
                 <p className="text-sm text-gray-500 text-center">
-                  Ingresa el código que enviamos a<br /><strong className="text-gray-700">{form.email}</strong>
+                  Ingresa el código que enviamos a<br /><strong className="text-gray-700">{email}</strong>
                 </p>
-                <input
-                  type="text"
-                  value={codigo}
-                  onChange={(e) => setCodigo(e.target.value)}
-                  placeholder="Código de verificación"
-                  required
-                  maxLength={6}
-                  className="w-full text-center tracking-widest rounded-full border border-pink-200 bg-white px-4 py-3 text-lg font-bold outline-none focus:border-pink-400 transition-colors"
-                />
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Código de verificación"
+                    maxLength={6}
+                    {...registerCodigo('codigo', {
+                      required: 'Ingresa el código que recibiste por correo.',
+                      minLength: { value: 6, message: 'El código tiene 6 caracteres.' },
+                      maxLength: { value: 6, message: 'El código tiene 6 caracteres.' },
+                    })}
+                    className={`w-full text-center tracking-widest rounded-full border bg-white px-4 py-3 text-lg font-bold outline-none transition-colors ${
+                      erroresCodigo.codigo ? 'border-red-300 focus:border-red-400' : 'border-pink-200 focus:border-pink-400'
+                    }`}
+                  />
+                  {erroresCodigo.codigo && <p className="text-xs text-red-500 mt-1 ml-1 text-center">{erroresCodigo.codigo.message}</p>}
+                </div>
 
                 {error && <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
 

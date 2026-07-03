@@ -5,6 +5,7 @@ import limiter from "./src/middlewares/limiter.js"
 import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
 import clientesRoutes from "./src/routes/clientes.js"
+import perfilClienteRoutes from "./src/routes/perfilCliente.js"
 import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
 import logoutRoutes from "./src/routes/logout.js";
 import gastosRoutes from "./src/routes/gastos.js"
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use("/api/loginAdmin", loginAdminRoutes);
 app.use("/api/loginClientes", loginClientesRoutes);
 app.use("/api/clientes", clientesRoutes);
+app.use("/api/perfilCliente", perfilClienteRoutes);
 app.use("/api/registerClientes", registerClientesRoutes);
 app.use("/api/logout", logoutRoutes);
 app.use("/api/recoveryPassword", recoveryPasswordRoutes);
