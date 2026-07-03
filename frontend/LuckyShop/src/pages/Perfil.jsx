@@ -157,14 +157,14 @@ const Perfil = () => {
                 className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white ring-1 ring-gray-200 flex items-center justify-center text-xs hover:bg-pink-50"
                 title="Cambiar foto"
               >
-                📷
+                
               </button>
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
             </div>
             <div>
               <p className="text-lg font-semibold text-gray-900">{perfil?.name} {perfil?.lastName}</p>
               <p className="text-sm text-gray-500">{perfil?.email}</p>
-              {perfil?.phone && <p className="text-sm text-gray-500">📞 {perfil.phone}</p>}
+              {perfil?.phone && <p className="text-sm text-gray-500"> {perfil.phone}</p>}
               <Link to="/historial" className="inline-block text-xs text-pink-500 hover:underline mt-1">
                 Ver mi historial de pedidos →
               </Link>
@@ -278,7 +278,7 @@ const Perfil = () => {
                     {producto.imagenPresentacion ? (
                       <img src={producto.imagenPresentacion} alt={producto.nombre} className="w-full h-full object-contain p-3" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">💍</div>
+                      <div className="w-full h-full flex items-center justify-center text-3xl"></div>
                     )}
                   </div>
                   <p className="text-xs text-gray-700 px-2 py-2 line-clamp-2">{producto.nombre}</p>

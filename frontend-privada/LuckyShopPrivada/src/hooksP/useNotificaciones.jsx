@@ -65,7 +65,7 @@ export function useNotificaciones() {
       lista.push({
         id: "videos-aceptados",
         tipo: "exito",
-        icono: "🎉",
+        icono: "",
         titulo: "¡Video aceptado!",
         descripcion:
           videosAceptados.length === 1
@@ -83,7 +83,7 @@ export function useNotificaciones() {
       lista.push({
         id: "pedidos",
         tipo: "advertencia",
-        icono: "📦",
+        icono: "",
         titulo: "Pedidos pendientes",
         descripcion: `Tienes ${pedidosPendientes.length} pedido${pedidosPendientes.length === 1 ? "" : "s"
           } pendiente${pedidosPendientes.length === 1 ? "" : "s"
@@ -101,7 +101,7 @@ export function useNotificaciones() {
       lista.push({
         id: "retraso",
         tipo: "critico",
-        icono: "🔴",
+        icono: "",
         titulo: "Pedido con retraso",
         descripcion: `Un pedido lleva más de ${HORAS_RETRASO} horas sin ser despachado. La experiencia del cliente está en riesgo. Revisa el panel de ventas.`,
         enlace: "/ventas",
@@ -117,7 +117,7 @@ export function useNotificaciones() {
       lista.push({
         id: "inventario",
         tipo: "advertencia",
-        icono: "⚠️",
+        icono: "",
         titulo: "Stock bajo",
         descripcion:
           productosStockBajo.length === 1
@@ -136,7 +136,7 @@ export function useNotificaciones() {
       lista.push({
         id: "exito-total",
         tipo: "exito",
-        icono: "✅",
+        icono: "",
         titulo: "¡Todo al día!",
         descripcion: "No tienes pedidos pendientes ni alertas de inventario. ¡Excelente trabajo!",
       });
