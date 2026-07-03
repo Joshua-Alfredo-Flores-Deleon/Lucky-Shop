@@ -37,7 +37,7 @@ bolsasController.getBolsaById = async (req, res) => {
 // INSERT
 bolsasController.insertBolsas = async (req, res) => {
   try {
-    let { nombre, precio, stock, descripcion, estado } = req.body;
+    let { nombre, precio, stock, descripcion, categoria, cantidadUnidades, estado } = req.body;
 
     nombre = nombre?.trim();
     if (!nombre || precio === undefined || stock === undefined) {
@@ -52,6 +52,10 @@ bolsasController.insertBolsas = async (req, res) => {
 
     if (isNaN(stock) || stock < 0) {
       return res.status(400).json({ message: "Stock inválido" });
+    }
+
+    if (cantidadUnidades !== undefined && ![6, 10].includes(Number(cantidadUnidades))) {
+      return res.status(400).json({ message: "Cantidad de unidades inválida" });
     }
 
     // Procesar imágenes subidas con multer + cloudinary
@@ -69,6 +73,8 @@ bolsasController.insertBolsas = async (req, res) => {
       precio: Number(precio),
       stock: Number(stock),
       descripcion,
+      categoria,
+      cantidadUnidades: cantidadUnidades !== undefined ? Number(cantidadUnidades) : 6,
       imagenes,
       imagenPresentacion,
       estado: estado || "activo",
@@ -92,6 +98,8 @@ bolsasController.updateBolsas = async (req, res) => {
       precio,
       stock,
       descripcion,
+      categoria,
+      cantidadUnidades,
       estado,
       imagenesExistentes, // URLs que ya existen y el usuario quiere conservar
     } = req.body;
@@ -106,6 +114,10 @@ bolsasController.updateBolsas = async (req, res) => {
 
     if (isNaN(precio) || precio < 0) {
       return res.status(400).json({ message: "Precio inválido" });
+    }
+
+    if (cantidadUnidades !== undefined && ![6, 10].includes(Number(cantidadUnidades))) {
+      return res.status(400).json({ message: "Cantidad de unidades inválida" });
     }
 
     // Combinar imágenes existentes conservadas + nuevas subidas
@@ -127,8 +139,13 @@ bolsasController.updateBolsas = async (req, res) => {
       precio: Number(precio),
       stock: Number(stock),
       descripcion,
+      categoria,
       estado,
     };
+
+    if (cantidadUnidades !== undefined) {
+      updateData.cantidadUnidades = Number(cantidadUnidades);
+    }
 
     if (imagenes.length > 0) {
       updateData.imagenes = imagenes;

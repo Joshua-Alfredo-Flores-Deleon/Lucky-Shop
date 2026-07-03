@@ -11,7 +11,6 @@ import PerfilAdmin from './pages/PerfilPriv.jsx'
 import Finanzas from './pages/Finanzas.jsx'
 import Pagos from './pages/Pagos.jsx'
 
-
 function App() {
   return (
     <Router>

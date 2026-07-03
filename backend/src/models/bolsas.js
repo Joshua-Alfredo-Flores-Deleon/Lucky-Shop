@@ -6,6 +6,8 @@ const bolsasSchema = new Schema(
     precio: { type: Number, required: true, min: 0 },
     stock: { type: Number, required: true, min: 0, default: 0 },
     descripcion: { type: String, trim: true },
+    categoria: { type: String, trim: true, default: "" },
+    cantidadUnidades: { type: Number, enum: [6, 10], default: 6 },
     imagenes: { type: [String], default: [] },
     imagenPresentacion: { type: String, default: "" },
     estado: {

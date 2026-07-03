@@ -45,51 +45,57 @@ const SuccessModal = ({ mensaje, onClose }) => (
 )
 
 // Modal de detalles de la bolsa
-const DetallesModal = ({ bolsa, onClose }) => {
+const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
   if (!bolsa) return null
+  const cantidadUnidades = bolsa.cantidadUnidades || 6
   return (
     <div className="pm-overlay" onClick={onClose}>
-      <div className="pm-modal pm-detalles-modal" onClick={e => e.stopPropagation()}>
-        <div className="pm-detalles-header">
+      <div className="pm-modal pm-form-modal" onClick={e => e.stopPropagation()}>
+        <div className="pm-form-header">
           <span className="pm-detalles-bar"></span>
           <h2>Detalles de bolsa</h2>
         </div>
-        <div className="pm-detalles-body">
-          <div className="pm-detalles-img-wrap">
-            {bolsa.imagenPresentacion
-              ? <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} />
-              : <div className="pm-no-img">Sin imagen</div>}
-          </div>
-          <div className="pm-detalles-info">
-            <div className="pm-info-row">
-              <div>
-                <span className="pm-info-label">Nombre de bolsa</span>
-                <p className="pm-info-val">{bolsa.nombre || 'Sin nombre'}</p>
-              </div>
+        <div className="pm-form-body">
+          {/* Columna izquierda: imagen + descripción */}
+          <div className="pm-detalle-col-izq">
+            <div className="pm-form-img-box pm-form-img-box-static">
+              {bolsa.imagenPresentacion
+                ? <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} />
+                : <span className="pm-no-img">Sin imagen</span>}
             </div>
-            <div className="pm-info-row pm-info-2col">
-              <div>
-                <span className="pm-info-label">Estado</span>
-                <p className="pm-info-val">{bolsa.estado}</p>
-              </div>
-              <div>
-                <span className="pm-info-label">Cantidad</span>
-                <p className="pm-info-val">{bolsa.stock} unidades</p>
-              </div>
+            <div className="pm-field-group pm-detalle-desc">
+              <label>Descripción</label>
+              <p className="pm-info-val">{bolsa.descripcion || '—'}</p>
+            </div>
+          </div>
+
+          {/* Columna derecha: info + variantes */}
+          <div className="pm-form-fields">
+            <div className="pm-field-group">
+              <label>Nombre de bolsita</label>
+              <p className="pm-info-val">{bolsa.nombre || 'Sin nombre'}</p>
+            </div>
+            <div className="pm-field-group">
+              <label>Categoría</label>
+              <p className="pm-info-val">{bolsa.categoria || '—'}</p>
+            </div>
+            <div className="pm-detalle-variantes">
+              <button
+                className={`pm-btn pm-btn-variante ${cantidadUnidades === 6 ? 'active' : ''}`}
+                onClick={() => onSelectVariante(bolsa, 6)}
+              >
+                Bolsa de 6
+              </button>
+              <button
+                className={`pm-btn pm-btn-variante ${cantidadUnidades === 10 ? 'active' : ''}`}
+                onClick={() => onSelectVariante(bolsa, 10)}
+              >
+                Bolsa de 10
+              </button>
             </div>
           </div>
         </div>
-        <div className="pm-detalles-footer">
-          <div>
-            <span className="pm-info-label">Descripción</span>
-            <p className="pm-info-val">{bolsa.descripcion || '—'}</p>
-          </div>
-          <div className="pm-detalles-price">
-            <span className="pm-info-label">Precio</span>
-            <p className="pm-price-big">${Number(bolsa.precio || 0).toFixed(2)}</p>
-          </div>
-        </div>
-        <div className="pm-detalles-actions">
+        <div className="pm-form-actions">
           <button className="pm-btn pm-btn-dark" onClick={onClose}>Aceptar</button>
         </div>
       </div>
@@ -104,6 +110,8 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
     precio: bolsa?.precio || '',
     stock: bolsa?.stock || 1,
     descripcion: bolsa?.descripcion || '',
+    categoria: bolsa?.categoria || '',
+    cantidadUnidades: bolsa?.cantidadUnidades || 6,
     estado: bolsa?.estado || 'activo',
   })
   const [imagenPreview, setImagenPreview] = useState(bolsa?.imagenPresentacion || null)
@@ -113,6 +121,10 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
   const handleChange = e => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleCantidadUnidades = (valor) => {
+    setForm(prev => ({ ...prev, cantidadUnidades: valor }))
   }
 
   const handleImageChange = e => {
@@ -169,6 +181,16 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
             </div>
             <div className="pm-field-row">
               <div className="pm-field-group">
+                <label>Categoría</label>
+                <input
+                  name="categoria"
+                  value={form.categoria}
+                  onChange={handleChange}
+                  placeholder="Ej. Bolsa"
+                  className="pm-input"
+                />
+              </div>
+              <div className="pm-field-group">
                 <label>Estado</label>
                 <select name="estado" value={form.estado} onChange={handleChange} className="pm-input">
                   {ESTADOS.map(e => (
@@ -176,8 +198,29 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
                   ))}
                 </select>
               </div>
+            </div>
+            <div className="pm-field-row">
               <div className="pm-field-group">
-                <label>Cantidad</label>
+                <label>Cantidad de unidades</label>
+                <div className="pm-detalle-variantes pm-detalle-variantes-form">
+                  <button
+                    type="button"
+                    className={`pm-btn pm-btn-variante ${Number(form.cantidadUnidades) === 6 ? 'active' : ''}`}
+                    onClick={() => handleCantidadUnidades(6)}
+                  >
+                    Bolsa de 6
+                  </button>
+                  <button
+                    type="button"
+                    className={`pm-btn pm-btn-variante ${Number(form.cantidadUnidades) === 10 ? 'active' : ''}`}
+                    onClick={() => handleCantidadUnidades(10)}
+                  >
+                    Bolsa de 10
+                  </button>
+                </div>
+              </div>
+              <div className="pm-field-group">
+                <label>Cantidad en stock</label>
                 <input
                   type="number"
                   name="stock"
@@ -319,6 +362,29 @@ const Bolsas = () => {
   // EDITAR
   const handleEditar = (bolsa) => {
     setModalForm({ modo: 'editar', bolsa })
+  }
+
+  // SELECCIONAR VARIANTE (cantidad de unidades) desde el modal de detalles
+  const handleSelectVariante = async (bolsa, cantidadUnidades) => {
+    if (bolsa.cantidadUnidades === cantidadUnidades) return
+    try {
+      const fd = new FormData()
+      fd.append('nombre', bolsa.nombre || '')
+      fd.append('precio', bolsa.precio ?? 0)
+      fd.append('stock', bolsa.stock ?? 0)
+      fd.append('descripcion', bolsa.descripcion || '')
+      fd.append('categoria', bolsa.categoria || '')
+      fd.append('estado', bolsa.estado || 'activo')
+      fd.append('cantidadUnidades', cantidadUnidades)
+
+      const res = await fetch(`${BASE_URL}/bolsas/${bolsa._id}`, { method: 'PUT', body: fd })
+      if (!res.ok) throw new Error('Error al actualizar la variante')
+
+      setModalDetalles(prev => prev && prev._id === bolsa._id ? { ...prev, cantidadUnidades } : prev)
+      setBolsas(prev => prev.map(b => b._id === bolsa._id ? { ...b, cantidadUnidades } : b))
+    } catch (err) {
+      alert('Error: ' + err.message)
+    }
   }
 
   // ELIMINAR
@@ -479,7 +545,11 @@ const Bolsas = () => {
 
       {/* ── MODALES ── */}
       {modalDetalles && (
-        <DetallesModal bolsa={modalDetalles} onClose={() => setModalDetalles(null)} />
+        <DetallesModal
+          bolsa={modalDetalles}
+          onClose={() => setModalDetalles(null)}
+          onSelectVariante={handleSelectVariante}
+        />
       )}
 
       {modalForm && (
