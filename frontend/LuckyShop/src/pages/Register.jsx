@@ -1,10 +1,9 @@
 // Register.jsx — registro de clientes con verificación por código
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar.jsx'
-import Footer from '../components/Footer.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
+const FLATLAY_BG = 'https://images.unsplash.com/photo-1647559709189-a257be60e147?fm=jpg&q=80&w=1400&auto=format&fit=crop'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -61,101 +60,119 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50">
-      <Navbar />
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-10 relative bg-cover bg-center"
+      style={{ backgroundImage: `url(${FLATLAY_BG})` }}
+    >
+      <div className="absolute inset-0 bg-pink-100/50" />
 
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Crear cuenta</h1>
-            <p className="text-sm text-gray-400 mt-1">Únete a Lucky Shop</p>
-          </div>
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo */}
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-serif tracking-tight text-gray-900">Luckyshop</h1>
+          <p className="text-gray-400 text-[10px] tracking-[0.25em] font-medium -mt-1">BY LESLY</p>
+          <div className="w-full h-px bg-white/70 mt-3" />
+        </div>
 
-          <div className="bg-white rounded-3xl shadow-sm ring-1 ring-pink-100 p-8">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl ring-1 ring-pink-200 px-8 py-8">
 
-            {success ? (
-              <div className="text-center py-6">
-                <p className="text-4xl mb-3"></p>
-                <p className="font-semibold text-gray-900">¡Cuenta creada!</p>
-                <p className="text-sm text-gray-400 mt-1">Redirigiendo al login...</p>
+          {success ? (
+            <div className="text-center py-6">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 ring-1 ring-pink-200">
+                <svg viewBox="0 0 24 24" className="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
               </div>
-            ) : step === 1 ? (
+              <p className="font-semibold text-gray-900">¡Cuenta creada!</p>
+              <p className="text-sm text-gray-400 mt-1">Redirigiendo al inicio de sesión...</p>
+            </div>
+          ) : step === 1 ? (
+            <>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-1">Regístrate</h2>
+              <div className="w-full h-px bg-gray-200 mb-5" />
+
               <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                  <input name="name" value={form.name} onChange={handleChange} placeholder="Alberto Fuentes" required
+                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                  <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="García" required
+                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Correo eléctronico</label>
+                  <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="alberto_lj@gmail.com" required
+                    className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Nombre</label>
-                    <input name="name" value={form.name} onChange={handleChange} placeholder="María" required
-                      className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                    <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••••" required minLength={6}
+                      className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Apellido</label>
-                    <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="García" required
-                      className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
+                    <input name="birthdate" type="date" value={form.birthdate} onChange={handleChange} required
+                      className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 transition-colors" />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
-                  <input name="birthdate" type="date" value={form.birthdate} onChange={handleChange} required
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="correo@ejemplo.com" required
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Contraseña</label>
-                  <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••••" required minLength={6}
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors" />
-                </div>
 
                 {error && <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
 
-                <button type="submit" disabled={loading}
-                  className="w-full rounded-2xl bg-pink-500 py-3 text-sm font-semibold text-white hover:bg-pink-600 transition-colors disabled:opacity-60">
-                  {loading ? 'Enviando...' : 'Crear cuenta'}
-                </button>
-
-                <p className="text-center text-sm text-gray-500">
-                  ¿Ya tienes cuenta?{' '}
-                  <Link to="/login" className="text-pink-500 font-semibold hover:underline">Inicia sesión</Link>
-                </p>
+                <div className="pt-2 text-center">
+                  <button type="submit" disabled={loading}
+                    className="w-full max-w-[220px] rounded-full bg-pink-200 py-3 text-sm font-semibold text-gray-800 hover:bg-pink-300 transition-colors disabled:opacity-60">
+                    {loading ? 'Enviando...' : 'Registrarse'}
+                  </button>
+                </div>
               </form>
-            ) : (
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-1 text-center">Verifica tu correo</h2>
+              <div className="w-full h-px bg-gray-200 mb-5" />
               <form onSubmit={handleVerify} className="space-y-4">
-                <div className="text-center mb-4">
-                  <p className="text-3xl mb-2"></p>
-                  <p className="font-semibold text-gray-900">Verifica tu correo</p>
-                  <p className="text-sm text-gray-400 mt-1">Ingresa el código que enviamos a <strong>{form.email}</strong></p>
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    value={codigo}
-                    onChange={(e) => setCodigo(e.target.value)}
-                    placeholder="Código de verificación"
-                    required
-                    maxLength={6}
-                    className="w-full text-center tracking-widest rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-lg font-bold outline-none focus:border-pink-400 focus:bg-white transition-colors"
-                  />
-                </div>
+                <p className="text-sm text-gray-500 text-center">
+                  Ingresa el código que enviamos a<br /><strong className="text-gray-700">{form.email}</strong>
+                </p>
+                <input
+                  type="text"
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
+                  placeholder="Código de verificación"
+                  required
+                  maxLength={6}
+                  className="w-full text-center tracking-widest rounded-full border border-pink-200 bg-white px-4 py-3 text-lg font-bold outline-none focus:border-pink-400 transition-colors"
+                />
 
                 {error && <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
 
-                <button type="submit" disabled={loading}
-                  className="w-full rounded-2xl bg-pink-500 py-3 text-sm font-semibold text-white hover:bg-pink-600 transition-colors disabled:opacity-60">
-                  {loading ? 'Verificando...' : 'Verificar código'}
-                </button>
-                <button type="button" onClick={() => setStep(1)} className="w-full text-sm text-gray-400 hover:text-gray-600">
-                  ← Volver
-                </button>
+                <div className="pt-2 text-center">
+                  <button type="submit" disabled={loading}
+                    className="w-full max-w-[220px] rounded-full bg-pink-200 py-3 text-sm font-semibold text-gray-800 hover:bg-pink-300 transition-colors disabled:opacity-60">
+                    {loading ? 'Verificando...' : 'Verificar código'}
+                  </button>
+                  <button type="button" onClick={() => setStep(1)} className="block w-full text-sm text-gray-400 hover:text-gray-600 mt-3">
+                    ← Volver
+                  </button>
+                </div>
               </form>
-            )}
-          </div>
+            </>
+          )}
         </div>
-      </div>
 
-      <Footer />
+        {!success && (
+          <div className="mt-4">
+            <Link to="/login" className="text-sm text-gray-600 hover:text-pink-500 hover:underline">
+              ‹ Regresar a Inicio de Sesión
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

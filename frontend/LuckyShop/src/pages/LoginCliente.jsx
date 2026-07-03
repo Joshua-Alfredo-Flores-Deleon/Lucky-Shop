@@ -1,20 +1,20 @@
 // Login.jsx — login de clientes Lucky Shop
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import Navbar from '../components/Navbar.jsx'
-import Footer from '../components/Footer.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const BASE_URL = 'http://localhost:4000/api'
+const JOYAS_BG = 'https://images.unsplash.com/photo-1631982690223-8aa4be0a2497?fm=jpg&q=80&w=1200&auto=format&fit=crop'
 
 const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
+  const [email,      setEmail]      = useState('')
+  const [password,   setPassword]   = useState('')
+  const [recordarme, setRecordarme] = useState(false)
+  const [error,      setError]      = useState('')
+  const [loading,    setLoading]    = useState(false)
 
   // Si veníamos redirigidos desde una ruta privada, regresamos ahí; si no, al inicio.
   const from = location.state?.from?.pathname || '/'
@@ -48,69 +48,83 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50">
-      <Navbar />
+    <div className="min-h-screen flex flex-col md:flex-row">
 
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Iniciar sesión</h1>
-            <p className="text-sm text-gray-400 mt-1">Accede a tu cuenta Lucky Shop</p>
-          </div>
+      {/* Panel izquierdo — foto de joyería sobre fondo rosa */}
+      <div
+        className="relative w-full md:w-1/2 min-h-[220px] md:min-h-screen bg-cover bg-center"
+        style={{ backgroundImage: `url(${JOYAS_BG})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-200/70 via-pink-100/40 to-pink-300/60" />
+      </div>
 
-          <div className="bg-white rounded-3xl shadow-sm ring-1 ring-pink-100 p-8">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+      {/* Panel derecho — formulario */}
+      <div className="w-full md:w-1/2 min-h-screen flex flex-col items-center justify-center bg-white px-6 py-12">
+        <div className="w-full max-w-sm">
+          <h1 className="text-3xl font-semibold text-gray-900 text-center mb-1">Inicio de sesión</h1>
+          <p className="text-sm text-gray-500 text-center border-b border-gray-200 pb-4 mb-8">
+            ¡Ingresa tus datos para descubrir tú suerte de hoy!
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Correo eléctronico</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="correo@ejemplo.com"
+                required
+                className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 shadow-sm transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full rounded-full border border-pink-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-pink-400 shadow-sm transition-colors"
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-xs pt-1">
+              <label className="flex items-center gap-1.5 text-gray-500 cursor-pointer">
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
+                  type="checkbox"
+                  checked={recordarme}
+                  onChange={(e) => setRecordarme(e.target.checked)}
+                  className="rounded border-gray-300 text-pink-500 focus:ring-pink-400"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
-                />
-              </div>
+                Recordarme la contraseña
+              </label>
+              <Link to="/recovery-password-cliente" className="text-pink-500 font-medium hover:underline whitespace-nowrap">
+                ¿Olvidaste la contraseña?
+              </Link>
+            </div>
 
-              <div className="flex items-center justify-end">
-                <Link to="/recovery-password-cliente" className="text-sm text-pink-500 font-medium hover:underline">
-                  ¿Olvidaste tu contraseña?
-                </Link>
-              </div>
+            {error && (
+              <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>
+            )}
 
-              {error && (
-                <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>
-              )}
-
+            <div className="pt-2 text-center">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-2xl bg-pink-500 py-3 text-sm font-semibold text-white hover:bg-pink-600 transition-colors disabled:opacity-60"
+                className="w-full max-w-[220px] rounded-full bg-pink-200 py-3 text-sm font-semibold text-gray-800 hover:bg-pink-300 transition-colors disabled:opacity-60"
               >
                 {loading ? 'Ingresando...' : 'Iniciar sesión'}
               </button>
-            </form>
-
-            <p className="text-center text-sm text-gray-500 mt-5">
-              ¿No tienes cuenta?{' '}
-              <Link to="/register" className="text-pink-500 font-semibold hover:underline">Regístrate</Link>
-            </p>
-          </div>
+              <p className="text-xs text-gray-500 mt-3">
+                ¿No tienes una cuenta?{' '}
+                <Link to="/register" className="text-pink-500 font-semibold hover:underline">Regístrate aquí</Link>
+              </p>
+            </div>
+          </form>
         </div>
       </div>
-
-      <Footer />
     </div>
   )
 }

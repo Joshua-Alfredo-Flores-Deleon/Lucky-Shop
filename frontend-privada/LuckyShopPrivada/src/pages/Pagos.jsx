@@ -6,6 +6,7 @@ import { usePagos } from "../hooksP/usePagos";
 import ModalAgregarPago from "../components/ModalAgregarPago";
 import ModalDetallePago from "../components/ModalDetallePago";
 import ConfirmModal from "../components/ConfirmModal";
+import "../AdminShell.css";
 import "./Pagos.css";
 
 
@@ -31,6 +32,7 @@ export default function Pagos() {
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [errorFormulario, setErrorFormulario] = useState(null);
   const [errorEliminar, setErrorEliminar] = useState(null);
+  const [notifAbierta, setNotifAbierta] = useState(false);
 
   const manejarAgregarPago = async (datos) => {
     try {
@@ -53,7 +55,11 @@ export default function Pagos() {
   };
 
   return (
-    <div className="pagos-pagina">
+    <div className="admin-shell">
+      <Sidebar />
+      <main className="admin-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
+        <div className="pagos-pagina">
       <h1 className="pagos-titulo">Pagos</h1>
       <p className="pagos-subtitulo">Lleva el control de pagos realizados y pendientes</p>
 
@@ -160,6 +166,9 @@ export default function Pagos() {
         onConfirm={() => manejarEliminarPago(pagoAEliminar.id)}
         onCancel={cancelarEliminar}
       />
+        </div>
+      </main>
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
+import "../AdminShell.css";
 import "./Home.css";
 
 const formatoMoneda = (n) =>
@@ -10,20 +11,41 @@ const formatoMoneda = (n) =>
 
 export default function Home() {
   const { cargando, error, resumen, tendencia, granularidad, cambiarGranularidad } = useHome();
+  const [notifAbierta, setNotifAbierta] = useState(false);
 
   if (cargando) {
-    return <p className="home-estado">Cargando panel…</p>;
+    return (
+      <div className="admin-shell">
+        <Sidebar />
+        <main className="admin-main">
+          <Nav openNotifications={() => setNotifAbierta(true)} />
+          <p className="home-estado">Cargando panel…</p>
+        </main>
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="home-estado-error">No se pudo cargar el panel: {error}</p>;
+    return (
+      <div className="admin-shell">
+        <Sidebar />
+        <main className="admin-main">
+          <Nav openNotifications={() => setNotifAbierta(true)} />
+          <p className="home-estado-error">No se pudo cargar el panel: {error}</p>
+        </main>
+      </div>
+    );
   }
 
   const valorMaximo = Math.max(...tendencia.map((t) => t.valor), 1);
   const indiceActivo = tendencia.length - 2 >= 0 ? tendencia.length - 2 : tendencia.length - 1;
 
   return (
-    <div className="home-pagina">
+    <div className="admin-shell">
+      <Sidebar />
+      <main className="admin-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
+        <div className="home-pagina">
       <div className="home-encabezado">
         <h1 className="home-titulo">Panel de control</h1>
       </div>
@@ -120,6 +142,9 @@ export default function Home() {
           <p className="home-resumen-texto">¡Luckyshop ha aumentado su popularidad este último mes!</p>
         </div>
       </div>
+        </div>
+      </main>
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   );
 }

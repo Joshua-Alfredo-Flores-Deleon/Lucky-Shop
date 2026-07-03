@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AdminLogo from './AdminLogo.jsx'
+import trebolFondo from '../assets/trebol-fondo.png'
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -18,7 +19,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
   const [step, setStep] = useState('email')
 
   const [email, setEmail] = useState('')
-  const [code, setCode] = useState(['', '', '', '', ''])
+  const [code, setCode] = useState(['', '', '', '', '', ''])
   const inputsRef = useRef([])
 
   const [newPassword, setNewPassword] = useState('')
@@ -123,7 +124,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'No se pudo reenviar el código.')
-      setCode(['', '', '', '', ''])
+      setCode(['', '', '', '', '', ''])
       inputsRef.current[0]?.focus()
     } catch (err) {
       setError(err.message)
@@ -166,18 +167,14 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden"
-      style={{
-        background: `
-          radial-gradient(circle at 12% 20%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 22%),
-          radial-gradient(circle at 85% 15%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 25%),
-          radial-gradient(circle at 70% 80%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 20%),
-          radial-gradient(circle at 30% 75%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 18%),
-          linear-gradient(135deg, #1f4d33 0%, #2d6b46 45%, #1a3d29 100%)
-        `,
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
+      {/* Foto de fondo, desenfocada */}
+      <div
+        className="absolute inset-0 bg-cover bg-center scale-110"
+        style={{ backgroundImage: `url(${trebolFondo})`, filter: 'blur(6px)' }}
+      />
+      {/* Overlay verde oscuro para mantener el texto legible */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1a3d29]/80 via-[#1f4d33]/70 to-[#0f2a1b]/85" />
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="mb-6">

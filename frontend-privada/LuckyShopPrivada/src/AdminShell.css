@@ -1,0 +1,39 @@
+/* AdminShell.css — layout compartido para páginas con Sidebar + Nav
+   (Home, Finanzas, Pagos, Perfil). Sigue el mismo patrón que ya usan
+   Productos/Clientes/Bolsas (pm-page / pm-main) pero generalizado. */
+
+.admin-shell {
+  min-height: 100vh;
+  background: #f4f6f3;
+  position: relative;
+}
+
+/* El sidebar queda fijo a la izquierda, ocupando toda la altura */
+.admin-shell .luckyshop-nav-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: auto;
+  z-index: 200;
+  background: transparent;
+}
+
+/* El contenido se corre a la derecha del sidebar (270px + 2×10px margin) */
+.admin-main {
+  margin-left: 300px;
+  min-height: 100vh;
+  padding: 24px 40px 60px 40px;
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  .admin-shell .luckyshop-nav-container {
+    position: static;
+    height: auto;
+  }
+  .admin-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

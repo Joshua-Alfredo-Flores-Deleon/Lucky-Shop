@@ -6,6 +6,7 @@ import NotificacionesModal from "../components/NotificationsModal";
 import { useFinanzas } from "../hooksP/useFinanzas";
 //import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
 //import ModalExito from "../components/ModalExito";
+import "../AdminShell.css";
 import "./Finanzas.css";
 
 const formatoMoneda = (n) => `$${Number(n).toFixed(2)}`;
@@ -29,6 +30,7 @@ export default function Finanzas() {
   const [modalExitoAbierto, setModalExitoAbierto] = useState(false);
   const [filaAbierta, setFilaAbierta] = useState(null);
   const [errorGasto, setErrorGasto] = useState(null);
+  const [notifAbierta, setNotifAbierta] = useState(false);
 
   const manejarGuardarGasto = async (datosGasto) => {
     try {
@@ -47,7 +49,11 @@ export default function Finanzas() {
   };
 
   return (
-    <div className="finanzas-pagina">
+    <div className="admin-shell">
+      <Sidebar />
+      <main className="admin-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
+        <div className="finanzas-pagina">
       <h1 className="finanzas-titulo">Finanzas</h1>
 
       {error && <p className="finanzas-estado-error">No se pudo cargar la información financiera: {error}</p>}
@@ -147,6 +153,9 @@ export default function Finanzas() {
         }
         onCerrar={cerrarModalExito}
       />
+        </div>
+      </main>
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   );
 }

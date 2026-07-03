@@ -3,25 +3,47 @@ import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
 import { usePerfil } from "../hooksP/usePerfilP";
+import "../AdminShell.css";
 import "./PerfilPriv.css";
 
 
 export default function Perfil() {
   const { perfil, borrador, editando, cargando, error, guardando, iniciarEdicion, cancelarEdicion, actualizarCampo, guardarPerfil } =
     usePerfil();
+  const [notifAbierta, setNotifAbierta] = useState(false);
 
   if (cargando) {
-    return <p className="perfil-estado">Cargando perfil…</p>;
+    return (
+      <div className="admin-shell">
+        <Sidebar />
+        <main className="admin-main">
+          <Nav openNotifications={() => setNotifAbierta(true)} />
+          <p className="perfil-estado">Cargando perfil…</p>
+        </main>
+      </div>
+    );
   }
 
   if (error || !perfil) {
-    return <p className="perfil-estado-error">No se pudo cargar el perfil{error ? `: ${error}` : "."}</p>;
+    return (
+      <div className="admin-shell">
+        <Sidebar />
+        <main className="admin-main">
+          <Nav openNotifications={() => setNotifAbierta(true)} />
+          <p className="perfil-estado-error">No se pudo cargar el perfil{error ? `: ${error}` : "."}</p>
+        </main>
+      </div>
+    );
   }
 
   const nombreMostrado = perfil.nombreCompleto || perfil.nombre;
 
   return (
-    <div className="perfil-pagina">
+    <div className="admin-shell">
+      <Sidebar />
+      <main className="admin-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
+        <div className="perfil-pagina">
       <div className="perfil-banner" />
 
       <div className="perfil-contenido">
@@ -84,6 +106,9 @@ export default function Perfil() {
           </div>
         </div>
       </div>
+        </div>
+      </main>
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   );
 }
