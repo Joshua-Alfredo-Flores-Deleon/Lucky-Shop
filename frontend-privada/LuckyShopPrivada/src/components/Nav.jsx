@@ -35,7 +35,7 @@ export default function Nav({ openNotifications }) {
           src={fotoperfilPriv}
           alt="Administrador"
           className="profile-image"
-          onClick={() => navigate("/perfil")}
+          onClick={() => navigate("/perfilAdmin")}
         />
 
       </div>

@@ -114,7 +114,7 @@ const Login = () => {
                 />
                 Recordarme la contraseña
               </label>
-              <Link to="/recovery-password-cliente" className="text-pink-500 font-medium hover:underline whitespace-nowrap">
+              <Link to="/recuperar-password" className="text-pink-500 font-medium hover:underline whitespace-nowrap">
                 ¿Olvidaste la contraseña?
               </Link>
             </div>

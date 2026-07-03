@@ -8,9 +8,9 @@ import mongoose, {Schema, model} from "mongoose"
 
 const ComboSuerte = new Schema({
     bolsas: [{
-        idBolsa: {  
+        idBolsa: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Bolsas",
+            ref: "bolsas",
         },
     }]
 }, {

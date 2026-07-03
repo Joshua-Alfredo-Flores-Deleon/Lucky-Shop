@@ -16,6 +16,22 @@ combosCompradosController.getAllcombosComprados = async (req, res) => {
     }
 }
 
+//SELECT POR ID
+combosCompradosController.getcombosCompradosById = async (req, res) => {
+    try {
+        const combo = await combosCompradosModel.findById(req.params.id)
+
+        if (!combo) {
+            return res.status(404).json({ message: "ComboComprados not found" })
+        }
+
+        return res.status(200).json(combo)
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
 //INSERT
 combosCompradosController.insertcombosComprados = async (req, res) => {
     try {

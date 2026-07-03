@@ -6,65 +6,91 @@ import gastosModel from "../models/Gastos.js"
 //GET
 //select
 gastosController.getAllGastos = async (req, res) => {
-  const gastos = await gastosModel.find();
-  res.json(gastos);
+  try {
+    const gastos = await gastosModel.find().sort({ createdAt: -1 });
+    return res.status(200).json(gastos);
+  } catch (error) {
+    console.error("getAllGastos error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 
 //POST
 //insert
 gastosController.insertGastos = async (req, res) => {
+  try {
+    const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
 
-  //solicito los datos a guardar
-  const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
+    if (cantidadGasto === undefined || isNaN(cantidadGasto) || Number(cantidadGasto) < 0) {
+      return res.status(400).json({ message: "Cantidad de gasto inválida" });
+    }
 
-  //lleno una instancia de mi squema
-  const newGasto = new gastosModel({ cantidadGasto, descripcionGasto, fechaGasto });
+    const newGasto = new gastosModel({
+      cantidadGasto: Number(cantidadGasto),
+      descripcionGasto,
+      fechaGasto,
+    });
 
-  //guardo en la base de datos
-  await newGasto.save();
+    await newGasto.save();
 
-  res.json({ message: "gasto saved" });
+    return res.status(201).json(newGasto);
+  } catch (error) {
+    console.error("insertGastos error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //DELETE
 //ELIMINAR
 gastosController.deleteGastos = async (req, res) => {
-  await gastosModel.findByIdAndDelete(req.params.id);
-  res.json({ message: "gasto deleted" });
+  try {
+    const gastoEliminado = await gastosModel.findByIdAndDelete(req.params.id);
+    if (!gastoEliminado) {
+      return res.status(404).json({ message: "Gasto no encontrado" });
+    }
+    return res.status(200).json({ message: "gasto deleted" });
+  } catch (error) {
+    console.error("deleteGastos error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //PUT
 //ACTUALIZAR
 gastosController.updateGastos = async (req, res) => {
-  //pido los nuevos datos
-  const { 
-    cantidadGasto, 
-    descripcionGasto,
-     fechaGasto 
-    } = req.body;
-  //actualizo los datos
-  await gastosModel.findByIdAndUpdate(
-    req.params.id,
-    {
-      cantidadGasto, 
-      descripcionGasto, 
-      fechaGasto 
-    },
-    { new: true },
-  );
+  try {
+    const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
 
-  res.json({ message: " gasto updated" });
+    if (cantidadGasto !== undefined && (isNaN(cantidadGasto) || Number(cantidadGasto) < 0)) {
+      return res.status(400).json({ message: "Cantidad de gasto inválida" });
+    }
+
+    const gastoActualizado = await gastosModel.findByIdAndUpdate(
+      req.params.id,
+      { cantidadGasto, descripcionGasto, fechaGasto },
+      { new: true },
+    );
+
+    if (!gastoActualizado) {
+      return res.status(404).json({ message: "Gasto no encontrado" });
+    }
+
+    return res.status(200).json(gastoActualizado);
+  } catch (error) {
+    console.error("updateGastos error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //SELECT POR ID
 gastosController.getGastoById = async (req, res) => {
   try {
-    const product = await gastosModel.findById(req.params.id);
-    if (!product) {
+    const gasto = await gastosModel.findById(req.params.id);
+    if (!gasto) {
       return res.status(404).json({ message: "Gasto not found " });
     }
-    return res.status(200).json(product);
+    return res.status(200).json(gasto);
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: " Internal server error " });

@@ -9,6 +9,7 @@ router.route("/")
 .post(upload.single("urlVideo"), combosCompradosController.insertcombosComprados)
 
 router.route("/:id")
+.get(combosCompradosController.getcombosCompradosById)
 .put(upload.single("urlVideo"), combosCompradosController.updatecombosComprados)
 .delete(combosCompradosController.deletecombosComprados)
 

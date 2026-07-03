@@ -1,4 +1,5 @@
 // Navbar.jsx — barra de navegación pública de Lucky Shop
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
@@ -18,10 +19,17 @@ const Navbar = () => {
   const { totalItems } = useCart()
   const { cliente, logout } = useAuth()
   const navigate = useNavigate()
+  const [busqueda, setBusqueda] = useState('')
 
   const handleLogout = async () => {
     await logout()
     navigate('/login')
+  }
+
+  const handleBuscarSubmit = (e) => {
+    e.preventDefault()
+    if (!busqueda.trim()) return
+    navigate(`/buscar?q=${encodeURIComponent(busqueda.trim())}`)
   }
 
   return (
@@ -36,16 +44,18 @@ const Navbar = () => {
           </Link>
 
           {/* Search */}
-          <div className="flex-1 max-w-xl">
+          <form onSubmit={handleBuscarSubmit} className="flex-1 max-w-xl">
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
               <input
                 type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
                 placeholder="Buscar"
                 className="w-full pl-9 pr-4 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm outline-none focus:border-pink-400 focus:bg-white transition-colors"
               />
             </div>
-          </div>
+          </form>
 
           {/* Icons */}
           <div className="flex items-center gap-4">

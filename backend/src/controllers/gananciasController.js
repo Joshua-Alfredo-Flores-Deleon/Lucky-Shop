@@ -6,51 +6,77 @@ import gananciasModel from "../models/Ganancias.js"
 //GET
 //select
 gananciasController.getAllGanancias = async (req, res) => {
-  const ganancias = await gananciasModel.find();
-  return res.status(200).json(ganancias);
+  try {
+    const ganancias = await gananciasModel.find().sort({ createdAt: -1 });
+    return res.status(200).json(ganancias);
+  } catch (error) {
+    console.error("getAllGanancias error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 
 //POST
 //insert
 gananciasController.insertGanancias = async (req, res) => {
+  try {
+    const { ventas, gastos, fechaMes, totalGanancias } = req.body;
 
-  //solicito los datos a guardar
-  const { ventas, gastos, fechaMes, totalGanancias } = req.body;
+    if (totalGanancias !== undefined && isNaN(totalGanancias)) {
+      return res.status(400).json({ message: "Total de ganancias inválido" });
+    }
 
-  //lleno una instancia de mi squema
-  const newGanancia = new gananciasModel({ ventas, gastos, fechaMes, totalGanancias });
+    const newGanancia = new gananciasModel({ ventas, gastos, fechaMes, totalGanancias });
 
-  //guardo en la base de datos
-  await newGanancia.save();
+    await newGanancia.save();
 
-  return res.status(201).json({ message: "ganancia saved" });
+    return res.status(201).json(newGanancia);
+  } catch (error) {
+    console.error("insertGanancias error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //DELETE
 //ELIMINAR
 gananciasController.deleteGanancia = async (req, res) => {
-  await gananciasModel.findByIdAndDelete(req.params.id);
-  return res.status(200).json({ message: "ganancia deleted" });
+  try {
+    const gananciaEliminada = await gananciasModel.findByIdAndDelete(req.params.id);
+    if (!gananciaEliminada) {
+      return res.status(404).json({ message: "Ganancia no encontrada" });
+    }
+    return res.status(200).json({ message: "ganancia deleted" });
+  } catch (error) {
+    console.error("deleteGanancia error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //PUT
 //ACTUALIZAR
 gananciasController.updateGanancia = async (req, res) => {
-  //pido los nuevos datos
-  const { ventas, gastos, fechaMes, totalGanancias } = req.body;
+  try {
+    const { ventas, gastos, fechaMes, totalGanancias } = req.body;
 
-  //actualizo los datos
-  await gananciasModel.findByIdAndUpdate(
-    req.params.id,
-    { ventas,
-        gastos,
-        fechaMes,
-        totalGanancias },
-    { new: true },
-  );
+    if (totalGanancias !== undefined && isNaN(totalGanancias)) {
+      return res.status(400).json({ message: "Total de ganancias inválido" });
+    }
 
-  return res.status(200).json({ message: "ganancia updated" });
+    const gananciaActualizada = await gananciasModel.findByIdAndUpdate(
+      req.params.id,
+      { ventas, gastos, fechaMes, totalGanancias },
+      { new: true },
+    );
+
+    if (!gananciaActualizada) {
+      return res.status(404).json({ message: "Ganancia no encontrada" });
+    }
+
+    return res.status(200).json(gananciaActualizada);
+  } catch (error) {
+    console.error("updateGanancia error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 //SELECT POR ID

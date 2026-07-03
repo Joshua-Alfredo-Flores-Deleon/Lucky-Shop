@@ -13,6 +13,8 @@ router
 
 router
   .route("/:id")
+  .get(carritoController.getCarritoById)
+  .put(carritoController.updateCarrito)
   .delete(carritoController.deleteCarrito);
 
 export default router;

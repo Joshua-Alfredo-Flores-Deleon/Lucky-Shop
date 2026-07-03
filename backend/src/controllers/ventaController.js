@@ -2,51 +2,126 @@ const ventaController = {};
 
 import ventaModel from "../models/venta.js";
 
+const POPULATE_CARRITO = {
+  path: "IdCarrito",
+  populate: [
+    { path: "idCliente", select: "name lastName email" },
+    { path: "productos.idProducto", select: "nombre" },
+  ],
+};
+
+// A falta de un campo "estado" propio, se deriva de los dos booleanos existentes:
+// status=false -> Cancelado, statusPago=false (con status activo) -> Pendiente, ambos true -> Completado
+const derivarEstado = (status, statusPago) => {
+  const activo = status === undefined ? true : status;
+  const pagado = statusPago === undefined ? true : statusPago;
+  if (!activo) return "Cancelado";
+  if (!pagado) return "Pendiente";
+  return "Completado";
+};
+
+const enriquecerVenta = (venta) => {
+  const obj = venta.toObject ? venta.toObject() : venta;
+  const carrito = obj.IdCarrito;
+  const cliente = carrito?.idCliente
+    ? `${carrito.idCliente.name || ""} ${carrito.idCliente.lastName || ""}`.trim()
+    : "";
+
+  return {
+    ...obj,
+    cliente: cliente || "Cliente",
+    monto: Number(carrito?.total ?? 0),
+    estado: derivarEstado(obj.status, obj.statusPago),
+  };
+};
+
 ventaController.getVenta = async (req, res) => {
-  const venta = await ventaModel.find();
-  res.json(venta);
+  try {
+    const { estado, search } = req.query;
+
+    const ventas = await ventaModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate(POPULATE_CARRITO);
+
+    let resultado = ventas.map(enriquecerVenta);
+
+    if (estado) {
+      resultado = resultado.filter(
+        (v) => v.estado.toLowerCase() === String(estado).toLowerCase()
+      );
+    }
+
+    if (search) {
+      const termino = String(search).toLowerCase();
+      resultado = resultado.filter(
+        (v) =>
+          v.cliente.toLowerCase().includes(termino) ||
+          (v.referencia || "").toLowerCase().includes(termino)
+      );
+    }
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    console.error("getVenta error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 ventaController.insertVenta = async (req, res) => {
-  const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status  } = req.body;
-  const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status });
-  await newVenta.save();
+  try {
+    const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
+    const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status });
+    await newVenta.save();
 
-  res.json({ message: "Venta saved" });
+    const ventaGuardada = await ventaModel.findById(newVenta._id).populate(POPULATE_CARRITO);
+    return res.status(201).json(enriquecerVenta(ventaGuardada));
+  } catch (error) {
+    console.error("insertVenta error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 ventaController.deleteVenta = async (req, res) => {
-  await ventaModel.findByIdAndDelete(req.params.id);
-  res.json({ message: "Venta deleted" });
+  try {
+    const ventaEliminada = await ventaModel.findByIdAndDelete(req.params.id);
+    if (!ventaEliminada) {
+      return res.status(404).json({ message: "Venta no encontrada" });
+    }
+    return res.status(200).json({ message: "Venta deleted" });
+  } catch (error) {
+    console.error("deleteVenta error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 ventaController.updateVenta = async (req, res) => {
-  const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
-  await ventaModel.findByIdAndUpdate(
-    req.params.id,
-    {
-      IdCarrito,
-      direcion,
-      referencia,
-      metodoPago,
-      statusPago,
-      phone,
-      fecha,
-      status
-    },
-    { new: true },
-  );
+  try {
+    const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
+    const ventaActualizada = await ventaModel.findByIdAndUpdate(
+      req.params.id,
+      { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status },
+      { new: true },
+    ).populate(POPULATE_CARRITO);
 
-  res.json({ message: "venta updated" });
+    if (!ventaActualizada) {
+      return res.status(404).json({ message: "Venta no encontrada" });
+    }
+
+    return res.status(200).json(enriquecerVenta(ventaActualizada));
+  } catch (error) {
+    console.error("updateVenta error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 ventaController.getVentaById = async (req, res) => {
   try {
-    const venta = await ventaModel.findById(req.params.id)
-    if(!venta){
-      return res.status(404).json({message: "venta not found"})
+    const venta = await ventaModel.findById(req.params.id).populate(POPULATE_CARRITO);
+    if (!venta) {
+      return res.status(404).json({ message: "venta not found" });
     }
-    return res.status(200).json(venta);
+    return res.status(200).json(enriquecerVenta(venta));
   } catch (error) {
     console.log("error" + error)
     return res.status(500).json({message: "internal server error"})

@@ -4,8 +4,8 @@ import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
 import { useFinanzas } from "../hooksP/useFinanzas";
-//import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
-//import ModalExito from "../components/ModalExito";
+import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
+import ModalExito from "../components/ModalExito";
 import "../AdminShell.css";
 import "./Finanzas.css";
 
@@ -149,7 +149,7 @@ export default function Finanzas() {
       <ModalExito
         abierto={modalExitoAbierto}
         mensaje={
-          ultimoGastoGuardado ? `Gasto de ${formatoMoneda(ultimoGastoGuardado.monto)} registrado satisfactoriamente` : "Gasto registrado satisfactoriamente"
+          ultimoGastoGuardado ? `Gasto de ${formatoMoneda(ultimoGastoGuardado.cantidadGasto)} registrado satisfactoriamente` : "Gasto registrado satisfactoriamente"
         }
         onCerrar={cerrarModalExito}
       />

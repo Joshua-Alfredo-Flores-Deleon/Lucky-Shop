@@ -61,8 +61,8 @@ export function useFinanzas() {
 
   // Recalcula los totales del periodo cada vez que cambian las ganancias o los gastos
   const resumen = useMemo(() => {
-    const ingresosTotales = ganancias.reduce((acc, g) => acc + Number(g.monto ?? g.total ?? 0), 0);
-    const perdidasTotales = gastos.reduce((acc, g) => acc + Number(g.monto ?? 0), 0);
+    const ingresosTotales = ganancias.reduce((acc, g) => acc + Number(g.totalGanancias ?? 0), 0);
+    const perdidasTotales = gastos.reduce((acc, g) => acc + Number(g.cantidadGasto ?? 0), 0);
     return {
       ingresosTotales,
       perdidasTotales,
@@ -81,8 +81,8 @@ export function useFinanzas() {
       mapa.get(mes)[campo] += Number(monto) || 0;
     };
 
-    ganancias.forEach((g) => registrar(g.fecha, "ingresos", g.monto ?? g.total));
-    gastos.forEach((g) => registrar(g.fecha, "gastos", g.monto));
+    ganancias.forEach((g) => registrar(g.fechaMes, "ingresos", g.totalGanancias));
+    gastos.forEach((g) => registrar(g.fechaGasto, "gastos", g.cantidadGasto));
 
     return Array.from(mapa.values());
   }, [ganancias, gastos]);
@@ -101,20 +101,20 @@ export function useFinanzas() {
     const combinados = [
       ...ganancias.map((g) => ({
         id: g._id ?? g.id,
-        cliente: g.cliente ?? g.nombreCliente ?? "—",
-        producto: g.producto ?? "—",
-        monto: Number(g.monto ?? g.total ?? 0),
-        estado: g.estado ?? "Completado",
-        fecha: g.fecha,
+        cliente: "Ganancia del mes",
+        producto: "—",
+        monto: Number(g.totalGanancias ?? 0),
+        estado: "Completado",
+        fecha: g.fechaMes,
         tipo: "ganancia",
       })),
       ...gastos.map((g) => ({
         id: g._id ?? g.id,
-        cliente: g.nombre,
-        producto: g.categoria || "Gasto",
-        monto: Number(g.monto ?? 0),
+        cliente: g.descripcionGasto || "Gasto",
+        producto: "Gasto",
+        monto: Number(g.cantidadGasto ?? 0),
         estado: "Completado",
-        fecha: g.fecha,
+        fecha: g.fechaGasto,
         tipo: "gasto",
       })),
     ];

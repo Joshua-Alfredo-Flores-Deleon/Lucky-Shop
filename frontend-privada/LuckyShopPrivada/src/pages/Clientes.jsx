@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Sidebar from '../components/sideBar'
+import { useClientes } from '../hooksP/useClientes'
 import '../sideBar.css'
 import '../clientes.css'
-
-const BASE_URL = 'http://localhost:4000/api'
 
 const getInitials = (name, lastName) => {
   const n = name ? name[0].toUpperCase() : ''
@@ -12,64 +11,27 @@ const getInitials = (name, lastName) => {
 }
 
 const Clientes = () => {
-  const [clientes, setClientes] = useState([])
-  const [busqueda, setBusqueda] = useState('')
+  const {
+    clientes: clientesFiltrados,
+    busqueda,
+    setBusqueda,
+    loading,
+    actualizarCliente,
+    eliminarCliente,
+  } = useClientes()
+
   const [clienteEditar, setClienteEditar] = useState(null)
   const [clienteEliminar, setClienteEliminar] = useState(null)
-  const [loading, setLoading] = useState(true)
 
-  const fetchClientes = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/clientes`)
-      const data = await res.json()
-      setClientes(Array.isArray(data) ? data : [])
-    } catch (err) {
-      console.error('Error al obtener clientes:', err)
-    } finally {
-      setLoading(false)
-    }
+  const handleGuardarCliente = async (id, datos) => {
+    const ok = await actualizarCliente(id, datos)
+    if (ok) setClienteEditar(null)
   }
 
-  useEffect(() => {
-    fetchClientes()
-  }, [])
-
-  const eliminarCliente = async (id) => {
-    try {
-      const res = await fetch(`${BASE_URL}/clientes/${id}`, { method: 'DELETE' })
-      if (res.ok) {
-        setClientes(prev => prev.filter(c => c._id !== id))
-        setClienteEliminar(null)
-      }
-    } catch (err) {
-      console.error('Error al eliminar cliente:', err)
-    }
+  const handleEliminarCliente = async (id) => {
+    const ok = await eliminarCliente(id)
+    if (ok) setClienteEliminar(null)
   }
-
-  const actualizarCliente = async (id, datos) => {
-    try {
-      const res = await fetch(`${BASE_URL}/clientes/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos),
-      })
-      if (res.ok) {
-        setClientes(prev =>
-          prev.map(c => c._id === id ? { ...c, ...datos } : c)
-        )
-        setClienteEditar(null)
-      }
-    } catch (err) {
-      console.error('Error al actualizar cliente:', err)
-    }
-  }
-
-  const clientesFiltrados = clientes.filter(c => {
-    const nombre = `${c.name || ''} ${c.lastName || ''}`.toLowerCase()
-    const email = (c.email || '').toLowerCase()
-    const busq = busqueda.toLowerCase()
-    return nombre.includes(busq) || email.includes(busq)
-  })
 
   return (
     <div className="clientes-wrapper">
@@ -175,7 +137,7 @@ const Clientes = () => {
         <EditModal
           cliente={clienteEditar}
           onClose={() => setClienteEditar(null)}
-          onGuardar={actualizarCliente}
+          onGuardar={handleGuardarCliente}
         />
       )}
 
@@ -183,7 +145,7 @@ const Clientes = () => {
         <ConfirmDeleteModal
           cliente={clienteEliminar}
           onClose={() => setClienteEliminar(null)}
-          onConfirm={() => eliminarCliente(clienteEliminar._id)}
+          onConfirm={() => handleEliminarCliente(clienteEliminar._id)}
         />
       )}
     </div>

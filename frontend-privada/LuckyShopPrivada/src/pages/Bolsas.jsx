@@ -1,12 +1,32 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
+import { useBolsas } from '../hooksP/useBolsas'
 import '../sideBar.css'
 import '../productosPage.css'
 
-const BASE_URL = 'http://localhost:4000/api'
-
 const ESTADOS = ['activo', 'inactivo', 'agotado']
-const BOLSAS_POR_PAGINA = 8
+
+/* ── Iconos ── */
+const IconoLapiz = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+)
+const IconoBasura = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14H6L5 6" />
+    <path d="M10 11v6M14 11v6" />
+    <path d="M9 6V4h6v2" />
+  </svg>
+)
+const IconoBolsaVacia = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8Z" />
+    <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+  </svg>
+)
 
 /*  SUBCOMPONENTES DE MODALES   */
 
@@ -276,49 +296,26 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
 /*  COMPONENTE PRINCIPAL                                     */
 /* ────────────────────────────────────────────────────────── */
 const Bolsas = () => {
-  const [bolsas, setBolsas] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  // Filtros
-  const [busqueda, setBusqueda] = useState('')
-
-  // Paginación
-  const [paginaActual, setPaginaActual] = useState(1)
+  const {
+    bolsas: bolsasPagina,
+    loading,
+    error,
+    busqueda,
+    setBusqueda,
+    paginaActual,
+    setPaginaActual,
+    totalPaginas,
+    fetchBolsas,
+    guardarBolsa,
+    eliminarBolsa,
+    actualizarVariante,
+  } = useBolsas()
 
   // Modales
   const [modalDetalles, setModalDetalles] = useState(null)        // bolsa
   const [modalForm, setModalForm] = useState(null)                // { modo: 'agregar'|'editar', bolsa? }
   const [modalConfirm, setModalConfirm] = useState(null)          // { mensaje, onConfirm }
   const [modalSuccess, setModalSuccess] = useState(null)          // mensaje string
-
-  /* ── Fetch bolsas ── */
-  const fetchBolsas = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const params = new URLSearchParams()
-      if (busqueda.trim()) params.set('search', busqueda.trim())
-      const res = await fetch(`${BASE_URL}/bolsas?${params}`)
-      if (!res.ok) throw new Error('Error al obtener bolsas')
-      const data = await res.json()
-      setBolsas(data)
-      setPaginaActual(1)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [busqueda])
-
-  useEffect(() => { fetchBolsas() }, [fetchBolsas])
-
-  /* ── Paginación ── */
-  const totalPaginas = Math.ceil(bolsas.length / BOLSAS_POR_PAGINA)
-  const bolsasPagina = bolsas.slice(
-    (paginaActual - 1) * BOLSAS_POR_PAGINA,
-    paginaActual * BOLSAS_POR_PAGINA
-  )
 
   /* ── Helpers de confirm ── */
   const pedirConfirmacion = (mensaje, onConfirm) => {
@@ -342,16 +339,8 @@ const Bolsas = () => {
         setModalConfirm(null)
         setModalForm(null)
         try {
-          const fd = new FormData()
-          Object.entries(form).forEach(([k, v]) => fd.append(k, v))
-          if (imageFile) fd.append('imagenes', imageFile)
-
-          const url = esEditar ? `${BASE_URL}/bolsas/${bolsaId}` : `${BASE_URL}/bolsas`
-          const method = esEditar ? 'PUT' : 'POST'
-          const res = await fetch(url, { method, body: fd })
-          if (!res.ok) throw new Error('Error en la operación')
+          await guardarBolsa({ form, imageFile, bolsaId })
           setModalSuccess(esEditar ? '¡Bolsa actualizada con éxito!' : '¡Bolsa agregada con éxito!')
-          fetchBolsas()
         } catch (err) {
           alert('Error: ' + err.message)
         }
@@ -366,22 +355,9 @@ const Bolsas = () => {
 
   // SELECCIONAR VARIANTE (cantidad de unidades) desde el modal de detalles
   const handleSelectVariante = async (bolsa, cantidadUnidades) => {
-    if (bolsa.cantidadUnidades === cantidadUnidades) return
     try {
-      const fd = new FormData()
-      fd.append('nombre', bolsa.nombre || '')
-      fd.append('precio', bolsa.precio ?? 0)
-      fd.append('stock', bolsa.stock ?? 0)
-      fd.append('descripcion', bolsa.descripcion || '')
-      fd.append('categoria', bolsa.categoria || '')
-      fd.append('estado', bolsa.estado || 'activo')
-      fd.append('cantidadUnidades', cantidadUnidades)
-
-      const res = await fetch(`${BASE_URL}/bolsas/${bolsa._id}`, { method: 'PUT', body: fd })
-      if (!res.ok) throw new Error('Error al actualizar la variante')
-
+      await actualizarVariante(bolsa, cantidadUnidades)
       setModalDetalles(prev => prev && prev._id === bolsa._id ? { ...prev, cantidadUnidades } : prev)
-      setBolsas(prev => prev.map(b => b._id === bolsa._id ? { ...b, cantidadUnidades } : b))
     } catch (err) {
       alert('Error: ' + err.message)
     }
@@ -394,10 +370,8 @@ const Bolsas = () => {
       async () => {
         setModalConfirm(null)
         try {
-          const res = await fetch(`${BASE_URL}/bolsas/${bolsa._id}`, { method: 'DELETE' })
-          if (!res.ok) throw new Error('Error al eliminar')
+          await eliminarBolsa(bolsa._id)
           setModalSuccess('¡Bolsa eliminada con éxito!')
-          fetchBolsas()
         } catch (err) {
           alert('Error: ' + err.message)
         }
@@ -461,7 +435,7 @@ const Bolsas = () => {
 
         {!loading && !error && bolsasPagina.length === 0 && (
           <div className="pm-empty">
-            <div className="pm-empty-icon">🎁</div>
+            <div className="pm-empty-icon"><IconoBolsaVacia /></div>
             <p>No se encontraron bolsas</p>
           </div>
         )}
@@ -491,14 +465,14 @@ const Bolsas = () => {
                       title="Editar"
                       onClick={() => handleEditar(bolsa)}
                     >
-                      ✏
+                      <IconoLapiz />
                     </button>
                     <button
                       className="pm-icon-btn pm-delete-btn"
                       title="Eliminar"
                       onClick={() => handleEliminar(bolsa)}
                     >
-                      🗑
+                      <IconoBasura />
                     </button>
                   </div>
                   <button

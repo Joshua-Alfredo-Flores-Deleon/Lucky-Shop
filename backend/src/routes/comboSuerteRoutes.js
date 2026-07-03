@@ -13,6 +13,8 @@ router
 
 router
   .route("/:id")
+  .get(comboSuerteController.getComboSuerteById)
+  .put(comboSuerteController.updateComboSuerte)
   .delete(comboSuerteController.deleteComboSuerte);
 
 export default router;

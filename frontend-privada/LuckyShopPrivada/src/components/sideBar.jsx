@@ -122,7 +122,7 @@ const SideBar = () => {
         <NotificacionesModal abierto={modalAbierto} onCerrar={() => setModalAbierto(false)} />
         
         {/* Perfil del Usuario */}
-        <Link to="/perfil" className="profile-btn" aria-label="Ver Perfil">
+        <Link to="/perfilAdmin" className="profile-btn" aria-label="Ver Perfil">
           <div className="profile-avatar-wrapper">
             <img src={PerfilIcon} alt="Foto de perfil" className="profile-avatar-img" />
           </div>

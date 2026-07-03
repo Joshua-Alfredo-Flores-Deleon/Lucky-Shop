@@ -1,14 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
+import { useProductos } from '../hooksP/useProductos'
 import '../sideBar.css'
 import '../productosPage.css'
-
-const BASE_URL = 'http://localhost:4000/api'
 
 const CATEGORIAS = ['Todo', 'Anillos', 'Pulseras', 'Aretes', 'Charms', 'Bolsas', 'Collares', 'Otros']
 const SUBCATEGORIAS = ['Oro', 'Plata', 'Dorado', 'Plateado', 'Multicolor', 'Otro']
 const ESTADOS = ['activo', 'inactivo', 'agotado']
-const PRODUCTOS_POR_PAGINA = 8
 
 /*  SUBCOMPONENTES DE MODALES   */
 
@@ -266,51 +264,27 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
 /*  COMPONENTE PRINCIPAL                                     */
 /* ────────────────────────────────────────────────────────── */
 const Productos = () => {
-  const [productos, setProductos] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  // Filtros
-  const [categoriaActiva, setCategoriaActiva] = useState('Todo')
-  const [busqueda, setBusqueda] = useState('')
-
-  // Paginación
-  const [paginaActual, setPaginaActual] = useState(1)
+  const {
+    productos: productosPagina,
+    loading,
+    error,
+    categoriaActiva,
+    setCategoriaActiva,
+    busqueda,
+    setBusqueda,
+    paginaActual,
+    setPaginaActual,
+    totalPaginas,
+    fetchProductos,
+    guardarProducto,
+    eliminarProducto,
+  } = useProductos()
 
   // Modales
   const [modalDetalles, setModalDetalles] = useState(null)        // producto
   const [modalForm, setModalForm] = useState(null)                // { modo: 'agregar'|'editar', producto? }
   const [modalConfirm, setModalConfirm] = useState(null)          // { mensaje, onConfirm }
   const [modalSuccess, setModalSuccess] = useState(null)          // mensaje string
-
-  /* ── Fetch productos ── */
-  const fetchProductos = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const params = new URLSearchParams()
-      if (categoriaActiva !== 'Todo') params.set('categoria', categoriaActiva)
-      if (busqueda.trim()) params.set('search', busqueda.trim())
-      const res = await fetch(`${BASE_URL}/productos?${params}`)
-      if (!res.ok) throw new Error('Error al obtener productos')
-      const data = await res.json()
-      setProductos(data)
-      setPaginaActual(1)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [categoriaActiva, busqueda])
-
-  useEffect(() => { fetchProductos() }, [fetchProductos])
-
-  /* ── Paginación ── */
-  const totalPaginas = Math.ceil(productos.length / PRODUCTOS_POR_PAGINA)
-  const productosPagina = productos.slice(
-    (paginaActual - 1) * PRODUCTOS_POR_PAGINA,
-    paginaActual * PRODUCTOS_POR_PAGINA
-  )
 
   /* ── Helpers de confirm ── */
   const pedirConfirmacion = (mensaje, onConfirm) => {
@@ -334,16 +308,8 @@ const Productos = () => {
         setModalConfirm(null)
         setModalForm(null)
         try {
-          const fd = new FormData()
-          Object.entries(form).forEach(([k, v]) => fd.append(k, v))
-          if (imageFile) fd.append('imagenes', imageFile)
-
-          const url = esEditar ? `${BASE_URL}/productos/${productoId}` : `${BASE_URL}/productos`
-          const method = esEditar ? 'PUT' : 'POST'
-          const res = await fetch(url, { method, body: fd })
-          if (!res.ok) throw new Error('Error en la operación')
+          await guardarProducto({ form, imageFile, productoId })
           setModalSuccess(esEditar ? '¡Producto actualizado con éxito!' : '¡Producto agregado con éxito!')
-          fetchProductos()
         } catch (err) {
           alert('Error: ' + err.message)
         }
@@ -363,10 +329,8 @@ const Productos = () => {
       async () => {
         setModalConfirm(null)
         try {
-          const res = await fetch(`${BASE_URL}/productos/${producto._id}`, { method: 'DELETE' })
-          if (!res.ok) throw new Error('Error al eliminar')
+          await eliminarProducto(producto._id)
           setModalSuccess('¡Producto eliminado con éxito!')
-          fetchProductos()
         } catch (err) {
           alert('Error: ' + err.message)
         }

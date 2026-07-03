@@ -4,7 +4,7 @@ const carritoController = {};
 import carritoModel from "../models/carrito.js";
 
 
-//SELECT 
+//SELECT
 carritoController.getCarrito = async (req, res) => {
     try {
         const carrito = await carritoModel.find()
@@ -15,10 +15,26 @@ carritoController.getCarrito = async (req, res) => {
     }
 }
 
+//SELECT POR ID
+carritoController.getCarritoById = async (req, res) => {
+    try {
+        const carrito = await carritoModel.findById(req.params.id)
+
+        if (!carrito) {
+            return res.status(404).json({ message: "Carrito not found" })
+        }
+
+        return res.status(200).json(carrito)
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
 //INSERT
 carritoController.insertCarrito = async (req, res) => {
     try {
-        
+
         const { idCliente, productos, total, estado } = req.body;
 
         const newCarrito = new carritoModel({
@@ -32,6 +48,28 @@ carritoController.insertCarrito = async (req, res) => {
 
         return res.status(200).json({message: "carrito Saved"})
 
+    } catch (error) {
+        console.log("error"+error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
+//ACTUALIZAR
+carritoController.updateCarrito = async (req, res) => {
+    try {
+        const { idCliente, productos, total, estado } = req.body;
+
+        const carritoActualizado = await carritoModel.findByIdAndUpdate(
+            req.params.id,
+            { idCliente, productos, total, estado },
+            { new: true }
+        )
+
+        if (!carritoActualizado) {
+            return res.status(404).json({ message: "Carrito not found" })
+        }
+
+        return res.status(200).json(carritoActualizado)
     } catch (error) {
         console.log("error"+error)
         return res.status(500).json({message: "Internal Server Error"})
