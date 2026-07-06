@@ -125,11 +125,19 @@
   color: #374151;
 }
 
-.finanzas-tabla-encabezado span.pill {
+.finanzas-tabla-encabezado .pill {
   border: 1px solid #9ca3af;
   border-radius: 999px;
   padding: 1px 12px;
   margin: 0 4px;
+}
+
+.pill-select {
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .finanzas-boton-vertodo {
@@ -188,6 +196,37 @@
   background: #f9fafb;
   font-size: 12px;
   color: #6b7280;
+}
+
+.finanzas-fila-acciones {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 4px 0;
+}
+
+.finanzas-icono-accion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.finanzas-icono-accion:hover {
+  color: #0d2818;
+  background: #eaf3de;
+}
+
+.finanzas-icono-accion.eliminar:hover {
+  color: #dc2626;
+  background: #fdecea;
 }
 
 @media (max-width: 860px) {

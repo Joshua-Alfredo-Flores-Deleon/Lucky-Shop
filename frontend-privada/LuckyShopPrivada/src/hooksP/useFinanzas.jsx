@@ -24,7 +24,9 @@ async function solicitar(path, { method = "GET", body } = {}) {
 
 /**
  * Hook central de la sección Finanzas.
- * Trae ganancias y gastos desde el backend y calcula la tendencia mensual y los totales del periodo.
+ * Trae ganancias y gastos desde el backend, calcula la tendencia mensual y
+ * los totales del periodo, y expone editar/eliminar tanto para gastos como
+ * para ganancias, más un filtro para ver solo un tipo de movimiento.
  */
 export function useFinanzas() {
   const [ganancias, setGanancias] = useState([]);
@@ -33,6 +35,7 @@ export function useFinanzas() {
   const [error, setError] = useState(null);
   const [mostrarTodo, setMostrarTodo] = useState(false);
   const [ultimoGastoGuardado, setUltimoGastoGuardado] = useState(null);
+  const [filtroTipo, setFiltroTipo] = useState("ganancia"); // "gasto" | "ganancia"
 
   // Carga inicial de ganancias y gastos desde el backend
   useEffect(() => {
@@ -94,6 +97,22 @@ export function useFinanzas() {
     return gastoCreado;
   }, []);
 
+  const actualizarGasto = useCallback(async (id, datosGasto) => {
+    const gastoActualizado = await solicitar(`/gastos/${id}`, { method: "PUT", body: datosGasto });
+    setGastos((prev) => prev.map((g) => (g._id === id ? gastoActualizado : g)));
+    return gastoActualizado;
+  }, []);
+
+  const eliminarGasto = useCallback(async (id) => {
+    await solicitar(`/gastos/${id}`, { method: "DELETE" });
+    setGastos((prev) => prev.filter((g) => g._id !== id));
+  }, []);
+
+  const eliminarGanancia = useCallback(async (id) => {
+    await solicitar(`/ganancias/${id}`, { method: "DELETE" });
+    setGanancias((prev) => prev.filter((g) => g._id !== id));
+  }, []);
+
   const limpiarUltimoGasto = useCallback(() => setUltimoGastoGuardado(null), []);
 
   // Combina ganancias y gastos en una sola lista de movimientos, ordenada por fecha
@@ -107,6 +126,7 @@ export function useFinanzas() {
         estado: "Completado",
         fecha: g.fechaMes,
         tipo: "ganancia",
+        original: g,
       })),
       ...gastos.map((g) => ({
         id: g._id ?? g.id,
@@ -116,12 +136,18 @@ export function useFinanzas() {
         estado: "Completado",
         fecha: g.fechaGasto,
         tipo: "gasto",
+        original: g,
       })),
     ];
     return combinados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   }, [ganancias, gastos]);
 
-  const movimientosVisibles = mostrarTodo ? movimientos : movimientos.slice(0, 3);
+  // Filtra por tipo (ganancias o gastos) antes de limitar a 3
+  const movimientosFiltrados = useMemo(() => {
+    return movimientos.filter((m) => m.tipo === filtroTipo);
+  }, [movimientos, filtroTipo]);
+
+  const movimientosVisibles = mostrarTodo ? movimientosFiltrados : movimientosFiltrados.slice(0, 3);
 
   return {
     cargando,
@@ -129,10 +155,15 @@ export function useFinanzas() {
     tendencia,
     resumen,
     movimientos: movimientosVisibles,
-    hayMasMovimientos: movimientos.length > 3,
+    hayMasMovimientos: movimientosFiltrados.length > 3,
     mostrarTodo,
     toggleMostrarTodo: () => setMostrarTodo((v) => !v),
+    filtroTipo,
+    setFiltroTipo,
     registrarGasto,
+    actualizarGasto,
+    eliminarGasto,
+    eliminarGanancia,
     ultimoGastoGuardado,
     limpiarUltimoGasto,
   };

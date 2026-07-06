@@ -1,6 +1,4 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import '../sideBar.css'
 
 // Importación de imágenes y recursos
 import logosite from '../assets/image-removebg-preview.png' 
@@ -12,17 +10,9 @@ import pagosIcon from '../assets/icons8-reembolso-2-50.png'
 import bolsasIcon from '../assets/suerte.png'
 import videosIcon from '../assets/icons8-vídeo-50.png'
 import FinanzasIcon from '../assets/finanza.png'
-import notificacionIcon from '../assets/icons8-recordatorios-de-citas-48.png'
-import PerfilIcon from '../assets/cuales-son-las-razas-de-gatos-mas-populares-en-colombia.jpg'
-
-import NotificacionesModal from './NotificationsModal.jsx'
-import { useNotificaciones } from '../hooksP/useNotificaciones.jsx'
 
 const SideBar = () => {
   const location = useLocation()
-  const [modalAbierto, setModalAbierto] = useState(false)
-  const { notificaciones } = useNotificaciones()
-  const totalNotif = notificaciones?.length || 0
 
   // Función para determinar si una ruta está activa
   const isActive = (path) => {
@@ -110,25 +100,7 @@ const SideBar = () => {
           </li>
         </ul>
       </aside>
-      {/* Barra de Usuario y Notificaciones (Top-Right) */}
-      <div className="header-actions">
-        {/* Botón de Notificaciones con Indicador de Alerta */}
-        <button onClick={() => setModalAbierto(true)} className="notification-btn" aria-label="Notificaciones">
-          <img src={notificacionIcon} alt="Notificaciones" />
-          {totalNotif > 0 && (
-            <span className="notification-badge">{totalNotif}</span>
-          )}
-        </button>
-        <NotificacionesModal abierto={modalAbierto} onCerrar={() => setModalAbierto(false)} />
-        
-        {/* Perfil del Usuario */}
-        <Link to="/perfilAdmin" className="profile-btn" aria-label="Ver Perfil">
-          <div className="profile-avatar-wrapper">
-            <img src={PerfilIcon} alt="Foto de perfil" className="profile-avatar-img" />
-          </div>
-        </Link>
-      </div>
     </nav>
   )
 }
-export default SideBar
+export default SideBar;

@@ -50,13 +50,13 @@
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 20px); /* Ocupa casi toda la pantalla verticalmente */
+  height: calc(100vh - 20px); /* Ocupa casi toda la pantalla verticalmente, sin pasarse */
   margin: 10px;
-  min-height: 800px;
   padding: 30px 20px;
   position: relative;
   width: 270px;
   z-index: 100;
+  box-sizing: border-box;
 }
 /* Efecto de luz ambiental en la esquina trasera del sidebar */
 .luckyshop-sidebar::after {
@@ -99,6 +99,40 @@
   height: 1px;
   margin: 15px 0 25px 0;
   width: 100%;
+}
+
+/* Bloque de Inicio / Cerrar sesión, pegado abajo del sidebar */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 15px;
+  width: 100%;
+}
+
+.sidebar-footer-link {
+  align-items: center;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  padding: 10px 4px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.sidebar-footer-link:hover {
+  color: #ffffff;
+}
+
+.sidebar-footer-link .menu-text {
+  color: inherit;
+  font-weight: 500;
+}
+
+.sidebar-footer-boton {
+  font-family: inherit;
+  font-size: inherit;
 }
 /* Menú de Navegación */
 .sidebar-menu {
@@ -188,20 +222,6 @@
   width: 4px;
 }
 /* Variación especial del botón activo con el Rosa de Luckyshop */
-.menu-item.active:nth-child(even) {
-  background: var(--color-active-bg-pink);
-  border: var(--border-glow-pink);
-}
-.menu-item.active:nth-child(even) .menu-text {
-  color: var(--color-primary-pink);
-}
-.menu-item.active:nth-child(even) .icon-wrapper img {
-  filter: drop-shadow(0 0 4px var(--color-primary-pink));
-}
-.menu-item.active:nth-child(even)::before {
-  background-color: var(--color-primary-pink);
-  box-shadow: 0 0 8px var(--color-primary-pink);
-}
 /* --- BARRA DE ACCIONES (TOP-RIGHT HEADER) --- */
 .header-actions {
   align-items: center;

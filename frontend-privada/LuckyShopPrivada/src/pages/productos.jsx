@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
+import Nav from '../components/Nav'
+import NotificacionesModal from '../components/NotificationsModal'
 import { useProductos } from '../hooksP/useProductos'
 import '../sideBar.css'
 import '../productosPage.css'
@@ -248,11 +250,9 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
           </div>
         </div>
         <div className="pm-form-actions">
-          {modo === 'editar' && (
-            <button className="pm-btn pm-btn-cancel" onClick={onClose}>Cancelar</button>
-          )}
+          <button className="pm-btn pm-btn-cancel" onClick={onClose}>Cancelar</button>
           <button className="pm-btn pm-btn-dark" onClick={handleSubmit}>
-            {modo === 'agregar' ? 'Aceptar' : 'Guardar'}
+            Guardar
           </button>
         </div>
       </div>
@@ -279,6 +279,8 @@ const Productos = () => {
     guardarProducto,
     eliminarProducto,
   } = useProductos()
+
+  const [notifAbierta, setNotifAbierta] = useState(false)
 
   // Modales
   const [modalDetalles, setModalDetalles] = useState(null)        // producto
@@ -351,6 +353,7 @@ const Productos = () => {
       <Sidebar />
 
       <main className="pm-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
         {/* ENCABEZADO */}
         <div className="pm-header">
           <div className="pm-title-wrap">
@@ -517,8 +520,10 @@ const Productos = () => {
           onClose={() => setModalSuccess(null)}
         />
       )}
+
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   )
 }
 
-export default Productos
+export default Productos;

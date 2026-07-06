@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Sidebar from '../components/sideBar'
+import Nav from '../components/Nav'
+import NotificacionesModal from '../components/NotificationsModal'
 import { useClientes } from '../hooksP/useClientes'
 import '../sideBar.css'
 import '../clientes.css'
@@ -22,6 +24,7 @@ const Clientes = () => {
 
   const [clienteEditar, setClienteEditar] = useState(null)
   const [clienteEliminar, setClienteEliminar] = useState(null)
+  const [notifAbierta, setNotifAbierta] = useState(false)
 
   const handleGuardarCliente = async (id, datos) => {
     const ok = await actualizarCliente(id, datos)
@@ -38,6 +41,7 @@ const Clientes = () => {
       <Sidebar />
 
       <main className="clientes-content-area">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
         <div className="clientes-header">
           <h1 className="clientes-title">Clientes</h1>
           <p className="clientes-subtitle">
@@ -148,6 +152,8 @@ const Clientes = () => {
           onConfirm={() => handleEliminarCliente(clienteEliminar._id)}
         />
       )}
+
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   )
 }
@@ -158,7 +164,6 @@ const EditModal = ({ cliente, onClose, onGuardar }) => {
     lastName: cliente.lastName || '',
     email: cliente.email || '',
     isVerified: cliente.isVerified || false,
-    // Pass through existing values to satisfy backend validations
     password: cliente.password || '',
     birthdate: cliente.birthdate || new Date('1990-01-01').toISOString(),
     loginAttemps: cliente.loginAttemps || 0,
@@ -265,4 +270,4 @@ const ConfirmDeleteModal = ({ cliente, onClose, onConfirm }) => {
   )
 }
 
-export default Clientes
+export default Clientes;

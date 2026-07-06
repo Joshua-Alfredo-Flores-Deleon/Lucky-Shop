@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import Sidebar from '../components/sideBar'
 import { useVentas } from '../hooksP/useVentas'
-import '../sideBar.css'
+import Sidebar from "../components/sideBar";
+import Nav from "../components/Nav";
+import NotificacionesModal from "../components/NotificationsModal";
 import '../productosPage.css'
 import '../ventasPage.css'
+import '../sideBar.css'
 
 const ESTADOS_FILTRO = ['Todos', 'Completado', 'Pendiente', 'Cancelado']
 
@@ -225,6 +227,7 @@ const Ventas = () => {
   } = useVentas()
 
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
+  const [notifAbierta, setNotifAbierta] = useState(false)
 
   const [modalDetalle, setModalDetalle] = useState(null)
   const [modalEditar, setModalEditar] = useState(null)
@@ -261,6 +264,7 @@ const Ventas = () => {
       <Sidebar />
 
       <main className="pm-main">
+        <Nav openNotifications={() => setNotifAbierta(true)} />
         <div className="pm-header">
           <div className="pm-title-wrap">
             <h1 className="pm-title">Ventas</h1>
@@ -427,8 +431,10 @@ const Ventas = () => {
           onConfirm={handleEliminar}
         />
       )}
+
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   )
 }
 
-export default Ventas
+export default Ventas;

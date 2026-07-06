@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import fotoperfilPriv from "../assets/perfilPriv.png"
-//import "./Nav.css";
+import "./Nav.css";
 
 export default function Nav({ openNotifications }) {
 

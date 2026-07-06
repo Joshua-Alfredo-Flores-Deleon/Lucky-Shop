@@ -79,6 +79,33 @@
   border-color: #0d2818;
 }
 
+.modal-precio-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 12px;
+}
+
+.modal-precio-input:focus-within {
+  border-color: #0d2818;
+}
+
+.modal-precio-input span {
+  color: #6b7280;
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+.modal-precio-input .modal-input {
+  border: none;
+  padding: 8px 0;
+}
+
+.modal-precio-input .modal-input:focus {
+  outline: none;
+}
+
 .modal-textarea {
   resize: vertical;
   min-height: 80px;

@@ -4,6 +4,9 @@ import jsonwebtoken from "jsonwebtoken"; // Token
 import bcryptjs from "bcryptjs"; //Encriptar
 import adminModel from "../models/admin.js";
 import {config} from "../../config.js";
+
+import { validateAuthToken } from "../middlewares/validateAuthToken.js"
+
  
 //array de funciones
 const registerAdminController = {};
@@ -128,6 +131,51 @@ registerAdminController.verifyCode = async (req, res) => {
   } catch (error) {
     console.log("error"+error)
     return res.status(500).json({message: "Internal server error"});
+  }
+};
+
+
+
+//perfil
+// GET registerAdmin — trae los datos de la administradora autenticada 
+registerAdminController.getMyProfile = async (req, res) => {
+  try {
+    const admin = await adminModel.findById(req.user.id).select("-password");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Administrador no encontrado" });
+    }
+
+    return res.status(200).json(admin);
+  } catch (error) {
+    console.log("error" + error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// PUT /registerAdmin/:id — actualiza nombre, apellido y teléfono de la administradora
+registerAdminController.updateMyProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id !== req.user.id) {
+      return res.status(403).json({ message: "No puedes editar el perfil de otro administrador" });
+    }
+
+    const { name, lastName, telefono } = req.body;
+
+    const adminActualizado = await adminModel
+      .findByIdAndUpdate(id, { name, lastName, telefono }, { new: true, runValidators: true })
+      .select("-password");
+
+    if (!adminActualizado) {
+      return res.status(404).json({ message: "Administrador no encontrado" });
+    }
+
+    return res.status(200).json(adminActualizado);
+  } catch (error) {
+    console.log("error" + error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
  

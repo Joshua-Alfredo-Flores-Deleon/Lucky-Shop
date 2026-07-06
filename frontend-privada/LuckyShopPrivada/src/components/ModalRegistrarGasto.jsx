@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import "./PagosModals.css";
 
-const VALORES_INICIALES = {
-  cantidadGasto: "",
-  descripcionGasto: "",
-  fechaGasto: "",
-};
+const VALORES_INICIALES = { cantidadGasto: "", descripcionGasto: "", fechaGasto: "" };
 
-export default function ModalRegistrarGasto({ abierto, onCerrar, onGuardar, error }) {
+// Sirve para crear (gasto=null) y para editar (gasto={ _id, cantidadGasto, descripcionGasto, fechaGasto }).
+export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuardar, error }) {
   const [form, setForm] = useState(VALORES_INICIALES);
+  const esEditar = !!gasto;
 
+  // Cada vez que el modal se abre, arranca en blanco (crear) o con los datos del gasto (editar)
   useEffect(() => {
-    if (abierto) setForm(VALORES_INICIALES);
-  }, [abierto]);
+    if (!abierto) return;
+    if (gasto) {
+      setForm({
+        cantidadGasto: gasto.cantidadGasto ?? "",
+        descripcionGasto: gasto.descripcionGasto ?? "",
+        fechaGasto: gasto.fechaGasto ? String(gasto.fechaGasto).slice(0, 10) : "",
+      });
+    } else {
+      setForm(VALORES_INICIALES);
+    }
+  }, [abierto, gasto]);
 
   if (!abierto) return null;
 
@@ -27,20 +35,24 @@ export default function ModalRegistrarGasto({ abierto, onCerrar, onGuardar, erro
   return (
     <div className="modal-fondo">
       <div className="modal-panel mediano">
-        <h2 className="modal-titulo">Registrar gasto</h2>
+        <h2 className="modal-titulo">{esEditar ? "Editar gasto" : "Registrar gasto"}</h2>
 
         <form onSubmit={manejarGuardar} className="modal-form una-columna">
           <div>
             <label className="modal-campo-label">Monto del gasto</label>
-            <input
-              className="modal-input"
-              type="number"
-              min="0"
-              step="0.01"
-              value={form.cantidadGasto}
-              onChange={(e) => actualizar("cantidadGasto", e.target.value)}
-              required
-            />
+            <div className="modal-precio-input">
+              <span>$</span>
+              <input
+                className="modal-input"
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.cantidadGasto}
+                onChange={(e) => actualizar("cantidadGasto", e.target.value)}
+                placeholder="0.00"
+                required
+              />
+            </div>
           </div>
 
           <div>
@@ -71,7 +83,7 @@ export default function ModalRegistrarGasto({ abierto, onCerrar, onGuardar, erro
               Cancelar
             </button>
             <button type="submit" className="modal-boton-primario">
-              Guardar gasto
+              {esEditar ? "Guardar cambios" : "Guardar gasto"}
             </button>
           </div>
         </form>

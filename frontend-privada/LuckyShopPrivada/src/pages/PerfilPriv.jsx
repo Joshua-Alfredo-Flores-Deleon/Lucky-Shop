@@ -1,23 +1,17 @@
-import { useState } from "react";
-import Sidebar from "../components/sideBar";
-import Nav from "../components/Nav";
-import NotificacionesModal from "../components/NotificationsModal";
+import SidebarPerfil from "../components/sideBarPerfil";
 import { usePerfil } from "../hooksP/usePerfilP";
 import "../AdminShell.css";
 import "./PerfilPriv.css";
 
-
 export default function Perfil() {
   const { perfil, borrador, editando, cargando, error, guardando, iniciarEdicion, cancelarEdicion, actualizarCampo, guardarPerfil } =
     usePerfil();
-  const [notifAbierta, setNotifAbierta] = useState(false);
 
   if (cargando) {
     return (
       <div className="admin-shell">
-        <Sidebar />
+        <SidebarPerfil />
         <main className="admin-main">
-          <Nav openNotifications={() => setNotifAbierta(true)} />
           <p className="perfil-estado">Cargando perfil…</p>
         </main>
       </div>
@@ -27,9 +21,8 @@ export default function Perfil() {
   if (error || !perfil) {
     return (
       <div className="admin-shell">
-        <Sidebar />
+        <SidebarPerfil />
         <main className="admin-main">
-          <Nav openNotifications={() => setNotifAbierta(true)} />
           <p className="perfil-estado-error">No se pudo cargar el perfil{error ? `: ${error}` : "."}</p>
         </main>
       </div>
@@ -40,9 +33,8 @@ export default function Perfil() {
 
   return (
     <div className="admin-shell">
-      <Sidebar />
+      <SidebarPerfil />
       <main className="admin-main">
-        <Nav openNotifications={() => setNotifAbierta(true)} />
         <div className="perfil-pagina">
       <div className="perfil-banner" />
 
@@ -108,7 +100,6 @@ export default function Perfil() {
       </div>
         </div>
       </main>
-      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   );
 }

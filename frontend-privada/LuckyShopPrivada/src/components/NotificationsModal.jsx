@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../NotificationModal.css";
 
 export default function NotificacionesModal({ abierto, onCerrar }) {
-  const { notificaciones, cargando, error } = useNotificaciones();
+  const { notificaciones, cargando, error } = useNotificaciones(abierto);
   const navigate = useNavigate();
 
   const handleClick = (enlace) => {

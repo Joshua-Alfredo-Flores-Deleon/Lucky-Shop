@@ -13,12 +13,13 @@ async function obtener(path) {
 
 /**
  * Hook de notificaciones del Panel de control.
- * Consulta tres fuentes de datos en paralelo:
+ * Consulta tres fuentes de datos en paralelo, PERO solo cuando `activo` es true
+ * (para no disparar peticiones de fondo en cada página, aunque el modal esté cerrado):
  *  - /api/venta          → pedidos con status: false  = pendientes de despachar
  *  - /api/combosComprados → combos con status: true   = cliente aceptó el video
  *  - /api/productos       → productos con stock ≤ 5   = stock bajo
  */
-export function useNotificaciones() {
+export function useNotificaciones(activo = true) {
   const [productos, setProductos] = useState([]);
   const [ventas, setVentas] = useState([]);
   const [combos, setCombos] = useState([]);
@@ -26,7 +27,9 @@ export function useNotificaciones() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let activo = true;
+    if (!activo) return;
+
+    let vivo = true;
 
     async function cargar() {
       setCargando(true);
@@ -37,22 +40,22 @@ export function useNotificaciones() {
           obtener("/venta"),
           obtener("/combosComprados"),
         ]);
-        if (!activo) return;
+        if (!vivo) return;
         setProductos(dataProductos);
         setVentas(dataVentas);
         setCombos(dataCombos);
       } catch (err) {
-        if (activo) setError(err.message);
+        if (vivo) setError(err.message);
       } finally {
-        if (activo) setCargando(false);
+        if (vivo) setCargando(false);
       }
     }
 
     cargar();
     return () => {
-      activo = false;
+      vivo = false;
     };
-  }, []);
+  }, [activo]);
 
   const notificaciones = useMemo(() => {
     const lista = [];

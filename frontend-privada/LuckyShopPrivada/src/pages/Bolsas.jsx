@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
+import Nav from '../components/Nav'
+import NotificacionesModal from '../components/NotificationsModal'
 import { useBolsas } from '../hooksP/useBolsas'
 import '../sideBar.css'
 import '../productosPage.css'
@@ -30,7 +32,6 @@ const IconoBolsaVacia = () => (
 
 /*  SUBCOMPONENTES DE MODALES   */
 
-// Modal de confirmación
 const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   <div className="pm-overlay" onClick={onCancel}>
     <div className="pm-modal pm-confirm-modal" onClick={e => e.stopPropagation()}>
@@ -47,7 +48,6 @@ const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   </div>
 )
 
-// Modal de éxito
 const SuccessModal = ({ mensaje, onClose }) => (
   <div className="pm-overlay" onClick={onClose}>
     <div className="pm-modal pm-success-modal" onClick={e => e.stopPropagation()}>
@@ -64,7 +64,6 @@ const SuccessModal = ({ mensaje, onClose }) => (
   </div>
 )
 
-// Modal de detalles de la bolsa
 const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
   if (!bolsa) return null
   const cantidadUnidades = bolsa.cantidadUnidades || 6
@@ -76,7 +75,6 @@ const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
           <h2>Detalles de bolsa</h2>
         </div>
         <div className="pm-form-body">
-          {/* Columna izquierda: imagen + descripción */}
           <div className="pm-detalle-col-izq">
             <div className="pm-form-img-box pm-form-img-box-static">
               {bolsa.imagenPresentacion
@@ -89,7 +87,6 @@ const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
             </div>
           </div>
 
-          {/* Columna derecha: info + variantes */}
           <div className="pm-form-fields">
             <div className="pm-field-group">
               <label>Nombre de bolsita</label>
@@ -123,7 +120,6 @@ const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
   )
 }
 
-// Modal de Agregar / Editar bolsa
 const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
   const [form, setForm] = useState({
     nombre: bolsa?.nombre || '',
@@ -167,7 +163,6 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
           <h2>{modo === 'agregar' ? 'Nueva bolsa' : 'Editar bolsa'}</h2>
         </div>
         <div className="pm-form-body">
-          {/* Columna imagen */}
           <div className="pm-form-img-col">
             <div
               className="pm-form-img-box"
@@ -187,7 +182,6 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
             <p className="pm-form-img-label">Agregar foto</p>
           </div>
 
-          {/* Columna campos */}
           <div className="pm-form-fields">
             <div className="pm-field-group">
               <label>Nombre de bolsa</label>
@@ -293,8 +287,6 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
 }
 
 /* ────────────────────────────────────────────────────────── */
-/*  COMPONENTE PRINCIPAL                                     */
-/* ────────────────────────────────────────────────────────── */
 const Bolsas = () => {
   const {
     bolsas: bolsasPagina,
@@ -311,20 +303,17 @@ const Bolsas = () => {
     actualizarVariante,
   } = useBolsas()
 
-  // Modales
-  const [modalDetalles, setModalDetalles] = useState(null)        // bolsa
-  const [modalForm, setModalForm] = useState(null)                // { modo: 'agregar'|'editar', bolsa? }
-  const [modalConfirm, setModalConfirm] = useState(null)          // { mensaje, onConfirm }
-  const [modalSuccess, setModalSuccess] = useState(null)          // mensaje string
+  const [notifAbierta, setNotifAbierta] = useState(false)
 
-  /* ── Helpers de confirm ── */
+  const [modalDetalles, setModalDetalles] = useState(null)
+  const [modalForm, setModalForm] = useState(null)
+  const [modalConfirm, setModalConfirm] = useState(null)
+  const [modalSuccess, setModalSuccess] = useState(null)
+
   const pedirConfirmacion = (mensaje, onConfirm) => {
     setModalConfirm({ mensaje, onConfirm })
   }
 
-  /* ── CRUD handlers ── */
-
-  // AGREGAR: el formulario pide confirmación antes de enviar
   const handleNuevaBolsa = () => {
     setModalForm({ modo: 'agregar', bolsa: null })
   }
@@ -348,12 +337,10 @@ const Bolsas = () => {
     )
   }
 
-  // EDITAR
   const handleEditar = (bolsa) => {
     setModalForm({ modo: 'editar', bolsa })
   }
 
-  // SELECCIONAR VARIANTE (cantidad de unidades) desde el modal de detalles
   const handleSelectVariante = async (bolsa, cantidadUnidades) => {
     try {
       await actualizarVariante(bolsa, cantidadUnidades)
@@ -363,7 +350,6 @@ const Bolsas = () => {
     }
   }
 
-  // ELIMINAR
   const handleEliminar = (bolsa) => {
     pedirConfirmacion(
       `¿Estás segura que deseas eliminar esta bolsa?`,
@@ -379,20 +365,18 @@ const Bolsas = () => {
     )
   }
 
-  /* ── Etiqueta de estado ── */
   const estadoBadge = (estado) => {
     const map = { activo: 'Disponible', inactivo: 'Inactivo', agotado: 'Agotado' }
     const cls = { activo: 'badge-activo', inactivo: 'badge-inactivo', agotado: 'badge-agotado' }
     return <span className={`pm-badge ${cls[estado] || ''}`}>{map[estado] || estado}</span>
   }
 
-  /* ── RENDER ── */
   return (
     <div className="pm-page">
       <Sidebar />
 
       <main className="pm-main">
-        {/* ENCABEZADO */}
+        <Nav openNotifications={() => setNotifAbierta(true)} />
         <div className="pm-header">
           <div className="pm-title-wrap">
             <h1 className="pm-title">Bolsas</h1>
@@ -418,7 +402,6 @@ const Bolsas = () => {
           </div>
         </div>
 
-        {/* CONTENIDO */}
         {loading && (
           <div className="pm-loading">
             <div className="pm-spinner"></div>
@@ -440,24 +423,20 @@ const Bolsas = () => {
           </div>
         )}
 
-        {/* GRID DE BOLSAS */}
         {!loading && !error && bolsasPagina.length > 0 && (
           <div className="pm-grid">
             {bolsasPagina.map(bolsa => (
               <div key={bolsa._id} className="pm-card">
-                {/* Imagen */}
                 <div className="pm-card-img-wrap">
                   {bolsa.imagenPresentacion
                     ? <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} className="pm-card-img" />
                     : <div className="pm-card-no-img">Sin imagen</div>}
                   {estadoBadge(bolsa.estado)}
                 </div>
-                {/* Info */}
                 <div className="pm-card-info">
                   <p className="pm-card-nombre">{bolsa.nombre || 'Sin nombre'}</p>
                   <p className="pm-card-precio">${Number(bolsa.precio || 0).toFixed(2)}</p>
                 </div>
-                {/* Acciones */}
                 <div className="pm-card-actions">
                   <div className="pm-card-icons">
                     <button
@@ -487,7 +466,6 @@ const Bolsas = () => {
           </div>
         )}
 
-        {/* PAGINACIÓN */}
         {totalPaginas > 1 && (
           <div className="pm-pagination">
             <button
@@ -517,7 +495,6 @@ const Bolsas = () => {
         )}
       </main>
 
-      {/* ── MODALES ── */}
       {modalDetalles && (
         <DetallesModal
           bolsa={modalDetalles}
@@ -549,8 +526,10 @@ const Bolsas = () => {
           onClose={() => setModalSuccess(null)}
         />
       )}
+
+      <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   )
 }
 
-export default Bolsas
+export default Bolsas;

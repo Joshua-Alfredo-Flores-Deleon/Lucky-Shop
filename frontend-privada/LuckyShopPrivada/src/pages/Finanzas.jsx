@@ -6,6 +6,7 @@ import NotificacionesModal from "../components/NotificationsModal";
 import { useFinanzas } from "../hooksP/useFinanzas";
 import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
 import ModalExito from "../components/ModalExito";
+import ConfirmModal from "../components/ConfirmModal";
 import "../AdminShell.css";
 import "./Finanzas.css";
 
@@ -21,21 +22,41 @@ export default function Finanzas() {
     hayMasMovimientos,
     mostrarTodo,
     toggleMostrarTodo,
+    filtroTipo,
+    setFiltroTipo,
     registrarGasto,
+    actualizarGasto,
+    eliminarGasto,
     ultimoGastoGuardado,
     limpiarUltimoGasto,
   } = useFinanzas();
 
   const [modalGastoAbierto, setModalGastoAbierto] = useState(false);
+  const [gastoEditando, setGastoEditando] = useState(null); // null = crear, objeto = editar
   const [modalExitoAbierto, setModalExitoAbierto] = useState(false);
   const [filaAbierta, setFilaAbierta] = useState(null);
   const [errorGasto, setErrorGasto] = useState(null);
   const [notifAbierta, setNotifAbierta] = useState(false);
+  const [confirmEliminar, setConfirmEliminar] = useState(null); // { tipo: "gasto"|"ganancia", id, mensaje }
+
+  const abrirNuevoGasto = () => {
+    setGastoEditando(null);
+    setModalGastoAbierto(true);
+  };
+
+  const abrirEditarGasto = (movimiento) => {
+    setGastoEditando(movimiento.original);
+    setModalGastoAbierto(true);
+  };
 
   const manejarGuardarGasto = async (datosGasto) => {
     try {
       setErrorGasto(null);
-      await registrarGasto(datosGasto);
+      if (gastoEditando) {
+        await actualizarGasto(gastoEditando._id, datosGasto);
+      } else {
+        await registrarGasto(datosGasto);
+      }
       setModalGastoAbierto(false);
       setModalExitoAbierto(true);
     } catch (err) {
@@ -46,6 +67,25 @@ export default function Finanzas() {
   const cerrarModalExito = () => {
     setModalExitoAbierto(false);
     limpiarUltimoGasto();
+    setGastoEditando(null);
+  };
+
+  const pedirEliminar = (movimiento) => {
+    setConfirmEliminar({
+      id: movimiento.id,
+      mensaje: "¿Estás segura que deseas eliminar este gasto?",
+    });
+  };
+
+  const confirmarEliminar = async () => {
+    if (!confirmEliminar) return;
+    try {
+      await eliminarGasto(confirmEliminar.id);
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      setConfirmEliminar(null);
+    }
   };
 
   return (
@@ -76,7 +116,7 @@ export default function Finanzas() {
                 </ResponsiveContainer>
               </div>
 
-              <button className="finanzas-boton-gasto" onClick={() => setModalGastoAbierto(true)}>
+              <button className="finanzas-boton-gasto" onClick={abrirNuevoGasto}>
                 Registrar gasto
               </button>
             </div>
@@ -105,7 +145,12 @@ export default function Finanzas() {
           <div className="finanzas-tabla-wrap">
             <div className="finanzas-tabla-encabezado">
               <p>
-                Últimas <span className="pill">movimientos</span> registrados
+                Últimas{" "}
+                <select className="pill pill-select" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+                  <option value="ganancia">ganancias</option>
+                  <option value="gasto">gastos</option>
+                </select>{" "}
+                registrados
               </p>
               {hayMasMovimientos && (
                 <button className="finanzas-boton-vertodo" onClick={toggleMostrarTodo}>
@@ -132,6 +177,8 @@ export default function Finanzas() {
                     movimiento={mov}
                     abierta={filaAbierta === mov.id}
                     onToggle={() => setFilaAbierta(filaAbierta === mov.id ? null : mov.id)}
+                    onEditar={() => abrirEditarGasto(mov)}
+                    onEliminar={() => pedirEliminar(mov)}
                   />
                 ))}
               </tbody>
@@ -142,6 +189,7 @@ export default function Finanzas() {
 
       <ModalRegistrarGasto
         abierto={modalGastoAbierto}
+        gasto={gastoEditando}
         onCerrar={() => setModalGastoAbierto(false)}
         onGuardar={manejarGuardarGasto}
         error={errorGasto}
@@ -149,9 +197,20 @@ export default function Finanzas() {
       <ModalExito
         abierto={modalExitoAbierto}
         mensaje={
-          ultimoGastoGuardado ? `Gasto de ${formatoMoneda(ultimoGastoGuardado.cantidadGasto)} registrado satisfactoriamente` : "Gasto registrado satisfactoriamente"
+          gastoEditando
+            ? "Gasto actualizado satisfactoriamente"
+            : ultimoGastoGuardado
+            ? `Gasto de ${formatoMoneda(ultimoGastoGuardado.cantidadGasto)} registrado satisfactoriamente`
+            : "Gasto registrado satisfactoriamente"
         }
         onCerrar={cerrarModalExito}
+      />
+      <ConfirmModal
+        isOpen={!!confirmEliminar}
+        title="Confirmación"
+        message={confirmEliminar?.mensaje}
+        onConfirm={confirmarEliminar}
+        onCancel={() => setConfirmEliminar(null)}
       />
         </div>
       </main>
@@ -160,14 +219,16 @@ export default function Finanzas() {
   );
 }
 
-function FilaMovimiento({ movimiento, abierta, onToggle }) {
+function FilaMovimiento({ movimiento, abierta, onToggle, onEditar, onEliminar }) {
+  const esGasto = movimiento.tipo === "gasto";
+
   return (
     <>
       <tr>
         <td>{movimiento.cliente}</td>
         <td>{movimiento.producto}</td>
-        <td className={movimiento.tipo === "gasto" ? "finanzas-monto-gasto" : ""}>
-          {movimiento.tipo === "gasto" ? "-" : ""}
+        <td className={esGasto ? "finanzas-monto-gasto" : ""}>
+          {esGasto ? "-" : ""}
           {formatoMoneda(movimiento.monto)}
         </td>
         <td>
@@ -175,14 +236,27 @@ function FilaMovimiento({ movimiento, abierta, onToggle }) {
         </td>
         <td>{movimiento.fecha ? new Date(movimiento.fecha).toLocaleDateString("es-SV") : "—"}</td>
         <td style={{ textAlign: "right" }}>
-          <button className="finanzas-boton-expandir" onClick={onToggle} aria-label="Ver más detalles">
-            <IconoChevron abierta={abierta} />
-          </button>
+          {esGasto && (
+            <button className="finanzas-boton-expandir" onClick={onToggle} aria-label="Ver más detalles">
+              <IconoChevron abierta={abierta} />
+            </button>
+          )}
         </td>
       </tr>
-      {abierta && (
+      {esGasto && abierta && (
         <tr className="finanzas-fila-detalle">
-          <td colSpan={6}>Tipo de movimiento: {movimiento.tipo === "gasto" ? "Gasto" : "Ganancia"}</td>
+          <td colSpan={6}>
+            <div className="finanzas-fila-acciones">
+              <button className="finanzas-icono-accion" onClick={onEditar} aria-label="Editar gasto">
+                <IconoLapiz />
+                Editar gasto
+              </button>
+              <button className="finanzas-icono-accion eliminar" onClick={onEliminar} aria-label="Eliminar">
+                <IconoBasura />
+                Eliminar
+              </button>
+            </div>
+          </td>
         </tr>
       )}
     </>
@@ -203,6 +277,26 @@ function IconoChevron({ abierta }) {
       style={{ transform: abierta ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}
     >
       <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function IconoLapiz() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+function IconoBasura() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14H6L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4h6v2" />
     </svg>
   );
 }

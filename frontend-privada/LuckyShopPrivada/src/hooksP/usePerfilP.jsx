@@ -39,7 +39,7 @@ export function usePerfil() {
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch(`${BASE_URL}/registerAdmin`, {
+        const res = await fetch(`${BASE_URL}`, {
           method: "GET",
           credentials: "include", // manda la cookie authCookie
         });
@@ -85,7 +85,7 @@ export function usePerfil() {
     try {
       // Solo se mandan los campos editables: nombre, apellido, teléfono.
       // El correo no se toca desde aquí.
-      const res = await fetch(`${BASE_URL}/registerAdmin/${borrador.id}`, {
+      const res = await fetch(`${BASE_URL}/${borrador.id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

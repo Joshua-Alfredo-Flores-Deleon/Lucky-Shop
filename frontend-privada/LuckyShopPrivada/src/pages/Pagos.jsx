@@ -6,7 +6,7 @@ import { usePagos } from "../hooksP/usePagos";
 import ModalAgregarPago from "../components/ModalAgregarPago";
 import ModalDetallePago from "../components/ModalDetallePago";
 import ConfirmModal from "../components/ConfirmModal";
-import "../AdminShell.css";
+import '../sideBar.css'
 import "./Pagos.css";
 
 
