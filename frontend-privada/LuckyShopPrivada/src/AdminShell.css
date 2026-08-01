@@ -6,6 +6,7 @@
   min-height: 100vh;
   background: #f4f6f3;
   position: relative;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* El sidebar queda fijo a la izquierda, ocupando toda la altura */

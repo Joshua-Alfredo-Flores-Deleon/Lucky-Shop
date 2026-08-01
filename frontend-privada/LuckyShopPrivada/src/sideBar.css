@@ -36,7 +36,7 @@
 }
 /* Contenedor Principal Flex */
 .luckyshop-nav-container {
-  display: flex;
+  display: fixed;
   justify-content: space-between;
   width: 100%;
 }

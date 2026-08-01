@@ -1,7 +1,3 @@
-.home-pagina {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 .home-encabezado {
   display: flex;
   align-items: flex-start;
@@ -10,13 +6,21 @@
 }
 
 .home-titulo {
-  display: inline-block;
-  font-size: 26px;
-  font-weight: 600;
+  position: relative;
+  font-size: 2.2rem;      
+  font-weight: 700;   
   color: #111111;
   margin: 0 0 8px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #0d2818;
+}
+
+.home-titulo::after {
+  content: '';
+  display: block;
+  width: 300px;
+  height: 2px;
+  background: #0d2818;
+  margin-top: 8px;
 }
 
 .home-acciones {

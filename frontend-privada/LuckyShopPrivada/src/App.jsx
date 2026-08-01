@@ -10,7 +10,6 @@ import Bolsas from './pages/Bolsas.jsx'
 import RecoveryPasswordAdmin from './pages/RecoveryPasswordAdmin.jsx'
 import PerfilAdmin from './pages/PerfilPriv.jsx'
 import Finanzas from './pages/Finanzas.jsx'
-import Pagos from './pages/Pagos.jsx'
 import VideosCombos from './pages/VideosCombos.jsx'
 
 function App() {
@@ -57,14 +56,6 @@ function App() {
           element={
             <ProtectedRoute userType="admin">
               <Bolsas />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pagos"
-          element={
-            <ProtectedRoute userType="admin">
-              <Pagos />
             </ProtectedRoute>
           }
         />

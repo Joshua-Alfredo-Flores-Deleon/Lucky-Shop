@@ -6,7 +6,6 @@ import HomeIcon from '../assets/icons8-casa-24.png'
 import ventaIcon from '../assets/ventas.png'
 import productoIcon from '../assets/icons8-paquete-50.png'
 import clienteIcon from '../assets/icons8-grupo-de-usuario-2-32.png'
-import pagosIcon from '../assets/icons8-reembolso-2-50.png'
 import bolsasIcon from '../assets/suerte.png'
 import videosIcon from '../assets/icons8-vídeo-50.png'
 import FinanzasIcon from '../assets/finanza.png'
@@ -62,14 +61,6 @@ const SideBar = () => {
                 <img src={clienteIcon} alt="Clientes" />
               </div>
               <span className="menu-text">Clientes</span>
-            </Link>
-          </li>
-          <li className={`menu-item ${isActive('/pagos')}`}>
-            <Link to="/pagos" className="menu-link">
-              <div className="icon-wrapper">
-                <img src={pagosIcon} alt="Pagos" />
-              </div>
-              <span className="menu-text">Pagos</span>
             </Link>
           </li>
           <li className={`menu-item ${isActive('/bolsasSuerte')}`}>

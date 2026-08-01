@@ -6,14 +6,9 @@ const router = express.Router();
  
 router.route("/")
 .post(registerAdminController.register)
-.get(validateAuthToken("Admin"), registerAdminController.getMyProfile);
 
- 
+
 router.route("/verifyCodeEmail")
 .post(registerAdminController.verifyCode);
 
-router.route("/:id")
-.put(validateAuthToken("Admin"), registerAdminController.updateMyProfile);
- 
- 
 export default router;

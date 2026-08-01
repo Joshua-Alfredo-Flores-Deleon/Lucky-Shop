@@ -118,16 +118,32 @@ export function useFinanzas() {
   // Combina ganancias y gastos en una sola lista de movimientos, ordenada por fecha
   const movimientos = useMemo(() => {
     const combinados = [
-      ...ganancias.map((g) => ({
-        id: g._id ?? g.id,
-        cliente: "Ganancia del mes",
-        producto: "—",
-        monto: Number(g.totalGanancias ?? 0),
-        estado: "Completado",
-        fecha: g.fechaMes,
-        tipo: "ganancia",
-        original: g,
-      })),
+      ...ganancias.map((g) => {
+  const primeraVenta = g.ventas?.[0]?.idVenta;
+  const carrito = primeraVenta?.IdCarrito;
+  const productos = carrito?.productos || [];
+  const cliente = carrito?.idCliente;
+
+  const nombreProducto =
+    productos.length === 0
+      ? "—"
+      : productos.length === 1
+      ? productos[0]?.idProducto?.nombre || "—"
+      : `${productos[0]?.idProducto?.nombre || "Producto"} y ${productos.length - 1} más`;
+
+  const fechaReal = primeraVenta?.fecha || g.fechaMes;
+
+  return {
+    id: g._id ?? g.id,
+    cliente: cliente ? `${cliente.name || ""} ${cliente.lastName || ""}`.trim() : "Ganancia del mes",
+    producto: nombreProducto,
+    monto: Number(g.totalGanancias ?? 0),
+    estado: "Completado",
+    fecha: fechaReal,
+    tipo: "ganancia",
+    original: g,
+  };
+}),
       ...gastos.map((g) => ({
         id: g._id ?? g.id,
         cliente: g.descripcionGasto || "Gasto",

@@ -91,7 +91,13 @@ loginAdminController.checkSession = async (req, res) => {
 
     return res.status(200).json({
       message: "Sesión activa",
-      admin: { email: adminFound.email, name: adminFound.name },
+      admin: {
+    id: adminFound._id,
+    name: adminFound.name,
+    lastName: adminFound.lastName,
+    email: adminFound.email,
+    telefono: adminFound.telefono,
+  },
     });
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });

@@ -1,6 +1,7 @@
-const ventaController = {};
-
 import ventaModel from "../models/venta.js";
+import gananciasModel from "../models/Ganancias.js";
+
+const ventaController = {};
 
 const POPULATE_CARRITO = {
   path: "IdCarrito",
@@ -33,6 +34,30 @@ const enriquecerVenta = (venta) => {
     monto: Number(carrito?.total ?? 0),
     estado: derivarEstado(obj.status, obj.statusPago),
   };
+};
+
+// Crea o actualiza la ganancia vinculada a una venta cuando esta queda "Completado"
+const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
+  try {
+    if (estado !== "Completado") return;
+
+    await gananciasModel.findOneAndUpdate(
+      { "ventas.idVenta": ventaId }, // busca si ya existe una ganancia para esta venta
+      {
+        $setOnInsert: {
+          ventas: [{ idVenta: ventaId }],
+          gastos: [],
+          fecha: fecha || new Date(),
+        },
+        $set: {
+          totalGanancias: monto,
+        },
+      },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error("sincronizarGanancia error:", error);
+  }
 };
 
 ventaController.getVenta = async (req, res) => {
@@ -75,7 +100,11 @@ ventaController.insertVenta = async (req, res) => {
     await newVenta.save();
 
     const ventaGuardada = await ventaModel.findById(newVenta._id).populate(POPULATE_CARRITO);
-    return res.status(201).json(enriquecerVenta(ventaGuardada));
+    const ventaEnriquecida = enriquecerVenta(ventaGuardada);
+
+    await sincronizarGanancia(ventaGuardada._id, ventaEnriquecida.estado, ventaEnriquecida.monto, ventaEnriquecida.fecha);
+
+    return res.status(201).json(ventaEnriquecida);
   } catch (error) {
     console.error("insertVenta error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -108,7 +137,11 @@ ventaController.updateVenta = async (req, res) => {
       return res.status(404).json({ message: "Venta no encontrada" });
     }
 
-    return res.status(200).json(enriquecerVenta(ventaActualizada));
+    const ventaEnriquecida = enriquecerVenta(ventaActualizada);
+
+    await sincronizarGanancia(ventaActualizada._id, ventaEnriquecida.estado, ventaEnriquecida.monto, ventaEnriquecida.fecha);
+
+    return res.status(200).json(ventaEnriquecida);
   } catch (error) {
     console.error("updateVenta error:", error);
     return res.status(500).json({ message: "Internal Server Error" });

@@ -218,7 +218,7 @@ const Ventas = () => {
     paginaActual,
     setPaginaActual,
     totalPaginas,
-    ventasTotales,
+    metodoMasUsado,
     datosGrafica,
     valorMaximoGrafica,
     fetchVentas,
@@ -274,61 +274,45 @@ const Ventas = () => {
         </div>
 
         <div className="vt-stat-card">
-          <p className="vt-stat-label">Ventas totales</p>
-          <p className="vt-stat-value">{formatoMoneda(ventasTotales)}</p>
-          {datosGrafica.length > 0 ? (
-            <div className="vt-chart-bars">
-              {datosGrafica.map((d, i) => (
-                <div
-                  key={d.etiqueta + i}
-                  className={`vt-chart-bar ${i === datosGrafica.length - 1 ? 'activa' : ''}`}
-                  style={{ height: `${Math.max((d.valor / valorMaximoGrafica) * 100, 6)}%` }}
-                  title={`${d.etiqueta}: ${formatoMoneda(d.valor)}`}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="vt-chart-empty">Todavía no hay suficientes ventas fechadas para graficar.</p>
-          )}
-        </div>
+  <p className="vt-stat-label">Método más usado</p>
+  {metodoMasUsado ? (
+    <>
+      <p className="vt-metodo-destacado">{metodoMasUsado.metodo}</p>
+      <p className="vt-metodo-subtexto">
+        {metodoMasUsado.cantidad} pago{metodoMasUsado.cantidad !== 1 ? "s" : ""} realizado{metodoMasUsado.cantidad !== 1 ? "s" : ""} usando este método
+      </p>
+    </>
+  ) : (
+    <p className="vt-chart-empty">Todavía no hay ventas con método de pago registrado.</p>
+  )}
+</div>
 
-        <div className="vt-toolbar">
-          <div className="vt-filtros-wrap">
-            <button
-              className={`vt-filtros-btn ${filtrosAbiertos ? 'activo' : ''}`}
-              onClick={() => setFiltrosAbiertos(o => !o)}
-            >
-              <IconoFiltro />
-              Filtros
-            </button>
-            {filtrosAbiertos && (
-              <div className="vt-filtros-dropdown">
-                {ESTADOS_FILTRO.map(e => (
-                  <button
-                    key={e}
-                    className={`vt-filtros-option ${filtroEstado === e ? 'activo' : ''}`}
-                    onClick={() => { setFiltroEstado(e); setFiltrosAbiertos(false) }}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+       <div className="vt-toolbar">
+  <div className="vt-filtros-wrap">
+    {ESTADOS_FILTRO.map(e => (
+      <button
+        key={e}
+        className={`vt-filtro-tab ${filtroEstado === e ? 'activo' : ''}`}
+        onClick={() => setFiltroEstado(e)}
+      >
+        {e}
+      </button>
+    ))}
+  </div>
 
-          <div className="pm-search-wrap" style={{ marginLeft: 'auto' }}>
-            <svg className="pm-search-icon" viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <input
-              className="pm-search-input"
-              placeholder="Buscar"
-              value={busqueda}
-              onChange={e => setBusqueda(e.target.value)}
-            />
-          </div>
-        </div>
+  <div className="pm-search-wrap" style={{ marginLeft: 'auto' }}>
+    <svg className="pm-search-icon" viewBox="0 0 24 24" fill="none">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+    <input
+      className="pm-search-input"
+      placeholder="Buscar"
+      value={busqueda}
+      onChange={e => setBusqueda(e.target.value)}
+    />
+  </div>
+</div>
 
         {error && !loading && (
           <div className="pm-error">

@@ -409,7 +409,6 @@ const Productos = () => {
 
         {!loading && !error && productosPagina.length === 0 && (
           <div className="pm-empty">
-            <div className="pm-empty-icon">📦</div>
             <p>No se encontraron productos</p>
           </div>
         )}

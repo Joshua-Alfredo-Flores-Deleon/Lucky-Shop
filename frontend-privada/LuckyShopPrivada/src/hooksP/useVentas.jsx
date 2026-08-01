@@ -59,6 +59,20 @@ export function useVentas() {
     return Array.from(mapa.values()).sort((a, b) => a.orden - b.orden).slice(-7);
   }, [ventas]);
 
+  const metodoMasUsado = useMemo(() => {
+  const mapa = new Map();
+  ventas.forEach((v) => {
+    const metodo = v.metodoPago?.trim();
+    if (!metodo) return;
+    mapa.set(metodo, (mapa.get(metodo) || 0) + 1);
+  });
+
+  if (mapa.size === 0) return null;
+
+  const [metodo, cantidad] = [...mapa.entries()].sort((a, b) => b[1] - a[1])[0];
+  return { metodo, cantidad };
+}, [ventas]);
+
   const valorMaximoGrafica = Math.max(...datosGrafica.map((d) => d.valor), 1);
 
   /* ── Paginación ── */
@@ -103,6 +117,7 @@ export function useVentas() {
     totalPaginas,
     ventasTotales,
     datosGrafica,
+    metodoMasUsado,
     valorMaximoGrafica,
     fetchVentas,
     actualizarVenta,

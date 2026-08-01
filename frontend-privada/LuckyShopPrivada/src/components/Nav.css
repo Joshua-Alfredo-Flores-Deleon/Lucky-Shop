@@ -59,3 +59,13 @@
 .profile-image:hover {
   border-color: #00e676;
 }
+
+.profile-image-iniciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1a3d26, #4a7c5e);
+}

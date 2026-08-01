@@ -4,8 +4,7 @@ import "../AdminShell.css";
 import "./PerfilPriv.css";
 
 export default function Perfil() {
-  const { perfil, borrador, editando, cargando, error, guardando, iniciarEdicion, cancelarEdicion, actualizarCampo, guardarPerfil } =
-    usePerfil();
+  const { perfil, cargando, error } = usePerfil();
 
   if (cargando) {
     return (
@@ -43,7 +42,9 @@ export default function Perfil() {
           {perfil.avatarUrl ? (
             <img src={perfil.avatarUrl} alt={`Foto de perfil de ${nombreMostrado}`} className="perfil-avatar" />
           ) : (
-            <div className="perfil-avatar" />
+            <div className="perfil-avatar perfil-avatar-iniciales">
+              {iniciales(nombreMostrado)}
+            </div>
           )}
           <div style={{ paddingBottom: 4 }}>
             <p className="perfil-nombre">{nombreMostrado}</p>
@@ -52,49 +53,19 @@ export default function Perfil() {
         </div>
 
         <div className="perfil-grid">
-          <div>
-            <button className="perfil-boton-editar" onClick={iniciarEdicion}>
-              Editar perfil
-            </button>
-          </div>
-
           <div className="perfil-tarjeta">
             <p className="perfil-titulo-tarjeta">Información de cuenta</p>
 
-            {!editando || !borrador ? (
-              <div className="perfil-info-grid">
-                <div>
-                  <p className="perfil-etiqueta">Nombre</p>
-                  <p className="perfil-valor">{perfil.nombreCompleto}</p>
-                </div>
-                <div>
-                  <p className="perfil-etiqueta">Correo</p>
-                  <p className="perfil-valor">{perfil.correo}</p>
-                </div>
-                <div>
-                  <p className="perfil-etiqueta">Teléfono</p>
-                  <p className="perfil-valor">{perfil.telefono}</p>
-                </div>
+            <div className="perfil-info-grid">
+              <div>
+                <p className="perfil-etiqueta">Nombre</p>
+                <p className="perfil-valor">{perfil.nombreCompleto}</p>
               </div>
-            ) : (
-              <div className="perfil-info-grid">
-                <Campo label="Nombre" value={borrador.nombre} onChange={(v) => actualizarCampo("nombre", v)} />
-                <Campo label="Apellido" value={borrador.apellido} onChange={(v) => actualizarCampo("apellido", v)} />
-                <Campo label="Teléfono" value={borrador.telefono} onChange={(v) => actualizarCampo("telefono", v)} />
-                <div>
-                  <p className="perfil-etiqueta">Correo</p>
-                  <p className="perfil-valor">{borrador.correo}</p>
-                </div>
-                <div className="perfil-acciones-form">
-                  <button className="perfil-boton-guardar" onClick={guardarPerfil} disabled={guardando}>
-                    {guardando ? "Guardando…" : "Guardar"}
-                  </button>
-                  <button className="perfil-boton-cancelar" onClick={cancelarEdicion}>
-                    Cancelar
-                  </button>
-                </div>
+              <div>
+                <p className="perfil-etiqueta">Correo</p>
+                <p className="perfil-valor">{perfil.correo}</p>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -104,11 +75,12 @@ export default function Perfil() {
   );
 }
 
-function Campo({ label, value, onChange }) {
-  return (
-    <label style={{ display: "block" }}>
-      <span className="perfil-campo-label">{label}</span>
-      <input className="perfil-input" value={value} onChange={(e) => onChange(e.target.value)} />
-    </label>
-  );
+function iniciales(nombre = '') {
+  return nombre
+    .split(' ')
+    .filter(Boolean)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || '?'
 }

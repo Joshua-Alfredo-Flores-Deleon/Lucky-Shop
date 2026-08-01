@@ -1,8 +1,3 @@
-/* ════════════════════════════════════════════════════════════
-   productosPage.css  — Estilos exclusivos de la página Productos
-   Paleta: Verde oscuro LuckyShop + Blanco limpio
-   ════════════════════════════════════════════════════════════ */
-
 /* ── Layout principal ── */
 .pm-page {
   min-height: 100vh;
@@ -63,7 +58,7 @@
 }
 
 .pm-title-underline {
-  width: 80%;
+  width: 200px;
   height: 2px;
   background: #000000;
   border-radius: 0;

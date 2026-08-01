@@ -7,7 +7,21 @@ import gananciasModel from "../models/Ganancias.js"
 //select
 gananciasController.getAllGanancias = async (req, res) => {
   try {
-    const ganancias = await gananciasModel.find().sort({ createdAt: -1 });
+    const ganancias = await gananciasModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "ventas.idVenta",
+        select: "fecha IdCarrito",
+        populate: {
+          path: "IdCarrito",
+          select: "idCliente productos",
+          populate: [
+            { path: "idCliente", select: "name lastName" },
+            { path: "productos.idProducto", select: "nombre" },
+          ],
+        },
+      });
     return res.status(200).json(ganancias);
   } catch (error) {
     console.error("getAllGanancias error:", error);

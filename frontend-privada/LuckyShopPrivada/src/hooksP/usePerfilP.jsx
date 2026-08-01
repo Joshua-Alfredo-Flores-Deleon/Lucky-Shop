@@ -1,15 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 
-const BASE_URL = "http://localhost:4000/api/registerAdmin";
+const BASE_URL = "http://localhost:4000/api";
 
-// Normaliza el admin que devuelve el backend (adminModel: name, lastName,
-// email, ...) a la forma que usa la UI de Perfil. "telefono" no está en el
-// schema fijo pero se guarda igual gracias a `strict: false`. "rol" no
-// existe en la base de datos (todos son "Admin" por el token), así que
-// queda fijo aquí.
 function normalizarAdmin(admin) {
   return {
-    id: admin._id ?? admin.id,
+    id: admin.id ?? admin._id,
     nombre: admin.name ?? "",
     apellido: admin.lastName ?? "",
     nombreCompleto: [admin.name, admin.lastName].filter(Boolean).join(" "),
@@ -19,10 +14,6 @@ function normalizarAdmin(admin) {
   };
 }
 
-/**
- * Hook central de la sección Perfil.
- * Trae los datos del administrador logueado (vía cookie authCookie) y administra el modo edición.
- */
 export function usePerfil() {
   const [perfil, setPerfil] = useState(null);
   const [borrador, setBorrador] = useState(null);
@@ -31,7 +22,6 @@ export function usePerfil() {
   const [error, setError] = useState(null);
   const [guardando, setGuardando] = useState(false);
 
-  // Carga el perfil del administrador autenticado (el backend lo identifica por la cookie)
   useEffect(() => {
     let activo = true;
 
@@ -39,9 +29,9 @@ export function usePerfil() {
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch(`${BASE_URL}`, {
+        const res = await fetch(`${BASE_URL}/loginAdmin/checkSession`, {
           method: "GET",
-          credentials: "include", // manda la cookie authCookie
+          credentials: "include",
         });
 
         const data = await res.json();
@@ -51,8 +41,7 @@ export function usePerfil() {
         }
 
         if (!activo) return;
-        const admin = Array.isArray(data) ? data[0] : data.data ?? data;
-        setPerfil(normalizarAdmin(admin));
+        setPerfil(normalizarAdmin(data.admin));
       } catch (err) {
         if (activo) setError(err.message);
       } finally {
@@ -66,7 +55,6 @@ export function usePerfil() {
     };
   }, []);
 
-  // Cada vez que se entra en modo edición, el borrador parte de los datos guardados
   useEffect(() => {
     if (editando && perfil) setBorrador(perfil);
   }, [editando, perfil]);
@@ -83,9 +71,7 @@ export function usePerfil() {
     setGuardando(true);
     setError(null);
     try {
-      // Solo se mandan los campos editables: nombre, apellido, teléfono.
-      // El correo no se toca desde aquí.
-      const res = await fetch(`${BASE_URL}/${borrador.id}`, {
+      const res = await fetch(`${BASE_URL}/registerAdmin/${borrador.id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

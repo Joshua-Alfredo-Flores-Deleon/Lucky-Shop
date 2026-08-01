@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════════════════
-   videosCombosPage.css — Estilos de la página Videos Combos
-   Paleta: Verde oscuro LuckyShop + Blanco limpio
-   ═══════════════════════════════════════════════════════════ */
 
 /* ── Filtros toolbar ── */
 .vc-toolbar {
@@ -444,4 +440,8 @@
   display: flex;
   gap: 10px;
   justify-content: center;
+}
+
+.pm-page .pm-title-underline {
+  width: 280px;
 }
