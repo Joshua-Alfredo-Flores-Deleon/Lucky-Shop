@@ -1,0 +1,447 @@
+/* ═══════════════════════════════════════════════════════════
+   videosCombosPage.css — Estilos de la página Videos Combos
+   Paleta: Verde oscuro LuckyShop + Blanco limpio
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Filtros toolbar ── */
+.vc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.vc-filter-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vc-filter-btn {
+  padding: 7px 18px;
+  border-radius: 20px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.vc-filter-btn:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.vc-filter-btn.activo {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+/* ── Lista de tarjetas ── */
+.vc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Tarjeta individual ── */
+.vc-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.vc-card:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Miniatura del video ── */
+.vc-video-thumb {
+  flex-shrink: 0;
+  width: 110px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0f1f14;
+  position: relative;
+  cursor: pointer;
+}
+
+.vc-video-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vc-video-no-url {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 6px;
+}
+
+/* Icono de play sobre el thumbnail */
+.vc-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  transition: background 0.18s ease;
+}
+
+.vc-video-thumb:hover .vc-play-overlay {
+  background: rgba(0, 0, 0, 0.52);
+}
+
+.vc-play-overlay svg {
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+}
+
+/* ── Información del combo ── */
+.vc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.vc-combo-nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f1f14;
+  margin: 0 0 6px;
+}
+
+.vc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.vc-meta strong {
+  font-weight: 600;
+  color: #0f1f14;
+}
+
+/* ── Badge de estado ── */
+.vc-badge-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.vc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.vc-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vc-badge.aceptada {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.vc-badge.aceptada .vc-badge-dot { background: #16a34a; }
+
+.vc-badge.denegada {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+.vc-badge.denegada .vc-badge-dot { background: #ef4444; }
+
+.vc-badge.pendiente {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde68a;
+}
+.vc-badge.pendiente .vc-badge-dot { background: #ca8a04; }
+
+/* ── Acciones de la tarjeta ── */
+.vc-acciones {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.vc-btn-detalle {
+  background: #0f1f14;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.vc-btn-detalle:hover {
+  background: #1f3a27;
+}
+
+.vc-icon-btn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+}
+
+.vc-icon-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fff1f2;
+}
+
+.vc-icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Estado vacío / error / cargando ── */
+.vc-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+.vc-empty svg {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  display: block;
+  color: #d1d5db;
+}
+.vc-empty p { margin: 0; font-size: 0.95rem; }
+
+/* ── Modal de video ── */
+.vc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.vc-modal-box {
+  background: #0f1f14;
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: 720px;
+  width: 100%;
+  position: relative;
+}
+
+.vc-modal-box video {
+  width: 100%;
+  display: block;
+  max-height: 70vh;
+  background: #000;
+}
+
+.vc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  color: #fff;
+}
+
+.vc-modal-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.vc-modal-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+
+.vc-modal-close:hover { background: rgba(255,255,255,0.15); }
+
+.vc-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Modal de detalles ── */
+.vc-detalle-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 32px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+
+.vc-detalle-bar {
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: #16a34a;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.vc-detalle-modal h2 {
+  margin: 0 0 20px;
+  font-size: 1.25rem;
+  color: #0f1f14;
+}
+
+.vc-detalle-row {
+  margin-bottom: 14px;
+}
+
+.vc-detalle-label {
+  font-size: 0.78rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.vc-detalle-val {
+  font-size: 0.95rem;
+  color: #111827;
+  margin: 3px 0 0;
+  font-weight: 500;
+}
+
+.vc-detalle-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.vc-btn-aceptar {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+}
+.vc-btn-aceptar:hover { background: #15803d; }
+
+.vc-btn-denegar {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+}
+.vc-btn-denegar:hover { background: #dc2626; }
+
+.vc-btn-cerrar {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+}
+.vc-btn-cerrar:hover { background: #e5e7eb; }
+
+/* ── Confirm modal ── */
+.vc-confirm-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.vc-confirm-icon {
+  width: 52px;
+  height: 52px;
+  background: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 1.4rem;
+}
+.vc-confirm-modal h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: #0f1f14;
+}
+.vc-confirm-modal p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 22px;
+}
+.vc-confirm-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
