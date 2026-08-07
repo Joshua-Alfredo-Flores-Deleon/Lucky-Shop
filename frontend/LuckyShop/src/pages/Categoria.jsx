@@ -1,12 +1,11 @@
 // Categoria.jsx — listado de productos por categoría con subcategorías
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import CategoryBanner from '../components/CategoryBanner.jsx'
-
-const BASE_URL = 'http://localhost:4000/api'
+import { useCategoria } from '../hooks/useCategoria.jsx'
 
 const CONFIG_CATEGORIAS = {
   anillos: {
@@ -17,18 +16,19 @@ const CONFIG_CATEGORIAS = {
     titulo: 'Pulseras',
     descripcion: 'No es solo una joya, es un recordatorio tangible de que la suerte no ocurre por azar, sino porque llevas contigo la energía necesaria para atraerla; deja que esta pulsera sea el amuleto que sintonice tu destino con tus deseos.',
     subcategorias: [
-      { value: 'Tobilleras',   label: 'Tobileras'},
+      { value: 'Tobilleras', label: 'Tobilleras' },
     ],
   },
   pendientes: {
     titulo: 'Pendientes',
     descripcion: 'La distinción no es una coincidencia, es una elección. Estos pendientes han sido grabados con la firme convicción de que la elegancia es el imán definitivo de la fortuna.',
+    apiCategoria: 'Aretes', // En la BD se guardan como "Aretes"
   },
   collares: {
     titulo: 'Collares',
     descripcion: 'El destino se rinde ante quienes caminan con seguridad; deja que este collar sea el destello que ilumine tu camino y atraiga hacia ti las sincronías perfectas que el universo tiene preparadas para quienes se atreven a brillar.',
     subcategorias: [
-      { value: 'Set',    label: 'Set'},
+      { value: 'Set', label: 'Set' },
     ],
   },
   otros: {
@@ -42,29 +42,13 @@ const Categoria = () => {
   const { cat } = useParams()
   const config = CONFIG_CATEGORIAS[cat] || { titulo: cat, descripcion: '', subcategorias: [] }
 
-  const [productos,    setProductos]    = useState([])
-  const [loading,      setLoading]      = useState(true)
+  // Usar el nombre de categoría de la API si existe un mapeo, sino usar el param de la URL
+  const categoriaApi = config.apiCategoria || cat
+  const { productos, loading, error } = useCategoria(categoriaApi)
   const [subcatActiva, setSubcatActiva] = useState('')
 
-  useEffect(() => {
-    setLoading(true)
-    setSubcatActiva('')
-    const fetchProductos = async () => {
-      try {
-        const res  = await fetch(`${BASE_URL}/productos?categoria=${cat}&estado=activo`, { credentials: 'include' })
-        const data = await res.json()
-        setProductos(Array.isArray(data) ? data : [])
-      } catch {
-        setProductos([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProductos()
-  }, [cat])
-
   const productosFiltrados = subcatActiva
-    ? productos.filter((p) => p.subCategoria?.toLowerCase() === subcatActiva)
+    ? productos.filter((p) => p.subCategoria?.toLowerCase() === subcatActiva.toLowerCase())
     : productos
 
   return (
@@ -81,18 +65,24 @@ const Categoria = () => {
       />
 
       {/* Productos */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-3 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+          <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-400">
+            <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+            <p className="text-sm font-medium">Cargando productos...</p>
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl bg-red-50 border border-red-200 px-6 py-8 text-center text-red-700 text-sm">
+            <p className="font-semibold mb-2">Hubo un problema al cargar los productos</p>
+            <p className="text-xs">{error}</p>
           </div>
         ) : productosFiltrados.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-4xl mb-3"></p>
-            <p>No hay productos en esta categoría</p>
+          <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+            <span className="text-5xl mb-4 opacity-40">✨</span>
+            <p className="text-sm font-medium">No hay productos en esta categoría</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 sm:gap-6">
             {productosFiltrados.map((p) => (
               <ProductCard key={p._id} producto={p} />
             ))}

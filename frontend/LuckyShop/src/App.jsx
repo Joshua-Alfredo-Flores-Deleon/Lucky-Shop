@@ -14,7 +14,6 @@ import Register from './pages/Register.jsx'
 import BolsasSuerte from './pages/BolsasSuerte.jsx'
 import LoginCliente from './pages/LoginCliente.jsx'
 import RecuperarPassword from './pages/RecuperarPassword.jsx'
-import Anillos from './pages/Anillos.jsx'
 import AcercaDe from './pages/AcercaDe.jsx'
 import Perfil from './pages/Perfil.jsx'
 
@@ -34,7 +33,7 @@ function App() {
             <Route path="/buscar"          element={<Buscar />} />
             <Route path="/categoria/:cat"  element={<Categoria />} />
             <Route path="/producto/:id"    element={<ProductoDetalle />} />
-            <Route path="/anillos"         element={<Anillos />} />
+            <Route path="/anillos"         element={<Navigate to="/categoria/anillos" replace />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
             <Route path="/acercaDe"       element={<AcercaDe />} />
 

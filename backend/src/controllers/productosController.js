@@ -9,7 +9,7 @@ productosController.getProductos = async (req, res) => {
     const { categoria, estado, search } = req.query;
     const filter = {};
 
-    if (categoria) filter.idCategoria = categoria;
+    if (categoria) filter.idCategoria = { $regex: new RegExp(`^${categoria}$`, "i") };
     if (estado) filter.estado = estado;
     if (search) filter.nombre = { $regex: search, $options: "i" };
 
