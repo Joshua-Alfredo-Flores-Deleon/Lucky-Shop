@@ -7,7 +7,7 @@ const POPULATE_CARRITO = {
   path: "IdCarrito",
   populate: [
     { path: "idCliente", select: "name lastName email" },
-    { path: "productos.idProducto", select: "nombre" },
+    { path: "productos.idProducto", select: "nombre precio imagenPresentacion descripcion" },
   ],
 };
 

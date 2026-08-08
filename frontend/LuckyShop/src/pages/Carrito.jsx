@@ -17,67 +17,7 @@ const Carrito = () => {
   const COSTO_ENVIO = items.length > 0 ? 4.00 : 0
   const totalFinal  = total + COSTO_ENVIO
 
-  const handleComprar = async () => {
-    // No debería ocurrir: esta página ya está protegida por PrivateRoute,
-    // pero validamos igual antes de golpear el backend.
-    const clienteId = cliente?._id
-    if (!clienteId) {
-      setError('Debes iniciar sesión para completar la compra')
-      return
-    }
-
-    setError('')
-    setLoading(true)
-
-    try {
-      // 1. Crear carrito en el backend
-      const carritoPayload = {
-        idCliente: clienteId,
-        productos: items.map((i) => ({
-          idProducto: i._id,
-          cantidad:   i.cantidad,
-          subtotal:   i.precio * i.cantidad,
-        })),
-        total: totalFinal,
-        estado: 'activo',
-      }
-
-      const resCarrito = await fetch(`${BASE_URL}/carrito`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ carrito: carritoPayload }),
-      })
-
-      if (!resCarrito.ok) throw new Error('Error al procesar el carrito')
-      const carritoData = await resCarrito.json()
-
-      // 2. Crear venta
-      const ventaPayload = {
-        IdCarrito:  carritoData._id || carritoData.id,
-        metodoPago: 'pendiente',
-        statusPago: false,
-        fecha:      new Date().toISOString(),
-        estado:     'pendiente',
-      }
-
-      const resVenta = await fetch(`${BASE_URL}/venta`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(ventaPayload),
-      })
-
-      if (!resVenta.ok) throw new Error('Error al crear la venta')
-
-      clearCart()
-      setSuccess(true)
-    } catch (err) {
-      setError(err.message || 'Error al procesar la compra')
-    } finally {
-      setLoading(false)
-    }
-  }
+  // El flujo de compra se ha trasladado a la página dedicada de Pago (/pago)
 
   if (success) return (
     <div className="min-h-screen bg-white">
@@ -203,13 +143,12 @@ const Carrito = () => {
 
                 {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
 
-                <button
-                  onClick={handleComprar}
-                  disabled={loading}
-                  className="w-full bg-gray-900 text-white py-3 rounded-2xl font-semibold text-sm hover:bg-gray-700 transition-colors disabled:opacity-60"
+                <Link
+                  to="/pago"
+                  className="block w-full text-center bg-[#1e293b] hover:bg-[#0f172a] text-white py-3 rounded-2xl font-semibold text-sm transition-all hover:shadow-lg active:scale-98"
                 >
-                  {loading ? 'Procesando...' : 'Comprar'}
-                </button>
+                  Proceder al pago
+                </Link>
               </div>
             </div>
           </div>
