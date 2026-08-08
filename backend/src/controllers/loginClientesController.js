@@ -64,7 +64,19 @@ loginClientesController.login = async (req, res) => {
 
     res.cookie("authCookie", token);
 
-    return res.status(200).json({ message: "Login exitoso" });
+    // La web usa la cookie de arriba. Para la app móvil devolvemos también el
+    // token y los datos del cliente en el cuerpo de la respuesta, de modo que
+    // el móvil pueda guardarlos y enviarlos como Authorization: Bearer.
+    return res.status(200).json({
+      message: "Login exitoso",
+      token,
+      cliente: {
+        _id: clienteFound._id,
+        email: clienteFound.email,
+        name: clienteFound.name,
+        lastName: clienteFound.lastName,
+      },
+    });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
@@ -74,7 +86,11 @@ loginClientesController.login = async (req, res) => {
 // Verifica si hay una sesión de cliente activa (usado por el frontend para proteger rutas)
 loginClientesController.checkSession = async (req, res) => {
   try {
-    const token = req.cookies.authCookie;
+    // Aceptamos el token desde la cookie (web) o desde el header Bearer (móvil).
+    const bearer = req.headers.authorization?.startsWith("Bearer ")
+      ? req.headers.authorization.slice(7)
+      : null;
+    const token = req.cookies.authCookie || bearer;
 
     if (!token) {
       return res.status(401).json({ message: "No autenticado" });
@@ -94,7 +110,12 @@ loginClientesController.checkSession = async (req, res) => {
 
     return res.status(200).json({
       message: "Sesión activa",
-      cliente: { _id: clienteFound._id, email: clienteFound.email, name: clienteFound.name },
+      cliente: {
+        _id: clienteFound._id,
+        email: clienteFound.email,
+        name: clienteFound.name,
+        lastName: clienteFound.lastName,
+      },
     });
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });

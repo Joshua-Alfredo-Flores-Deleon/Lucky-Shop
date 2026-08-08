@@ -6,7 +6,14 @@ import { config } from "../../config.js";
 export const validateAuthToken = (userType) => {
   return (req, res, next) => {
     try {
-      const token = req.cookies.authCookie;
+      // La app WEB envía el token en la cookie authCookie.
+      // La app MÓVIL (React Native) no maneja cookies de forma confiable, por
+      // eso también aceptamos el token en el header Authorization: Bearer <token>.
+      // Se prioriza la cookie para no cambiar el comportamiento de la web.
+      const bearer = req.headers.authorization?.startsWith("Bearer ")
+        ? req.headers.authorization.slice(7)
+        : null;
+      const token = req.cookies.authCookie || bearer;
 
       if (!token) {
         return res.status(401).json({ message: "No autenticado" });

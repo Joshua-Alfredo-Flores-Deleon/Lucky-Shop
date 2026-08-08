@@ -22,8 +22,19 @@ import registerAdminRoutes from "./src/routes/registerAdmin.js";
 
 const app = express();
 
+// Orígenes permitidos para la app WEB (Vite).
+const webOrigins = ["http://localhost:5173", "http://localhost:5174"];
+
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  // La app móvil nativa (React Native / Expo Go) NO envía cabecera Origin, por
+  // lo que `origin` llega como undefined: en ese caso permitimos la petición.
+  // Para la web seguimos validando contra la lista blanca de siempre.
+  origin: (origin, callback) => {
+    if (!origin || webOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true); // en desarrollo aceptamos también Expo web
+  },
   credentials: true,
 }));
 

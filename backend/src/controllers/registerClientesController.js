@@ -80,7 +80,8 @@ registerClientsController.register = async (req, res) => {
         console.log("error"+error)
         return res.status(500).json({message:"Error sending email"})
       }
-      return res.status(200).json({message:"Email sent"})
+      // Devolvemos el token también en el body para la app móvil (sin cookies).
+      return res.status(200).json({message:"Email sent", registrationToken: token})
     })
   } catch (error) {
     console.log("error"+error)
@@ -94,10 +95,10 @@ registerClientsController.register = async (req, res) => {
 registerClientsController.verifyCode = async (req, res) => {
   try {
     //Solicitamos el codigo que escribieron en el frontend
-    const {verificationCodeRequest} = req.body
+    const {verificationCodeRequest, registrationToken} = req.body
  
-    //Obtener el token de las cookies
-    const token = req.cookies.RegistrarionClientCookie
+    //Obtener el token de las cookies (web) o del body (móvil, sin cookies)
+    const token = req.cookies.RegistrarionClientCookie || registrationToken
    
     //Extrar toda la informacion del token
     const decoced = jsonwebtoken.verify(token, config.JWT.secret);

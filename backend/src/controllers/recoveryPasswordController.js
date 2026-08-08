@@ -53,7 +53,8 @@ recoveryPasswordController.requestCode = async (req, res) => {
       }
     });
 
-    return res.status(200).json({ message: "email sent" });
+    // Devolvemos el token también en el body para la app móvil (sin cookies).
+    return res.status(200).json({ message: "email sent", recoveryToken: token });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
@@ -62,9 +63,10 @@ recoveryPasswordController.requestCode = async (req, res) => {
 
 recoveryPasswordController.verifyCode = async (req, res) => {
   try {
-    const { code } = req.body;
+    // Aceptamos el código y, opcionalmente, el token del body (móvil sin cookies).
+    const { code, recoveryToken } = req.body;
 
-    const token = req.cookies.recoveryCookie;
+    const token = req.cookies.recoveryCookie || recoveryToken;
     const decoded = jsonwebtoken.verify(token, config.JWT.secret);
 
     if (code !== decoded.randomCode) {
@@ -79,7 +81,8 @@ recoveryPasswordController.verifyCode = async (req, res) => {
 
     res.cookie("recoveryCookie", newToken, { maxAge: 15 * 60 * 1000 });
 
-    return res.status(200).json({ message: "Code verified successfully" });
+    // Devolvemos el token renovado (verificado) también en el body para móvil.
+    return res.status(200).json({ message: "Code verified successfully", recoveryToken: newToken });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
@@ -88,13 +91,14 @@ recoveryPasswordController.verifyCode = async (req, res) => {
 
 recoveryPasswordController.newPassword = async (req, res) => {
   try {
-    const { newPassword, confirmNewPassword } = req.body;
+    const { newPassword, confirmNewPassword, recoveryToken } = req.body;
 
     if (newPassword !== confirmNewPassword) {
       return res.status(400).json({ message: "password doesnt match" });
     }
 
-    const token = req.cookies.recoveryCookie;
+    // Token desde la cookie (web) o desde el body (móvil, sin cookies).
+    const token = req.cookies.recoveryCookie || recoveryToken;
     const decoded = jsonwebtoken.verify(token, config.JWT.secret);
 
     if (!decoded.verified) {
