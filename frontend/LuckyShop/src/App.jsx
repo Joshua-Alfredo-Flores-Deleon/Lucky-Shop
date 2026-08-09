@@ -16,6 +16,8 @@ import LoginCliente from './pages/LoginCliente.jsx'
 import RecuperarPassword from './pages/RecuperarPassword.jsx'
 import AcercaDe from './pages/AcercaDe.jsx'
 import Perfil from './pages/Perfil.jsx'
+import Contactanos from './pages/contactanos.jsx'
+import Politicas from './pages/Politicas.jsx'
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
             <Route path="/anillos"         element={<Navigate to="/categoria/anillos" replace />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
             <Route path="/acercaDe"       element={<AcercaDe />} />
+            <Route path="/contactanos"       element={<Contactanos />} />
+            <Route path="/politicas"         element={<Politicas />} />
 
             {/* ── Requieren sesión: comprar / ver historial ── */}
             <Route element={<PrivateRoute />}>

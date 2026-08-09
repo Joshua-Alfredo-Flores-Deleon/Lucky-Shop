@@ -32,14 +32,14 @@ const Footer = () => (
         {/* Links */}
         <div className="flex gap-8 text-sm">
           <a
-            href="#"
+            href="/politicas"
             className="text-gray-600 hover:text-pink-500 font-medium transition-colors"
             id="footer-politicas"
           >
             Políticas
           </a>
           <a
-            href="#"
+            href="/contactanos"
             className="text-gray-600 hover:text-pink-500 font-medium underline underline-offset-4 decoration-pink-200 hover:decoration-pink-400 transition-all"
             id="footer-contactanos"
           >
