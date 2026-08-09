@@ -19,6 +19,7 @@ import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
+import wompiRoutes from "./src/routes/wimpi.js";
 
 const app = express();
 
@@ -59,5 +60,6 @@ app.use("/api/comboSuerte", comboSuerteRoutes);
 app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
+app.use("/api/wompi", wompiRoutes);
 
 export default app;
