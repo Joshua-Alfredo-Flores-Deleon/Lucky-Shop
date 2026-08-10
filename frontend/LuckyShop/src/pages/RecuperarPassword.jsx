@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import heroPng from '../assets/hero.png'
+import heroPng from '../assets/fondoderecoveryPassword.png'
 
 const BASE_URL = 'http://localhost:4000/api'
 
