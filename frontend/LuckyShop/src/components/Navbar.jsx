@@ -235,16 +235,7 @@ const Navbar = () => {
                       <span className="text-gray-400"><UserIcon /></span>
                       <span className="font-medium">Mi Información</span>
                     </button>
-                    <div className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600">
-                      <span className="text-gray-400"><MailIcon /></span>
-                      <span className="truncate">{cliente?.email || 'Sin correo'}</span>
-                    </div>
-                    <div className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600">
-                      <span className="text-gray-400"><PhoneIcon /></span>
-                      <span>{cliente?.phone || 'Sin teléfono'}</span>
-                    </div>
-
-                    <div className="border-t border-gray-100 my-1" />
+                   
 
                     {/* Accesos rápidos */}
                     <button

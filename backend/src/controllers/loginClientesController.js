@@ -40,6 +40,7 @@ loginClientesController.login = async (req, res) => {
       if (clienteFound.loginAttemps >= 5) {
         clienteFound.timeOut = Date.now() + 5 * 60 * 1000;
         clienteFound.loginAttemps = 0;
+        clienteFound.ultimoAcceso = new Date();   // registra la fecha de este login
 
         await clienteFound.save();
 

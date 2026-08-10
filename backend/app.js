@@ -66,11 +66,6 @@ app.use("/api/comboSuerte", comboSuerteRoutes);
 app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
-<<<<<<< HEAD
 app.use("/api/wompi", wompiRoutes);
 app.use("/api/promociones", promocionesRoutes);
-=======
-app.use("/api/wompi", wompiRoutes); // Rutas para la integración con pasarela Wompi
->>>>>>> 79a2ba34cf56a9d6d5bb9c0712390cd47382812e
-
 export default app;

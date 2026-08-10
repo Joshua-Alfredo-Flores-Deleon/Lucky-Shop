@@ -6,10 +6,25 @@ import { useClientes } from '../hooksP/useClientes'
 import '../sideBar.css'
 import '../clientes.css'
 
+const DIAS_ACTIVIDAD = 30 // dentro de cuántos días desde el último acceso se considera "Activo"
+
 const getInitials = (name, lastName) => {
   const n = name ? name[0].toUpperCase() : ''
   const l = lastName ? lastName[0].toUpperCase() : ''
   return (n + l) || '?'
+}
+
+// Un cliente está "activo" si inició sesión dentro de los últimos DIAS_ACTIVIDAD días
+const estaActivo = (ultimoAcceso) => {
+  if (!ultimoAcceso) return false
+  const dias = (Date.now() - new Date(ultimoAcceso)) / (1000 * 60 * 60 * 24)
+  return dias <= DIAS_ACTIVIDAD
+}
+
+// Fecha legible del último acceso (o "Nunca" si el cliente jamás ha iniciado sesión)
+const formatoUltimoAcceso = (fecha) => {
+  if (!fecha) return 'Nunca'
+  return new Date(fecha).toLocaleDateString('es-SV', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 const Clientes = () => {
@@ -18,18 +33,12 @@ const Clientes = () => {
     busqueda,
     setBusqueda,
     loading,
-    actualizarCliente,
     eliminarCliente,
   } = useClientes()
 
-  const [clienteEditar, setClienteEditar] = useState(null)
+  const [clienteVer, setClienteVer] = useState(null)
   const [clienteEliminar, setClienteEliminar] = useState(null)
   const [notifAbierta, setNotifAbierta] = useState(false)
-
-  const handleGuardarCliente = async (id, datos) => {
-    const ok = await actualizarCliente(id, datos)
-    if (ok) setClienteEditar(null)
-  }
 
   const handleEliminarCliente = async (id) => {
     const ok = await eliminarCliente(id)
@@ -71,6 +80,7 @@ const Clientes = () => {
               <tr>
                 <th>Nombre</th>
                 <th>Estado</th>
+                <th>Último acceso</th>
                 <th>Correo</th>
                 <th>Acciones</th>
               </tr>
@@ -78,11 +88,11 @@ const Clientes = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="loading-cell">Cargando clientes...</td>
+                  <td colSpan="5" className="loading-cell">Cargando clientes...</td>
                 </tr>
               ) : clientesFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="empty-cell">No se encontraron clientes</td>
+                  <td colSpan="5" className="empty-cell">No se encontraron clientes</td>
                 </tr>
               ) : (
                 clientesFiltrados.map(cliente => (
@@ -98,21 +108,22 @@ const Clientes = () => {
                       </div>
                     </td>
                     <td>
-                      <span className={`estado-badge ${cliente.isVerified ? 'activo' : 'inactivo'}`}>
-                        {cliente.isVerified ? 'Activo' : 'Inactivo'}
+                      <span className={`estado-badge ${estaActivo(cliente.ultimoAcceso) ? 'activo' : 'inactivo'}`}>
+                        {estaActivo(cliente.ultimoAcceso) ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
+                    <td className="cliente-email">{formatoUltimoAcceso(cliente.ultimoAcceso)}</td>
                     <td className="cliente-email">{cliente.email || '—'}</td>
                     <td>
                       <div className="acciones-cell">
                         <button
                           className="accion-btn editar-btn"
-                          onClick={() => setClienteEditar(cliente)}
-                          title="Editar cliente"
+                          onClick={() => setClienteVer(cliente)}
+                          title="Ver cliente"
                         >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                            <circle cx="12" cy="12" r="3" />
                           </svg>
                         </button>
                         <button
@@ -120,7 +131,7 @@ const Clientes = () => {
                           onClick={() => setClienteEliminar(cliente)}
                           title="Eliminar cliente"
                         >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="3 6 5 6 21 6" />
                             <path d="M19 6l-1 14H6L5 6" />
                             <path d="M10 11v6M14 11v6" />
@@ -137,11 +148,10 @@ const Clientes = () => {
         </div>
       </main>
 
-      {clienteEditar && (
-        <EditModal
-          cliente={clienteEditar}
-          onClose={() => setClienteEditar(null)}
-          onGuardar={handleGuardarCliente}
+      {clienteVer && (
+        <VerClienteModal
+          cliente={clienteVer}
+          onClose={() => setClienteVer(null)}
         />
       )}
 
@@ -158,90 +168,48 @@ const Clientes = () => {
   )
 }
 
-const EditModal = ({ cliente, onClose, onGuardar }) => {
-  const [form, setForm] = useState({
-    name: cliente.name || '',
-    lastName: cliente.lastName || '',
-    email: cliente.email || '',
-    isVerified: cliente.isVerified || false,
-    password: cliente.password || '',
-    birthdate: cliente.birthdate || new Date('1990-01-01').toISOString(),
-    loginAttemps: cliente.loginAttemps || 0,
-    timeOut: cliente.timeOut || null,
-  })
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    onGuardar(cliente._id, form)
-  }
-
+/* ── Modal de solo lectura: informacion que el cliente registro, no editable ── */
+const VerClienteModal = ({ cliente, onClose }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Editar Cliente</h2>
+          <h2>Información del Cliente</h2>
           <button className="modal-close-btn" onClick={onClose}>×</button>
         </div>
-        <form onSubmit={handleSubmit} className="modal-form">
+        <div className="modal-form">
           <div className="form-row">
             <div className="form-group">
               <label>Nombre</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Nombre"
-                required
-              />
+              <input value={cliente.name || ''} readOnly disabled />
             </div>
             <div className="form-group">
               <label>Apellido</label>
-              <input
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                placeholder="Apellido"
-              />
+              <input value={cliente.lastName || ''} readOnly disabled />
             </div>
           </div>
           <div className="form-group">
             <label>Correo electrónico</label>
-            <input
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="correo@ejemplo.com"
-              required
-            />
+            <input value={cliente.email || ''} readOnly disabled />
+          </div>
+          <div className="form-group">
+            <label>Último acceso</label>
+            <input value={formatoUltimoAcceso(cliente.ultimoAcceso)} readOnly disabled />
           </div>
           <div className="form-group-check">
             <input
               type="checkbox"
-              name="isVerified"
-              id="isVerified"
-              checked={form.isVerified}
-              onChange={handleChange}
+              checked={estaActivo(cliente.ultimoAcceso)}
+              disabled
             />
-            <label htmlFor="isVerified">Cliente activo / verificado</label>
+            <label>Cliente activo (inició sesión en los últimos {DIAS_ACTIVIDAD} días)</label>
           </div>
           <div className="modal-actions">
             <button type="button" className="btn-cancelar" onClick={onClose}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn-guardar">
-              Guardar cambios
+              Cerrar
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
