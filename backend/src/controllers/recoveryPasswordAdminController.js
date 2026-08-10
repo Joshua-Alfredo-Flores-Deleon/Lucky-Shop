@@ -7,10 +7,12 @@ import HTMLRecoveryEmail from "../utils/sendMailRecovery.js";
 
 import { config } from "../../config.js";
 
+// Controlador para manejar la recuperación de contraseña de administradores
 import adminModel from "../models/admin.js";
 
 const recoveryPasswordAdminController = {};
 
+//POST - Solicitar un código de recuperación y enviarlo al correo del admin
 recoveryPasswordAdminController.requestCode = async (req, res) => {
   try {
     const { email } = req.body;
@@ -60,6 +62,7 @@ recoveryPasswordAdminController.requestCode = async (req, res) => {
   }
 };
 
+//POST - Verificar que el código ingresado sea correcto
 recoveryPasswordAdminController.verifyCode = async (req, res) => {
   try {
     const { code } = req.body;
@@ -86,6 +89,7 @@ recoveryPasswordAdminController.verifyCode = async (req, res) => {
   }
 };
 
+//POST - Establecer una nueva contraseña después de verificar el código
 recoveryPasswordAdminController.newPassword = async (req, res) => {
   try {
     const { newPassword, confirmNewPassword } = req.body;
@@ -118,4 +122,5 @@ recoveryPasswordAdminController.newPassword = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default recoveryPasswordAdminController;

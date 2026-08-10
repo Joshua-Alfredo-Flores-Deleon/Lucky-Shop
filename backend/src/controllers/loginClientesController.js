@@ -1,3 +1,4 @@
+//Controlador para la autenticación de clientes
 import cleintesModel from "../models/Clientes.js";
 
 import bcrypt from "bcryptjs";
@@ -7,6 +8,7 @@ import { config } from "../../config.js";
 
 const loginClientesController = {};
 
+//POST - Iniciar sesión como cliente
 loginClientesController.login = async (req, res) => {
   const { password } = req.body;
   // Normalizamos el correo igual que en el registro (sin espacios, minusculas)
@@ -83,7 +85,7 @@ loginClientesController.login = async (req, res) => {
   }
 };
 
-// Verifica si hay una sesión de cliente activa (usado por el frontend para proteger rutas)
+//GET - Verificar si hay una sesión de cliente activa
 loginClientesController.checkSession = async (req, res) => {
   try {
     // Aceptamos el token desde la cookie (web) o desde el header Bearer (móvil).
@@ -122,4 +124,5 @@ loginClientesController.checkSession = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default loginClientesController;

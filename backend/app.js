@@ -1,7 +1,11 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
+// importamos el middleware para limitar las peticiones
 import limiter from "./src/middlewares/limiter.js"
+
+// importamos las rutas de la aplicación
 import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
 import clientesRoutes from "./src/routes/clientes.js"
@@ -21,28 +25,29 @@ import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
 import wompiRoutes from "./src/routes/wimpi.js";
 
+// Inicialización de la aplicación Express
 const app = express();
 
-// Orígenes permitidos para la app WEB (Vite).
+// Orígenes permitidos para la app web
 const webOrigins = ["http://localhost:5173", "http://localhost:5174"];
 
+// Configuración de CORS para permitir peticiones desde el frontend
 app.use(cors({
-  // La app móvil nativa (React Native / Expo Go) NO envía cabecera Origin, por
-  // lo que `origin` llega como undefined: en ese caso permitimos la petición.
-  // Para la web seguimos validando contra la lista blanca de siempre.
   origin: (origin, callback) => {
     if (!origin || webOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(null, true); // en desarrollo aceptamos también Expo web
+    return callback(null, true);
   },
-  credentials: true,
+  credentials: true, // Permitir envío de cookies en las peticiones
 }));
 
-app.use(limiter)
-app.use(cookieParser());
-app.use(express.json());
+// Middlewares globales
+app.use(limiter); // Aplica el límite de peticiones
+app.use(cookieParser()); // Parsea las cookies de las peticiones
+app.use(express.json()); // Permite recibir y enviar JSON en el cuerpo de las peticiones
 
+// Definición de las rutas
 app.use("/api/loginAdmin", loginAdminRoutes);
 app.use("/api/loginClientes", loginClientesRoutes);
 app.use("/api/clientes", clientesRoutes);
@@ -60,6 +65,6 @@ app.use("/api/comboSuerte", comboSuerteRoutes);
 app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
-app.use("/api/wompi", wompiRoutes);
+app.use("/api/wompi", wompiRoutes); // Rutas para la integración con pasarela Wompi
 
 export default app;

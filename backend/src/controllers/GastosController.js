@@ -1,10 +1,10 @@
+//Controlador para el registro y consulta de gastos
 const gastosController = {};
 
 //importar el schema de la coleccion que vamos a utilizar
 import gastosModel from "../models/Gastos.js"
 
-//GET
-//select
+//GET - Obtener todos los gastos ordenados del más reciente al más antiguo
 gastosController.getAllGastos = async (req, res) => {
   try {
     const gastos = await gastosModel.find().sort({ createdAt: -1 });
@@ -16,8 +16,7 @@ gastosController.getAllGastos = async (req, res) => {
 };
 
 
-//POST
-//insert
+//POST - Insertar un nuevo gasto en la base de datos
 gastosController.insertGastos = async (req, res) => {
   try {
     const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
@@ -41,8 +40,7 @@ gastosController.insertGastos = async (req, res) => {
   }
 };
 
-//DELETE
-//ELIMINAR
+//DELETE - Eliminar un gasto por su ID
 gastosController.deleteGastos = async (req, res) => {
   try {
     const gastoEliminado = await gastosModel.findByIdAndDelete(req.params.id);
@@ -56,8 +54,7 @@ gastosController.deleteGastos = async (req, res) => {
   }
 };
 
-//PUT
-//ACTUALIZAR
+//PUT - Actualizar un gasto por su ID
 gastosController.updateGastos = async (req, res) => {
   try {
     const { cantidadGasto, descripcionGasto, fechaGasto } = req.body;
@@ -83,7 +80,7 @@ gastosController.updateGastos = async (req, res) => {
   }
 };
 
-//SELECT POR ID
+//GET - Obtener un gasto por su ID
 gastosController.getGastoById = async (req, res) => {
   try {
     const gasto = await gastosModel.findById(req.params.id);
@@ -97,4 +94,5 @@ gastosController.getGastoById = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default gastosController;

@@ -1,3 +1,4 @@
+//Controlador para gestionar las ventas y pagos
 import ventaModel from "../models/venta.js";
 import gananciasModel from "../models/Ganancias.js";
 
@@ -60,6 +61,7 @@ const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
   }
 };
 
+//GET - Obtener todas las ventas con filtros opcionales por estado y nombre del cliente
 ventaController.getVenta = async (req, res) => {
   try {
     const { estado, search } = req.query;
@@ -93,6 +95,7 @@ ventaController.getVenta = async (req, res) => {
   }
 };
 
+//POST - Insertar una nueva venta y sincronizar la ganancia
 ventaController.insertVenta = async (req, res) => {
   try {
     const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
@@ -111,6 +114,7 @@ ventaController.insertVenta = async (req, res) => {
   }
 };
 
+//DELETE - Eliminar una venta por su ID
 ventaController.deleteVenta = async (req, res) => {
   try {
     const ventaEliminada = await ventaModel.findByIdAndDelete(req.params.id);
@@ -124,6 +128,7 @@ ventaController.deleteVenta = async (req, res) => {
   }
 };
 
+//PUT - Actualizar una venta por su ID y sincronizar la ganancia
 ventaController.updateVenta = async (req, res) => {
   try {
     const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
@@ -148,6 +153,7 @@ ventaController.updateVenta = async (req, res) => {
   }
 };
 
+//GET - Obtener una venta por su ID
 ventaController.getVentaById = async (req, res) => {
   try {
     const venta = await ventaModel.findById(req.params.id).populate(POPULATE_CARRITO);
@@ -161,6 +167,7 @@ ventaController.getVentaById = async (req, res) => {
   }
 };
 
+//POST - Buscar ventas por nombre de referencia
 ventaController.searchByName = async (req, res) => {
   try {
     const { referencia } = req.body;
@@ -180,4 +187,5 @@ ventaController.searchByName = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default ventaController;

@@ -4,7 +4,7 @@ const comboSuerteController = {};
 import comboSuerteModel from "../models/comboSuerte.js";
 
 
-//SELECT
+//GET - Obtener todos los combos de suerte con los datos de sus bolsas
 comboSuerteController.getComboSuerte = async (req, res) => {
     try {
         const ComboSuerte = await comboSuerteModel.find().populate("bolsas.idBolsa")
@@ -15,7 +15,7 @@ comboSuerteController.getComboSuerte = async (req, res) => {
     }
 }
 
-//SELECT POR ID
+//GET - Obtener un combo de suerte por su ID
 comboSuerteController.getComboSuerteById = async (req, res) => {
     try {
         const combo = await comboSuerteModel.findById(req.params.id).populate("bolsas.idBolsa")
@@ -31,7 +31,7 @@ comboSuerteController.getComboSuerteById = async (req, res) => {
     }
 }
 
-//INSERT
+//POST - Insertar un nuevo combo de suerte
 comboSuerteController.insertComboSuerte = async (req, res) => {
     try {
 
@@ -51,7 +51,7 @@ comboSuerteController.insertComboSuerte = async (req, res) => {
     }
 }
 
-//ACTUALIZAR
+//PUT - Actualizar un combo de suerte existente por su ID
 comboSuerteController.updateComboSuerte = async (req, res) => {
     try {
         const { bolsas } = req.body;
@@ -73,7 +73,7 @@ comboSuerteController.updateComboSuerte = async (req, res) => {
     }
 }
 
-//ELIMINAR
+//DELETE - Eliminar un combo de suerte por su ID
 comboSuerteController.deleteComboSuerte = async (req, res) => {
     try {
     const ComboSuerteDeleted = await comboSuerteModel.findByIdAndDelete(req.params.id)
@@ -90,4 +90,5 @@ comboSuerteController.deleteComboSuerte = async (req, res) => {
     }
 }
 
+//Exportamos el controlador para usarlo en las rutas
 export default comboSuerteController;

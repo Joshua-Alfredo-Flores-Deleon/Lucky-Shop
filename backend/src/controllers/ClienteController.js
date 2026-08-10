@@ -1,3 +1,4 @@
+//importamos el modelo de clientes y bcrypt para encriptar contraseñas
 import clientsModel from "../models/Clientes.js"
 import bcrypt from "bcryptjs"
 
@@ -5,6 +6,7 @@ import bcrypt from "bcryptjs"
 //array de funciones
 const clientesController = {};
 
+//GET - Obtener todos los clientes de la base de datos
 clientesController.getAllClients = async (req, res) =>{
     try{
         const clients = await clientsModel.find();
@@ -16,7 +18,7 @@ clientesController.getAllClients = async (req, res) =>{
 };
 
 
-//UPDATE
+//PUT - Actualizar un cliente por su ID
 clientesController.updateClients = async (req, res)=>{
     try{
         let{
@@ -79,7 +81,7 @@ clientesController.updateClients = async (req, res)=>{
     }
 };
 
-//ELIMINAR
+//DELETE - Eliminar un cliente por su ID
 clientesController.deleteClient = async (req, res) => {
   try{
    const deleteClient = await clientsModel.findByIdAndDelete(req.params.id);
@@ -95,4 +97,5 @@ clientesController.deleteClient = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default clientesController;
