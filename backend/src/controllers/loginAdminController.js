@@ -1,3 +1,4 @@
+//Controlador para la autenticación de administradores
 import adminModel from "../models/admin.js";
 
 import bcrypt from "bcryptjs";
@@ -7,6 +8,7 @@ import { config } from "../../config.js";
 
 const loginAdminController = {};
 
+//POST - Iniciar sesión como administrador
 loginAdminController.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -68,7 +70,7 @@ loginAdminController.login = async (req, res) => {
   }
 };
 
-// Verifica si hay una sesión de admin activa (usado por el frontend para proteger rutas)
+//GET - Verificar si hay una sesión de admin activa
 loginAdminController.checkSession = async (req, res) => {
   try {
     const token = req.cookies.authCookie;
@@ -104,4 +106,5 @@ loginAdminController.checkSession = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default loginAdminController; 

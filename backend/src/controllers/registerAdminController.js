@@ -2,6 +2,7 @@ import nodemailer from "nodemailer"; //Enviar correo
 import crypto from "crypto"; //Generar codigo aleatorio
 import jsonwebtoken from "jsonwebtoken"; // Token
 import bcryptjs from "bcryptjs"; //Encriptar
+// Controlador para registrar nuevos administradores
 import adminModel from "../models/admin.js";
 import {config} from "../../config.js";
 

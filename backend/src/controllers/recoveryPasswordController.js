@@ -7,10 +7,12 @@ import HTMLRecoveryEmail from "../utils/sendMailRecovery.js";
 
 import { config } from "../../config.js";
 
+// Controlador para manejar la recuperación de contraseña de clientes
 import clientesModel from "../models/Clientes.js";
 
 const recoveryPasswordController = {};
 
+//POST - Solicitar un código de recuperación y enviarlo al correo del cliente
 recoveryPasswordController.requestCode = async (req, res) => {
   try {
     const email = req.body.email?.trim().toLowerCase();
@@ -61,6 +63,7 @@ recoveryPasswordController.requestCode = async (req, res) => {
   }
 };
 
+//POST - Verificar que el código ingresado sea correcto
 recoveryPasswordController.verifyCode = async (req, res) => {
   try {
     // Aceptamos el código y, opcionalmente, el token del body (móvil sin cookies).
@@ -89,6 +92,7 @@ recoveryPasswordController.verifyCode = async (req, res) => {
   }
 };
 
+//POST - Establecer una nueva contraseña después de verificar el código
 recoveryPasswordController.newPassword = async (req, res) => {
   try {
     const { newPassword, confirmNewPassword, recoveryToken } = req.body;
@@ -122,4 +126,5 @@ recoveryPasswordController.newPassword = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default recoveryPasswordController;

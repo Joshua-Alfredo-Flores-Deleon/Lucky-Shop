@@ -1,9 +1,11 @@
+//importamos el modelo de bolsas y cloudinary para manejar imágenes en la nube
 import bolsasModel from "../models/bolsas.js";
 import { v2 as cloudinary } from "cloudinary";
 
+//array de funciones
 const bolsasController = {};
 
-// GET ALL
+//GET - Obtener todas las bolsas con filtros opcionales por estado y nombre
 bolsasController.getBolsas = async (req, res) => {
   try {
     const { estado, search } = req.query;
@@ -20,7 +22,7 @@ bolsasController.getBolsas = async (req, res) => {
   }
 };
 
-// GET BY ID
+//GET - Obtener una bolsa por su ID
 bolsasController.getBolsaById = async (req, res) => {
   try {
     const bolsa = await bolsasModel.findById(req.params.id);
@@ -34,7 +36,7 @@ bolsasController.getBolsaById = async (req, res) => {
   }
 };
 
-// INSERT
+//POST - Insertar una nueva bolsa con sus imágenes
 bolsasController.insertBolsas = async (req, res) => {
   try {
     let { nombre, precio, stock, descripcion, categoria, cantidadUnidades, estado } = req.body;
@@ -90,7 +92,7 @@ bolsasController.insertBolsas = async (req, res) => {
   }
 };
 
-// UPDATE
+//PUT - Actualizar una bolsa por su ID, manteniendo imágenes existentes y agregando nuevas
 bolsasController.updateBolsas = async (req, res) => {
   try {
     let {
@@ -172,7 +174,7 @@ bolsasController.updateBolsas = async (req, res) => {
   }
 };
 
-// DELETE
+//DELETE - Eliminar una bolsa y sus imágenes de Cloudinary
 bolsasController.deleteBolsas = async (req, res) => {
   try {
     const bolsa = await bolsasModel.findById(req.params.id);
@@ -200,4 +202,5 @@ bolsasController.deleteBolsas = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default bolsasController;

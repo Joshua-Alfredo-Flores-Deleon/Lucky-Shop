@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import Eliminar from '../assets/icons8-basura-50.png'
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -96,7 +97,13 @@ const Carrito = () => {
                       <span className="w-8 text-center text-sm font-semibold">{item.cantidad}</span>
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad + 1)}
-                        className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
+                        disabled={item.cantidad >= item.stock}
+                        className={`w-7 h-7 rounded-full border flex items-center justify-center font-bold transition-colors ${
+                          item.cantidad >= item.stock 
+                          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50' 
+                          : 'border-gray-300 text-gray-600 hover:border-pink-400 hover:text-pink-500'
+                        }`}
+                        title={item.cantidad >= item.stock ? "Stock máximo alcanzado" : "Aumentar cantidad"}
                       >
                         +
                       </button>
@@ -109,7 +116,7 @@ const Carrito = () => {
                         className="text-gray-400 hover:text-red-500 transition-colors text-xl"
                         title="Eliminar"
                       >
-                        
+                        <img src={Eliminar} alt="" className='w-7'/>
                       </button>
                     </div>
                   </div>
