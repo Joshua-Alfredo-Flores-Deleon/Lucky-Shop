@@ -78,7 +78,7 @@ const Categoria = () => {
           </div>
         ) : productosFiltrados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <span className="text-5xl mb-4 opacity-40">✨</span>
+          
             <p className="text-sm font-medium">No hay productos en esta categoría</p>
           </div>
         ) : (

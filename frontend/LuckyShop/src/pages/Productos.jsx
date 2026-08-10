@@ -294,7 +294,7 @@ const Productos = () => {
               <div className="rounded-2xl bg-red-50 px-4 py-6 text-red-700 text-sm text-center">{error}</div>
             ) : productos.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 gap-3 text-gray-400">
-                <span className="text-4xl">💍</span>
+             
                 <p className="text-sm">No se encontraron productos</p>
                 <button
                   onClick={() => { setEditingItem(null); setShowForm(true) }}
