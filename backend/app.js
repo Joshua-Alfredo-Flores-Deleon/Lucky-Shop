@@ -23,7 +23,7 @@ import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
-import wompiRoutes from "./src/routes/wimpi.js";
+import wompiRoutes from "./src/routes/wompi.js"
 import promocionesRoutes from "./src/routes/promociones.js"
 
 // Inicialización de la aplicación Express
