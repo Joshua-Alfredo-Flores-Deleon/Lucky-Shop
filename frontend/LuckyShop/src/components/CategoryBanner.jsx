@@ -47,7 +47,7 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
                   <img src={s.img} alt={s.label} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-2xl">
-                    {s.icon || '💍'}
+                    {s.icon || ''}
                   </div>
                 )}
               </div>

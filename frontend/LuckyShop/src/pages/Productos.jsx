@@ -331,7 +331,7 @@ const Productos = () => {
                               />
                             ) : (
                               <div className="w-11 h-11 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-xl flex-shrink-0">
-                                💍
+              
                               </div>
                             )}
                             <div>

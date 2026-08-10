@@ -9,9 +9,9 @@ const CATEGORIAS = [
   { label: 'Inicio',              path: '/home' },
   { label: 'Anillos',             path: '/categoria/anillos' },
   { label: 'Pulseras',            path: '/categoria/pulseras' },
-  { label: 'Pendientes',          path: '/categoria/pendientes' },
+  { label: 'Aritos',          path: '/categoria/aritos' },
   { label: 'Collares',            path: '/categoria/collares' },
-  { label: 'Boletos de la suerte', path: '/bolsas-suerte' },
+  { label: 'Bolsas de la suerte', path: '/bolsas-suerte' },
   { label: 'Acerca de',           path: '/acercaDe' },
   { label: 'Otros',               path: '/categoria/otros' },
 ]
@@ -108,7 +108,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Favoritos (siempre visible) */}
             <Link
-              to="/favoritos"
+              to="/Favoritos"
               className="p-2 rounded-full text-gray-600 hover:text-pink-500 hover:bg-white/50 transition-all duration-200"
               id="nav-favorites"
               title="Favoritos"

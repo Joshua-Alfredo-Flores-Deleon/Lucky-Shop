@@ -174,7 +174,7 @@ const Perfil = () => {
           {/* Formulario */}
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="pt-6">
             <div className="flex items-center gap-2 text-gray-700 font-medium mb-4">
-              <span>👤</span> Información personal
+              <span></span> Información personal
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

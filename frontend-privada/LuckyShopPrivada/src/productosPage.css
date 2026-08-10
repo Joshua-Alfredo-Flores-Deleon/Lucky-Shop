@@ -29,7 +29,7 @@
   /* 270px sidebar + 10px margin-left + 10px margin-right = 290px desde el borde */
   margin-left: 300px;
   /* padding-top alto para que el contenido no quede detrás de los iconos de notificación/perfil */
-  padding: 90px 40px 60px 40px;
+  padding: 24px 40px 60px 40px;
   min-height: 100vh;
   overflow-y: auto;
 }

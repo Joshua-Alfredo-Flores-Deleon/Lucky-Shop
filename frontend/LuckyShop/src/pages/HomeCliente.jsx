@@ -90,7 +90,6 @@ const HomeCliente = () => {
           </div>
         ) : destacados.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-gray-400">
-            <span className="text-4xl mb-3 opacity-40">✨</span>
             <p className="text-sm font-medium">No hay productos disponibles</p>
           </div>
         ) : (

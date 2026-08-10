@@ -20,6 +20,7 @@ import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
 import wompiRoutes from "./src/routes/wimpi.js";
+import promocionesRoutes from "./src/routes/promociones.js"
 
 const app = express();
 
@@ -61,5 +62,6 @@ app.use("/api/combosComprados", combosCompradosRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
 app.use("/api/wompi", wompiRoutes);
+app.use("/api/promociones", promocionesRoutes);
 
 export default app;

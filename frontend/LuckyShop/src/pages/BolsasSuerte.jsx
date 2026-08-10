@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
+import CategoryBanner from '../components/CategoryBanner.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
@@ -43,7 +44,7 @@ const BolsasSuerte = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
       {/* Toast */}
@@ -52,23 +53,16 @@ const BolsasSuerte = () => {
           ✓ Agregado al carrito
         </div>
       )}
+{/* Banner */}
 
-      {/* Banner */}
-      <div
-        className="relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #ffd6e8 0%, #ffe0ef 40%, #fff0f6 100%)', minHeight: '180px' }}
-      >
-        <div className="absolute right-8 top-4 w-48 h-48 rounded-full bg-white/20 blur-2xl" />
-        <div className="container mx-auto px-6 py-8 relative z-10">
-          <h1 className="text-2xl font-black text-gray-900 uppercase tracking-wide mb-2">Bolsa de Suerte</h1>
-          <p className="text-xs text-gray-600 leading-relaxed max-w-sm">
-            Descubre el encanto de lo inesperado en cada bolsita de suerte... una selección exclusiva diseñada para sorprender y cautivar.
-          </p>
-        </div>
-      </div>
+ <CategoryBanner
+        titulo="Bolsas de la suerte"
+        descripcion='Descubre el encanto de lo inesperado en cada bolsita de suerte...una selección exclusiva diseñada para sorprender y cautivar.'
+      />
+     
 
       {/* Productos */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 flex-1">
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-3 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
