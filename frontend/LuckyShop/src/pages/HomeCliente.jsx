@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
+import portadaJoyas from '../assets/portadaJoyas.jpg'
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -32,13 +33,13 @@ const HomeCliente = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* ── Hero con imagen de fondo ── */}
+      {/* Hero con imagen de fondo */}
       <section className="relative overflow-hidden">
         <div
           className="relative flex items-center min-h-[280px] sm:min-h-[340px]"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, rgba(251,194,212,0.35) 0%, rgba(251,194,212,0.05) 45%, rgba(255,255,255,0) 70%), url('/portadaJoyas.jpg')",
+              `linear-gradient(90deg, rgba(251,194,212,0.35) 0%, rgba(251,194,212,0.05) 45%, rgba(255,255,255,0) 70%), url(${portadaJoyas})`,
             backgroundColor: '#fbc2d4',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -50,13 +51,13 @@ const HomeCliente = () => {
               style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', fontWeight: 700, color: '#4B1010' }}
             >
               <span className="block">Joyas que hablan de ti</span>
-              <span className="block ml-16 sm:ml-32">sin decir una palabra!</span>
+              <span className="block ml-16 sm:ml-32">sin decir una palabra</span>
             </h1>
           </div>
         </div>
       </section>
 
-      {/* ── Bienvenida ── */}
+      {/* Bienvenida */}
       <section className="max-w-7xl mx-auto px-8 py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Bienvenido a tu lugar de confianza
@@ -78,7 +79,7 @@ const HomeCliente = () => {
         </div>
       </section>
 
-      {/* ── Lo más destacado ── */}
+      {/* Lo más destacado */}
       <section className="max-w-7xl mx-auto px-8 pb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">
           Lo más destacado
@@ -101,7 +102,7 @@ const HomeCliente = () => {
         )}
       </section>
 
-      {/* ── Guía de regalo + Promociones ── */}
+      {/* Guía de regalo + Promociones */}
       <section className="max-w-7xl mx-auto px-8 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
