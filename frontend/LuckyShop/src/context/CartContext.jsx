@@ -9,11 +9,18 @@ export const CartProvider = ({ children }) => {
     setItems((prev) => {
       const exists = prev.find((i) => i._id === producto._id)
       if (exists) {
-        return prev.map((i) =>
-          i._id === producto._id ? { ...i, cantidad: i.cantidad + cantidad } : i
-        )
+        return prev.map((i) => {
+          if (i._id === producto._id) {
+            const nuevaCantidad = i.cantidad + cantidad;
+            // Validar que no exceda el stock
+            return { ...i, cantidad: nuevaCantidad > i.stock ? i.stock : nuevaCantidad };
+          }
+          return i;
+        })
       }
-      return [...prev, { ...producto, cantidad }]
+      // Validar si la cantidad inicial no excede el stock
+      const cantidadInicial = cantidad > producto.stock ? producto.stock : cantidad;
+      return [...prev, { ...producto, cantidad: cantidadInicial }]
     })
   }
 
@@ -21,7 +28,14 @@ export const CartProvider = ({ children }) => {
 
   const updateCantidad = (id, cantidad) => {
     if (cantidad < 1) return removeItem(id)
-    setItems((prev) => prev.map((i) => (i._id === id ? { ...i, cantidad } : i)))
+    setItems((prev) => prev.map((i) => {
+      if (i._id === id) {
+        // Validar que no exceda el stock
+        const validCantidad = cantidad > i.stock ? i.stock : cantidad;
+        return { ...i, cantidad: validCantidad };
+      }
+      return i;
+    }))
   }
 
   const clearCart = () => setItems([])
