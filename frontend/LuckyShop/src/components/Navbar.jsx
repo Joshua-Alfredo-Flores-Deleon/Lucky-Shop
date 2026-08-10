@@ -1,5 +1,5 @@
 // Navbar.jsx — barra de navegación pública de Lucky Shop
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
@@ -53,6 +53,43 @@ const CloseIcon = () => (
   </svg>
 )
 
+/* Iconos adicionales para el menú de perfil (mismo estilo heroicons) */
+const MailIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+  </svg>
+)
+
+const PhoneIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+  </svg>
+)
+
+const HistoryIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+  </svg>
+)
+
+const VideoIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>
+  </svg>
+)
+
+const LogoutIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
+  </svg>
+)
+
+const ChevronRightIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+  </svg>
+)
+
 const Navbar = () => {
   const { totalItems } = useCart()
   const { cliente, logout } = useAuth()
@@ -61,7 +98,24 @@ const Navbar = () => {
   const [busqueda, setBusqueda] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  // Controla si el menú emergente del perfil está abierto.
+  const [menuPerfilAbierto, setMenuPerfilAbierto] = useState(false)
+  // Referencia al contenedor del menú para detectar clics fuera de él.
+  const menuPerfilRef = useRef(null)
+
+  // Cierra el menú emergente cuando se hace clic fuera de él.
+  useEffect(() => {
+    const manejarClicFuera = (e) => {
+      if (menuPerfilRef.current && !menuPerfilRef.current.contains(e.target)) {
+        setMenuPerfilAbierto(false)
+      }
+    }
+    document.addEventListener('mousedown', manejarClicFuera)
+    return () => document.removeEventListener('mousedown', manejarClicFuera)
+  }, [])
+
   const handleLogout = async () => {
+    setMenuPerfilAbierto(false)
     await logout()
     navigate('/login')
   }
@@ -72,7 +126,17 @@ const Navbar = () => {
     navigate(`/buscar?q=${encodeURIComponent(busqueda.trim())}`)
   }
 
+  // Navega a una ruta y cierra el menú emergente del perfil.
+  const irA = (ruta) => {
+    setMenuPerfilAbierto(false)
+    navigate(ruta)
+  }
+
   const isActive = (path) => location.pathname === path
+
+  // Datos derivados del usuario para mostrar en el menú de perfil.
+  const nombreCompleto = [cliente?.name, cliente?.lastName].filter(Boolean).join(' ') || 'Cliente'
+  const inicial = (cliente?.name || cliente?.email || 'C').charAt(0).toUpperCase()
 
   return (
     <header className="bg-[#fbdce6] shadow-[0_1px_3px_rgba(0,0,0,0.05)] sticky top-0 z-50">
@@ -133,22 +197,90 @@ const Navbar = () => {
 
             {/* Usuario */}
             {cliente ? (
-              <div className="flex items-center gap-2 ml-1">
-                <Link
-                  to="/perfil"
-                  className="flex items-center gap-1.5 text-sm text-gray-700 hover:text-pink-500 font-medium transition-colors"
+              <div className="relative ml-1" ref={menuPerfilRef}>
+                {/* Botón de perfil: ahora abre el menú emergente en lugar de ir a /perfil */}
+                <button
+                  onClick={() => setMenuPerfilAbierto((v) => !v)}
+                  className="flex items-center gap-1.5 p-2 rounded-full text-gray-700 hover:text-pink-500 hover:bg-white/50 font-medium transition-all duration-200"
                   id="nav-profile"
+                  title="Mi perfil"
+                  aria-expanded={menuPerfilAbierto}
+                  aria-haspopup="true"
                 >
                   <UserIcon />
-                  <span className="hidden md:inline">{cliente.name || cliente.email}</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-xs text-gray-500 hover:text-red-500 transition-colors font-medium"
-                  id="nav-logout"
-                >
-                  Salir
+                  <span className="hidden md:inline text-sm">{cliente.name || cliente.email}</span>
                 </button>
+
+                {/* Menú emergente (dropdown) */}
+                {menuPerfilAbierto && (
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-pink-100 py-3 z-50 animate-[slideDown_0.15s_ease]">
+                    {/* Encabezado con avatar + datos del usuario */}
+                    <div className="flex items-center gap-3 px-4 pb-3">
+                      <div className="w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex items-center justify-center text-pink-600 font-bold text-lg flex-shrink-0">
+                        {inicial}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-gray-800 truncate">{nombreCompleto}</p>
+                        <p className="text-xs text-gray-400 truncate">{cliente?.email}</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-100 my-1" />
+
+                    {/* Información del usuario */}
+                    <button
+                      onClick={() => irA('/perfil')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 transition-colors"
+                    >
+                      <span className="text-gray-400"><UserIcon /></span>
+                      <span className="font-medium">Mi Información</span>
+                    </button>
+                    <div className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600">
+                      <span className="text-gray-400"><MailIcon /></span>
+                      <span className="truncate">{cliente?.email || 'Sin correo'}</span>
+                    </div>
+                    <div className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600">
+                      <span className="text-gray-400"><PhoneIcon /></span>
+                      <span>{cliente?.phone || 'Sin teléfono'}</span>
+                    </div>
+
+                    <div className="border-t border-gray-100 my-1" />
+
+                    {/* Accesos rápidos */}
+                    <button
+                      onClick={() => irA('/historial')}
+                      className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 transition-colors"
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className="text-gray-400"><HistoryIcon /></span>
+                        <span className="font-medium">Historial</span>
+                      </span>
+                      <span className="text-gray-300"><ChevronRightIcon /></span>
+                    </button>
+                    <button
+                      onClick={() => irA('/videos')}
+                      className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 transition-colors"
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className="text-gray-400"><VideoIcon /></span>
+                        <span className="font-medium">Videos</span>
+                      </span>
+                      <span className="text-gray-300"><ChevronRightIcon /></span>
+                    </button>
+
+                    <div className="border-t border-gray-100 my-1" />
+
+                    {/* Cerrar sesión */}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors font-medium"
+                      id="nav-logout"
+                    >
+                      <LogoutIcon />
+                      <span>Cerrar Sesión</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <Link
