@@ -80,7 +80,7 @@ const ProductoDetalle = () => {
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-6xl">💍</span>
+                <span className="text-6xl"></span>
               )}
             </div>
             {/* Miniaturas */}

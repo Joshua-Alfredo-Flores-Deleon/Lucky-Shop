@@ -18,6 +18,7 @@ import AcercaDe from './pages/AcercaDe.jsx'
 import Perfil from './pages/Perfil.jsx'
 import Contactanos from './pages/contactanos.jsx'
 import Politicas from './pages/Politicas.jsx'
+import Pago from './pages/Pago.jsx'
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             {/* ── Requieren sesión: comprar / ver historial ── */}
             <Route element={<PrivateRoute />}>
               <Route path="/carrito"         element={<Carrito />} />
+              <Route path="/pago"            element={<Pago />} />
               <Route path="/historial"       element={<Historial />} />
               <Route path="/perfil"          element={<Perfil />} />
             </Route>
