@@ -53,7 +53,7 @@ const Buscar = () => {
           </div>
         ) : productos.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <p className="text-4xl mb-3">🔍</p>
+           
             <p>{termino ? 'No se encontraron productos con ese nombre' : 'Escribe algo en el buscador para empezar'}</p>
           </div>
         ) : (

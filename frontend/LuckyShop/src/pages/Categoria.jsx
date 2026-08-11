@@ -20,7 +20,7 @@ const CONFIG_CATEGORIAS = {
     ],
   },
   aritos: {
-    titulo: 'Aritos',
+    titulo: 'Aretes',
     descripcion: 'La distinción no es una coincidencia, es una elección. Estos pendientes han sido grabados con la firme convicción de que la elegancia es el imán definitivo de la fortuna.',
     apiCategoria: 'Aretes', // En la BD se guardan como "Aretes"
   },
@@ -34,7 +34,9 @@ const CONFIG_CATEGORIAS = {
   otros: {
     titulo: 'Otros',
     descripcion: 'Accesorios únicos y especiales para completar tu look.',
-    subcategorias: [],
+    subcategorias: [
+      { value: 'Bolsas', label: 'Bolsas' },
+    ],
   },
 }
 
