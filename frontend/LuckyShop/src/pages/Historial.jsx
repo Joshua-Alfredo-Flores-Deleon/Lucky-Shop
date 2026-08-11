@@ -99,7 +99,7 @@ const Historial = () => {
           </div>
         ) : ventas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
-            <span className="text-5xl mb-4 opacity-40">🛍️</span>
+        
             <p className="text-base font-semibold text-gray-700">
               No tienes compras registradas
             </p>

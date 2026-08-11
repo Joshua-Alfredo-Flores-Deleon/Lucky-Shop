@@ -1,3 +1,4 @@
+//importamos el modelo y cloudinary para manejar videos en la nube
 import combosCompradosModel from "../models/combosComprados.js";
 
 import {v2 as cloudinary} from "cloudinary"
@@ -5,7 +6,7 @@ import {v2 as cloudinary} from "cloudinary"
 //Array de funciones
 const combosCompradosController = {}
 
-//SELECT 
+//GET - Obtener todos los combos comprados
 combosCompradosController.getAllcombosComprados = async (req, res) => {
     try {
         const combosComprados = await combosCompradosModel.find()
@@ -16,7 +17,7 @@ combosCompradosController.getAllcombosComprados = async (req, res) => {
     }
 }
 
-//SELECT POR ID
+//GET - Obtener un combo comprado por su ID
 combosCompradosController.getcombosCompradosById = async (req, res) => {
     try {
         const combo = await combosCompradosModel.findById(req.params.id)
@@ -32,7 +33,7 @@ combosCompradosController.getcombosCompradosById = async (req, res) => {
     }
 }
 
-//INSERT
+//POST - Insertar un nuevo combo comprado con su video
 combosCompradosController.insertcombosComprados = async (req, res) => {
     try {
         
@@ -63,7 +64,7 @@ combosCompradosController.insertcombosComprados = async (req, res) => {
     }
 }
 
-//ELIMINAR
+//DELETE - Eliminar un combo comprado y su video de Cloudinary
 combosCompradosController.deletecombosComprados = async (req, res) => {
     try {
         const ComboCompradosFound = await combosCompradosModel.findById(req.params.id)
@@ -84,7 +85,7 @@ combosCompradosController.deletecombosComprados = async (req, res) => {
     }
 }
 
-//UPDATE
+//PUT - Actualizar un combo comprado, reemplazando el video si se sube uno nuevo
 combosCompradosController.updatecombosComprados = async (req, res) => {
     try {
         
@@ -121,4 +122,5 @@ combosCompradosController.updatecombosComprados = async (req, res) => {
     }
 }
 
+//Exportamos el controlador para usarlo en las rutas
 export default combosCompradosController;

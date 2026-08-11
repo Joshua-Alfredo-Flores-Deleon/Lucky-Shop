@@ -53,7 +53,7 @@ const Perfil = () => {
     cargarPerfil()
   }, [reset])
 
-  // ── Cargar favoritos ──
+  // Cargar favoritos 
   useEffect(() => {
     const cargarFavoritos = async () => {
       try {
@@ -61,7 +61,7 @@ const Perfil = () => {
         const data = await res.json()
         if (res.ok) setFavoritos(data)
       } catch {
-        // silencioso: si falla, simplemente no mostramos favoritos
+        // si falla, simplemente no mostramos favoritos
       }
     }
     cargarFavoritos()
@@ -174,17 +174,22 @@ const Perfil = () => {
           {/* Formulario */}
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="pt-6">
             <div className="flex items-center gap-2 text-gray-700 font-medium mb-4">
-              <span>👤</span> Información personal
+              <span></span> Información personal
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                 <input
                   {...register('name', { required: 'El nombre es obligatorio.' })}
                   className={inputClass(errors.name)}
                 />
                 {errors.name && <p className="text-xs text-red-500 mt-1 ml-1">{errors.name.message}</p>}
+              </div>
+
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                <input {...register('lastName')} className={inputClass(errors.lastName)} />
               </div>
 
               <div>
@@ -234,10 +239,6 @@ const Perfil = () => {
                 {errors.phone && <p className="text-xs text-red-500 mt-1 ml-1">{errors.phone.message}</p>}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
-                <input {...register('lastName')} className={inputClass(errors.lastName)} />
-              </div>
             </div>
 
             {error && <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}

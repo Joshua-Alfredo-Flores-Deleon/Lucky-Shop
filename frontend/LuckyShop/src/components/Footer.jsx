@@ -1,9 +1,17 @@
 // Footer.jsx — pie de página de Lucky Shop
 
-/* ── Iconos SVG de redes sociales ── */
-const InstagramIcon = () => (
+/* Iconos SVG de redes sociales */
+const TikTokIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+  </svg>
+)
+
+const InstagramIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
   </svg>
 )
 
@@ -13,34 +21,40 @@ const FacebookIcon = () => (
   </svg>
 )
 
-const TikTokIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+const ShareIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
   </svg>
 )
 
 const Footer = () => (
-  <footer className="bg-gradient-to-b from-pink-50 to-pink-100/80 mt-16 border-t border-pink-100" id="footer">
+  <footer className="bg-[#fbdce6] mt-16" id="footer">
     <div className="max-w-7xl mx-auto px-6 py-8">
-      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* Brand */}
         <div className="text-center sm:text-left">
-          <p className="font-bold text-pink-600 text-base mb-1">Lucky Shop</p>
-          <p className="text-xs text-gray-500">© 2026 Lucky Shop. La suerte en un adorno</p>
+          <p className="text-gray-800 text-lg mb-1" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
+            Lucky Shop
+          </p>
+          <p className="text-xs text-gray-600">©2026 Lucky Shop. La suerte en un adorno</p>
         </div>
 
         {/* Links */}
-        <div className="flex gap-8 text-sm">
+        <div className="flex gap-12 text-sm">
           <a
             href="/politicas"
-            className="text-gray-600 hover:text-pink-500 font-medium transition-colors"
+            className="text-gray-700 hover:text-pink-500 font-medium transition-colors"
             id="footer-politicas"
           >
             Políticas
           </a>
           <a
             href="/contactanos"
-            className="text-gray-600 hover:text-pink-500 font-medium underline underline-offset-4 decoration-pink-200 hover:decoration-pink-400 transition-all"
+            className="text-gray-700 hover:text-pink-500 font-medium transition-colors"
             id="footer-contactanos"
           >
             Contáctanos
@@ -48,32 +62,52 @@ const Footer = () => (
         </div>
 
         {/* Social Icons */}
-        <div className="flex gap-3" id="footer-social">
+        <div className="flex gap-5 text-gray-800" id="footer-social">
           <a
-            href="#"
-            className="w-9 h-9 rounded-full bg-white/80 border border-pink-100 flex items-center justify-center text-gray-500 hover:text-pink-500 hover:bg-pink-50 hover:border-pink-300 hover:shadow-md transition-all duration-300"
+            href="https://www.tiktok.com/@lucky_shopsv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition-colors"
+            title="TikTok"
+          >
+            <TikTokIcon />
+          </a>
+          <a
+            href="https://www.instagram.com/lucky_shopsv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition-colors"
             title="Instagram"
           >
             <InstagramIcon />
           </a>
           <a
-            href="#"
-            className="w-9 h-9 rounded-full bg-white/80 border border-pink-100 flex items-center justify-center text-gray-500 hover:text-pink-500 hover:bg-pink-50 hover:border-pink-300 hover:shadow-md transition-all duration-300"
+            href="https://www.facebook.com/share/1997RWBRXo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition-colors"
             title="Facebook"
           >
             <FacebookIcon />
           </a>
-          <a
-            href="#"
-            className="w-9 h-9 rounded-full bg-white/80 border border-pink-100 flex items-center justify-center text-gray-500 hover:text-pink-500 hover:bg-pink-50 hover:border-pink-300 hover:shadow-md transition-all duration-300"
-            title="TikTok"
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: 'Lucky Shop', url: window.location.origin })
+              } else {
+                navigator.clipboard.writeText(window.location.origin)
+                alert('¡Enlace copiado!')
+              }
+            }}
+            className="hover:text-pink-500 transition-colors"
+            title="Compartir"
           >
-            <TikTokIcon />
-          </a>
+            <ShareIcon />
+          </button>
         </div>
       </div>
     </div>
   </footer>
 )
 
-export default Footer
+export default Footer;

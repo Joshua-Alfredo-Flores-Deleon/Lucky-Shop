@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import Eliminar from '../assets/icons8-basura-50.png'
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -40,15 +41,15 @@ const Carrito = () => {
   )
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 flex-1">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Carrito de compras</h1>
 
         {items.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">🛒</p>
+           
             <p className="text-gray-400 mb-6">Tu carrito está vacío</p>
             <Link to="/home" className="bg-pink-500 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-pink-600 transition-colors">
               Explorar productos
@@ -91,12 +92,18 @@ const Carrito = () => {
                         onClick={() => updateCantidad(item._id, item.cantidad - 1)}
                         className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
                       >
-                        −
+                      
                       </button>
                       <span className="w-8 text-center text-sm font-semibold">{item.cantidad}</span>
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad + 1)}
-                        className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
+                        disabled={item.cantidad >= item.stock}
+                        className={`w-7 h-7 rounded-full border flex items-center justify-center font-bold transition-colors ${
+                          item.cantidad >= item.stock 
+                          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50' 
+                          : 'border-gray-300 text-gray-600 hover:border-pink-400 hover:text-pink-500'
+                        }`}
+                        title={item.cantidad >= item.stock ? "Stock máximo alcanzado" : "Aumentar cantidad"}
                       >
                         +
                       </button>
@@ -109,7 +116,7 @@ const Carrito = () => {
                         className="text-gray-400 hover:text-red-500 transition-colors text-xl"
                         title="Eliminar"
                       >
-                        
+                        <img src={Eliminar} alt="" className='w-7'/>
                       </button>
                     </div>
                   </div>

@@ -1,10 +1,10 @@
+//Controlador para registrar y consultar las ganancias
 const gananciasController = {};
 
 //importar el schema de la coleccion que vamos a utilizar
 import gananciasModel from "../models/Ganancias.js"
 
-//GET
-//select
+//GET - Obtener todas las ganancias con las ventas y datos del cliente
 gananciasController.getAllGanancias = async (req, res) => {
   try {
     const ganancias = await gananciasModel
@@ -30,8 +30,7 @@ gananciasController.getAllGanancias = async (req, res) => {
 };
 
 
-//POST
-//insert
+//POST - Insertar un nuevo registro de ganancias
 gananciasController.insertGanancias = async (req, res) => {
   try {
     const { ventas, gastos, fechaMes, totalGanancias } = req.body;
@@ -51,8 +50,7 @@ gananciasController.insertGanancias = async (req, res) => {
   }
 };
 
-//DELETE
-//ELIMINAR
+//DELETE - Eliminar un registro de ganancia por su ID
 gananciasController.deleteGanancia = async (req, res) => {
   try {
     const gananciaEliminada = await gananciasModel.findByIdAndDelete(req.params.id);
@@ -66,8 +64,7 @@ gananciasController.deleteGanancia = async (req, res) => {
   }
 };
 
-//PUT
-//ACTUALIZAR
+//PUT - Actualizar un registro de ganancia por su ID
 gananciasController.updateGanancia = async (req, res) => {
   try {
     const { ventas, gastos, fechaMes, totalGanancias } = req.body;
@@ -93,7 +90,7 @@ gananciasController.updateGanancia = async (req, res) => {
   }
 };
 
-//SELECT POR ID
+//GET - Obtener un registro de ganancia por su ID
 gananciasController.getGananciaById = async (req, res) => {
   try {
     const ganancia = await gananciasModel.findById(req.params.id);
@@ -107,4 +104,5 @@ gananciasController.getGananciaById = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default gananciasController;

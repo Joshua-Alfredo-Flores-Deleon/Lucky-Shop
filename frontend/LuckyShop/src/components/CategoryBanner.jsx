@@ -1,32 +1,29 @@
 /**
- * CategoryBanner — Banner decorativo de categoría con efecto bokeh rosa.
- * Muestra título en mayúsculas + descripción sobre un degradado premium.
+ * CategoryBanner — Banner decorativo de categoría con foto de fondo.
+ * Muestra título en mayúsculas + descripción sobre una imagen premium.
  */
+import bannerBg from '../assets/fondoCategoria.jpg'
+
 const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, subcatActiva }) => (
   <div
     className="relative overflow-hidden"
     style={{
-      background: 'linear-gradient(135deg, #fbc2d4 0%, #f9d0df 25%, #fce4ec 50%, #fdeef4 75%, #fff5f9 100%)',
+      backgroundImage: `linear-gradient(90deg, rgba(251,220,230,0.75) 0%, rgba(251,220,230,0.25) 45%, rgba(255,255,255,0) 75%), url(${bannerBg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundColor: '#fbdce6',
       minHeight: '200px',
     }}
     id="category-banner"
   >
-    {/* ── Partículas bokeh decorativas ── */}
-    <div className="bokeh-particle animate-float w-32 h-32 bg-white/25 right-[10%] top-[10%] blur-xl" />
-    <div className="bokeh-particle animate-shimmer w-20 h-20 bg-pink-200/30 right-[25%] top-[40%] blur-lg" />
-    <div className="bokeh-particle animate-drift w-40 h-40 bg-white/15 right-[5%] bottom-[5%] blur-2xl" />
-    <div className="bokeh-particle animate-float w-16 h-16 bg-pink-300/20 left-[60%] top-[20%] blur-md" style={{ animationDelay: '2s' }} />
-    <div className="bokeh-particle animate-shimmer w-24 h-24 bg-white/20 left-[40%] bottom-[15%] blur-xl" style={{ animationDelay: '1s' }} />
-    <div className="bokeh-particle animate-drift w-12 h-12 bg-pink-100/40 right-[40%] top-[60%] blur-sm" style={{ animationDelay: '3s' }} />
-
-    {/* ── Contenido ── */}
+    {/* Contenido */}
     <div className="max-w-7xl mx-auto px-6 py-10 sm:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
       {/* Texto */}
       <div className="max-w-md">
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-wider mb-3">
           {titulo}
         </h1>
-        <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-light">
+        <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
           {descripcion}
         </p>
       </div>
@@ -50,7 +47,7 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
                   <img src={s.img} alt={s.label} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-2xl">
-                    {s.icon || '💍'}
+                    {s.icon || ''}
                   </div>
                 )}
               </div>
@@ -67,4 +64,4 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
   </div>
 )
 
-export default CategoryBanner
+export default CategoryBanner;

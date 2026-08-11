@@ -9,8 +9,7 @@
 
 /* Área de contenido principal */
 .clientes-content-area {
-  padding: 30px 40px;
-  padding-top: 88px;
+  padding:  24px 30px 40px;
   overflow-y: auto;
   min-height: 100vh;
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;

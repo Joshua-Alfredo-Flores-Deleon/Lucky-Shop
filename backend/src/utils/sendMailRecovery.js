@@ -1,3 +1,4 @@
+// Función que retorna una plantilla HTML para enviar el correo de recuperación de contraseña
 const HTMLRecoveryEmail = (code) => {
   return `
     <div style="font-family: 'Poppins', Arial, sans-serif; background-color: #ffffff; color: #222; text-align: center; padding: 30px; border: 1px solid #e0e0e0; border-radius: 10px; max-width: 500px; margin: 0 auto;">

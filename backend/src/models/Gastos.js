@@ -1,10 +1,12 @@
+//importamos Schema y model de mongoose
 import { Schema, model } from "mongoose";
 
+//Esquema para el registro de Gastos
 const gastoschema = new Schema(
   {
-    cantidadGasto: { type: Number },
-    descripcionGasto: {type: String},
-    fechaGasto: {type: Date},
+    cantidadGasto: { type: Number }, //Monto del gasto
+    descripcionGasto: {type: String}, //Descripción del gasto
+    fechaGasto: {type: Date}, //Fecha en que se realizó el gasto
   },
   {
     timestamps: true,
@@ -12,4 +14,5 @@ const gastoschema = new Schema(
   },
 );
 
+//Exportamos el modelo con el nombre de la colección "Gastos"
 export default model("Gastos", gastoschema);

@@ -19,8 +19,8 @@ const CONFIG_CATEGORIAS = {
       { value: 'Tobilleras', label: 'Tobilleras' },
     ],
   },
-  pendientes: {
-    titulo: 'Pendientes',
+  aritos: {
+    titulo: 'Aritos',
     descripcion: 'La distinción no es una coincidencia, es una elección. Estos pendientes han sido grabados con la firme convicción de que la elegancia es el imán definitivo de la fortuna.',
     apiCategoria: 'Aretes', // En la BD se guardan como "Aretes"
   },
@@ -79,6 +79,7 @@ const Categoria = () => {
         ) : productosFiltrados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <span className="text-5xl mb-4 opacity-40"></span>
+          
             <p className="text-sm font-medium">No hay productos en esta categoría</p>
           </div>
         ) : (

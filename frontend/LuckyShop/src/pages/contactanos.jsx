@@ -184,7 +184,7 @@ function ContactForm() {
     setEnviando(true);
     setMensajeEstado({ texto: "", tipo: "" });
 
-    // REEMPLAZA ESTA URL CON LA QUE TE DA FORMSPREE
+    
     const formspreeEndpoint = "https://formspree.io/f/mvkpzygv"; 
 
     try {

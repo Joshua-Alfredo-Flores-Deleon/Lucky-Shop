@@ -1,0 +1,5 @@
+import Navbar from '../components/Navbar.jsx'
+import Footer from '../components/Footer.jsx'
+import ProductCard from '../components/ProductCard.jsx'
+import CategoryBanner from '../components/CategoryBanner.jsx'
+import { useCategoria } from '../hooks/useCategoria.jsx'

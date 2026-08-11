@@ -256,8 +256,8 @@ export default function Politicas() {
             </div>
           </div>
 
-          {/* Acento rosa */}
-          <div style={styles.pinkAccent}></div>
+        
+          
         </div>
       </div>
 
