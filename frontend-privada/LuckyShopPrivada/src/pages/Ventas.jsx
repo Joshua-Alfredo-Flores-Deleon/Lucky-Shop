@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useVentas } from '../hooksP/useVentas'
+import { useVentas } from '../hooks/useVentas'
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";

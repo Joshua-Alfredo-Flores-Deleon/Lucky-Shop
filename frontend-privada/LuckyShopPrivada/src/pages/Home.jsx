@@ -1,4 +1,4 @@
-import { useHome } from "../hooksP/useHome";
+import { useHome } from "../hooks/useHome";
 import { useState } from "react";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";

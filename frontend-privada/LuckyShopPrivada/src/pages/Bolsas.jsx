@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
-import { useBolsas } from '../hooksP/useBolsas'
+import { useBolsas } from '../hooks/useBolsas'
 import '../sideBar.css'
 import '../productosPage.css'
 

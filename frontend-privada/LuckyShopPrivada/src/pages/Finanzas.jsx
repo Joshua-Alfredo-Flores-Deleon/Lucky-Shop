@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Sidebar from "../components/sideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
-import { useFinanzas } from "../hooksP/useFinanzas";
+import { useFinanzas } from "../hooks/useFinanzas";
 import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
 import ModalExito from "../components/ModalExito";
 import ConfirmModal from "../components/ConfirmModal";

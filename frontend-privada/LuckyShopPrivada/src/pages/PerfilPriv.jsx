@@ -1,5 +1,5 @@
 import SidebarPerfil from "../components/sideBarPerfil";
-import { usePerfil } from "../hooksP/usePerfilP";
+import { usePerfil } from "../hooks/usePerfilP";
 import "../AdminShell.css";
 import "./PerfilPriv.css";
 
