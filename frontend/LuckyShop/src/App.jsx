@@ -19,6 +19,7 @@ import Perfil from './pages/Perfil.jsx'
 import Contactanos from './pages/contactanos.jsx'
 import Politicas from './pages/Politicas.jsx'
 import Pago from './pages/Pago.jsx'
+import Favoritos from './pages/Favoritos.jsx'
 
 function App() {
   return (
@@ -48,6 +49,8 @@ function App() {
               <Route path="/pago"            element={<Pago />} />
               <Route path="/historial"       element={<Historial />} />
               <Route path="/perfil"          element={<Perfil />} />
+              <Route path="/favoritos"       element={<Favoritos />} />
+              <Route path="/Favoritos"       element={<Favoritos />} />
             </Route>
           </Routes>
         </Router>
