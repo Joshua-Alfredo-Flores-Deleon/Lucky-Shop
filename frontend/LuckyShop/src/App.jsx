@@ -20,6 +20,8 @@ import Contactanos from './pages/contactanos.jsx'
 import Politicas from './pages/Politicas.jsx'
 import Pago from './pages/Pago.jsx'
 import Favoritos from './pages/Favoritos.jsx'
+import Promociones from './pages/Promociones.jsx'
+import GuiaRegalo from './pages/GuiaRegalo.jsx'
 
 function App() {
   return (
@@ -29,21 +31,23 @@ function App() {
           <Routes>
 
             {/* ── Rutas públicas: catálogo navegable sin sesión ── */}
-            <Route path="/"                            element={<Navigate to="/home" replace />} />
-            <Route path="/login"                      element={<LoginCliente />} />
-            <Route path="/register"                    element={<Register />} />
-            <Route path="/recuperar-password"           element={<RecuperarPassword />} />
+            <Route path="/"                 element={<Navigate to="/home" replace />} />
+            <Route path="/login"            element={<LoginCliente />} />
+            <Route path="/register"         element={<Register />} />
+            <Route path="/recuperar-password"  element={<RecuperarPassword />} />
             <Route path="/home"                element={<HomeCliente />} />
             <Route path="/buscar"          element={<Buscar />} />
             <Route path="/categoria/:cat"  element={<Categoria />} />
             <Route path="/producto/:id"    element={<ProductoDetalle />} />
             <Route path="/anillos"         element={<Navigate to="/categoria/anillos" replace />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
-            <Route path="/acercaDe"       element={<AcercaDe />} />
-            <Route path="/contactanos"       element={<Contactanos />} />
-            <Route path="/politicas"         element={<Politicas />} />
+            <Route path="/acercaDe"        element={<AcercaDe />} />
+            <Route path="/contactanos"     element={<Contactanos />} />
+            <Route path="/politicas"       element={<Politicas />} />
+            <Route path="/guia-regalo"     element={<GuiaRegalo />} />
+            <Route path="/promociones"     element={<Promociones />} />
 
-            {/* ── Requieren sesión: comprar / ver historial ── */}
+            {/* Requieren sesión*/}
             <Route element={<PrivateRoute />}>
               <Route path="/carrito"         element={<Carrito />} />
               <Route path="/pago"            element={<Pago />} />
@@ -51,6 +55,7 @@ function App() {
               <Route path="/perfil"          element={<Perfil />} />
               <Route path="/favoritos"       element={<Favoritos />} />
               <Route path="/Favoritos"       element={<Favoritos />} />
+              
             </Route>
           </Routes>
         </Router>

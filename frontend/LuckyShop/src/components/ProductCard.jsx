@@ -54,10 +54,26 @@ const ProductCard = ({ producto }) => {
     }
   }
 
+  // ── Cálculo de precio con descuento ──
+  // Si el producto trae "descuento" (porcentaje), calculamos el precio rebajado.
+  const precioOriginal = Number(producto.precio)
+  const descuento = Number(producto.descuento) || 0
+  const tienePromo = descuento > 0
+  const precioFinal = tienePromo
+    ? precioOriginal * (1 - descuento / 100)
+    : precioOriginal
+
   return (
     <div className="card-hover bg-white rounded-2xl border border-gray-100/80 overflow-hidden group relative">
       {/* Imagen */}
       <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100/50 overflow-hidden">
+        {/* Badge de descuento */}
+        {tienePromo && (
+          <span className="absolute top-3 left-3 z-10 bg-pink-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+            -{descuento}%
+          </span>
+        )}
+
         {/* Botón favorito */}
         <button
           onClick={handleToggleFavorito}
@@ -103,9 +119,23 @@ const ProductCard = ({ producto }) => {
         <p className="text-sm text-gray-700 font-medium leading-snug mb-1.5 line-clamp-2 min-h-[2.5rem]">
           {producto.nombre}
         </p>
-        <p className="text-base font-bold text-gray-900 mb-3 tracking-tight">
-          ${Number(producto.precio).toFixed(2)}
-        </p>
+
+        {/* Precio: con o sin descuento */}
+        {tienePromo ? (
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-base font-bold text-pink-600 tracking-tight">
+              ${precioFinal.toFixed(2)}
+            </span>
+            <span className="text-sm text-gray-400 line-through">
+              ${precioOriginal.toFixed(2)}
+            </span>
+          </div>
+        ) : (
+          <p className="text-base font-bold text-gray-900 mb-3 tracking-tight">
+            ${precioOriginal.toFixed(2)}
+          </p>
+        )}
+
         <Link
           to={`/producto/${producto._id}`}
           className="btn-pink-pulse block w-full text-center bg-gradient-to-r from-pink-100 to-pink-50 hover:from-pink-200 hover:to-pink-100 text-pink-600 text-sm font-semibold py-2.5 rounded-full transition-all duration-300 border border-pink-100 hover:border-pink-200"
@@ -118,4 +148,4 @@ const ProductCard = ({ producto }) => {
   )
 }
 
-export default ProductCard
+export default ProductCard;

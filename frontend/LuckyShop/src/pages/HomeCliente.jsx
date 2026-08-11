@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import portadaJoyas from '../assets/portadaJoyas.jpg'
+import promoicones from "../pages/Promociones.jsx"
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -111,7 +112,7 @@ const HomeCliente = () => {
               Encuentra el detalle ideal según su estilo.
             </p>
             <Link
-              to="/categoria/anillos"
+              to="/guia-regalo"
               className="text-base text-pink-500 hover:text-pink-600 font-medium hover:underline transition-colors"
             >
               Ver guía →

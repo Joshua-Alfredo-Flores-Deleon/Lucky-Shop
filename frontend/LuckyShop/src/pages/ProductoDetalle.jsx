@@ -8,6 +8,8 @@ import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useAnillo } from '../hooks/useAnillos.jsx'
 
+const BASE_URL = 'http://localhost:4000/api'
+
 const ProductoDetalle = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -20,6 +22,7 @@ const ProductoDetalle = () => {
   const [cantidad,    setCantidad]    = useState(1)
   const [imgActiva,   setImgActiva]   = useState(0)
   const [toast,       setToast]       = useState(false)
+  const [descuento,   setDescuento]   = useState(0) // porcentaje de promo activa para este producto
 
   useEffect(() => {
     if (error) {
@@ -32,13 +35,39 @@ const ProductoDetalle = () => {
     setCantidad(1)
   }, [id])
 
+  // Consultar si este producto tiene una promoción activa
+  useEffect(() => {
+    const fetchPromo = async () => {
+      try {
+        const res  = await fetch(`${BASE_URL}/promotions/activas`, { credentials: 'include' })
+        const data = await res.json()
+        const promo = Array.isArray(data)
+          ? data.find((p) => p.idProducto && p.idProducto._id === id)
+          : null
+        setDescuento(promo ? promo.descuento : 0)
+      } catch {
+        setDescuento(0)
+      }
+    }
+    if (id) fetchPromo()
+  }, [id])
+
+  // Precio con descuento aplicado (si hay promo)
+  const precioOriginal = producto ? Number(producto.precio) : 0
+  const tienePromo = descuento > 0
+  const precioFinal = tienePromo
+    ? Math.round(precioOriginal * (1 - descuento / 100) * 100) / 100
+    : precioOriginal
+
   const handleAgregar = () => {
     if (!producto) return
     if (!isAuthenticated) {
       navigate('/login', { state: { from: location } })
       return
     }
-    addItem(producto, cantidad)
+    // Agregamos el producto con el precio ya rebajado, para que el carrito
+    // y el total usen el precio con descuento.
+    addItem({ ...producto, precio: precioFinal }, cantidad)
     setToast(true)
     setTimeout(() => setToast(false), 2500)
   }
@@ -72,7 +101,13 @@ const ProductoDetalle = () => {
 
           {/* Imagen */}
           <div className="flex-1">
-            <div className="bg-gray-50 rounded-3xl overflow-hidden aspect-square flex items-center justify-center p-8 mb-3">
+            <div className="bg-gray-50 rounded-3xl overflow-hidden aspect-square flex items-center justify-center p-8 mb-3 relative">
+              {/* Badge de descuento */}
+              {tienePromo && (
+                <span className="absolute top-4 left-4 z-10 bg-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm">
+                  -{descuento}%
+                </span>
+              )}
               {imagenes[imgActiva] ? (
                 <img
                   src={imagenes[imgActiva]}
@@ -104,7 +139,19 @@ const ProductoDetalle = () => {
           {/* Info */}
           <div className="flex-1 flex flex-col gap-4">
             <h1 className="text-2xl font-bold text-gray-900 leading-tight">{producto.nombre}</h1>
-            <p className="text-3xl font-black text-gray-900">${Number(producto.precio).toFixed(2)}</p>
+
+            {/* Precio: con o sin descuento */}
+            {tienePromo ? (
+              <div className="flex items-center gap-3">
+                <p className="text-3xl font-black text-pink-600">${precioFinal.toFixed(2)}</p>
+                <p className="text-xl text-gray-400 line-through">${precioOriginal.toFixed(2)}</p>
+                <span className="bg-pink-100 text-pink-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                  Ahorras ${(precioOriginal - precioFinal).toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              <p className="text-3xl font-black text-gray-900">${precioOriginal.toFixed(2)}</p>
+            )}
 
             {producto.descripcion && (
               <p className="text-sm text-gray-600 leading-relaxed">{producto.descripcion}</p>
