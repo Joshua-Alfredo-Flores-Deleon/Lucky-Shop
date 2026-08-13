@@ -1,4 +1,3 @@
-// Promociones.jsx — página pública de promociones (cliente)
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
@@ -18,8 +17,6 @@ const Promociones = () => {
         const data = await res.json()
 
         // Cada promo trae { idProducto: {...}, descuento, ... }.
-        // Combinamos el producto poblado con su descuento en un solo objeto
-        // para pasárselo a ProductCard. Descartamos promos sin producto.
         const conDescuento = Array.isArray(data)
           ? data
               .filter((promo) => promo.idProducto)
@@ -29,7 +26,8 @@ const Promociones = () => {
               }))
           : []
 
-        setProductos(conDescuento)
+        // Mostramos solo los primeros 8
+        setProductos(conDescuento.slice(0, 8))
       } catch {
         setProductos([])
       } finally {

@@ -1,3 +1,5 @@
+//Pagina de Contactanos- Donde el cliente podra comunicarse con nosotros ante cualquier situacion o duda
+
 import { useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";

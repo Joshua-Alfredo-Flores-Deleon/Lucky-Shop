@@ -1,3 +1,4 @@
+//RecoveryPassword.jsx --Recuperacion de contraseña de clientes(usuarios)
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import heroPng from '../assets/fondoderecoveryPassword.png'

@@ -1,4 +1,4 @@
-// GuiaRegalo.jsx — página pública de guía de regalos (cliente)
+// GuiaRegalo.jsx — página pública de guía de regalos
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
@@ -14,11 +14,10 @@ const GuiaRegalo = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        // Para acotar a una categoría, cambia esta línea por:
-        // `${BASE_URL}/productos?categoria=collares&estado=activo`
         const res  = await fetch(`${BASE_URL}/productos?estado=activo`, { credentials: 'include' })
         const data = await res.json()
-        setProductos(Array.isArray(data) ? data : [])
+        // Mostramos solo los primeros 8 productos
+        setProductos(Array.isArray(data) ? data.slice(0, 8) : [])
       } catch {
         setProductos([])
       } finally {
@@ -47,11 +46,8 @@ const GuiaRegalo = () => {
 
       {/* Encabezado con frase motivadora */}
       <section className="max-w-7xl mx-auto px-8 pt-8 pb-4 text-center w-full">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
-          Guía de regalo
-        </h1>
-        <p className="text-lg sm:text-xl text-gray-500 italic max-w-2xl mx-auto leading-relaxed">
-          "Sorprende a quien amas con un detalle que brille tanto como ella."
+       <p className="text-lg sm:text-xl text-black-500 italic max-w-2xl mx-auto leading-relaxed">
+          ¡Sorprende a quien amas con un detalle que brille tanto como ella!
         </p>
         <p className="text-sm text-gray-400 mt-3 max-w-xl mx-auto">
           Encuentra el detalle perfecto para sorprender a esa persona especial.

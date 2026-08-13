@@ -1,3 +1,4 @@
+//Pago.jsx -- Pagina donde el cliente puede ver la forma de pago
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'

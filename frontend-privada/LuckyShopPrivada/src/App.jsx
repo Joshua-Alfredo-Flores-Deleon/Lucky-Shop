@@ -11,6 +11,7 @@ import RecoveryPasswordAdmin from './pages/RecoveryPasswordAdmin.jsx'
 import PerfilAdmin from './pages/PerfilPriv.jsx'
 import Finanzas from './pages/Finanzas.jsx'
 import VideosCombos from './pages/VideosCombos.jsx'
+import PromocionesAdmin from './pages/Promociones.jsx'
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
           element={
             <ProtectedRoute userType="admin">
               <Productos />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/promociones"
+          element={
+            <ProtectedRoute userType="admin">
+              <PromocionesAdmin />
             </ProtectedRoute>
           }
         />

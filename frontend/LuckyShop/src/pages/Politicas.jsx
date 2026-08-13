@@ -1,3 +1,4 @@
+//Pagina de Politicas.jsx - Pagina donde se encuentran los terminos y condiciones 
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import Logo from "../assets/icons8-trébol-50.png"

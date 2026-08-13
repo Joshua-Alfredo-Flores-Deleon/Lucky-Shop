@@ -1,4 +1,5 @@
-// ProductoDetalle.jsx — detalle de producto con agregar al carrito
+//// ProductoDetalle.jsx — detalle de producto con agregar al carrito
+
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
@@ -22,7 +23,8 @@ const ProductoDetalle = () => {
   const [cantidad,    setCantidad]    = useState(1)
   const [imgActiva,   setImgActiva]   = useState(0)
   const [toast,       setToast]       = useState(false)
-  const [descuento,   setDescuento]   = useState(0) // porcentaje de promo activa para este producto
+  const [descuento,   setDescuento]   = useState(0)    // porcentaje de promo activa para este producto
+  const [fechaFin,    setFechaFin]    = useState(null) // hasta cuándo dura la promoción
 
   useEffect(() => {
     if (error) {
@@ -45,8 +47,10 @@ const ProductoDetalle = () => {
           ? data.find((p) => p.idProducto && p.idProducto._id === id)
           : null
         setDescuento(promo ? promo.descuento : 0)
+        setFechaFin(promo ? promo.fechaFin : null)
       } catch {
         setDescuento(0)
+        setFechaFin(null)
       }
     }
     if (id) fetchPromo()
@@ -142,12 +146,22 @@ const ProductoDetalle = () => {
 
             {/* Precio: con o sin descuento */}
             {tienePromo ? (
-              <div className="flex items-center gap-3">
-                <p className="text-3xl font-black text-pink-600">${precioFinal.toFixed(2)}</p>
-                <p className="text-xl text-gray-400 line-through">${precioOriginal.toFixed(2)}</p>
-                <span className="bg-pink-100 text-pink-700 text-xs font-bold px-2.5 py-1 rounded-full">
-                  Ahorras ${(precioOriginal - precioFinal).toFixed(2)}
-                </span>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <p className="text-3xl font-black text-pink-600">${precioFinal.toFixed(2)}</p>
+                  <p className="text-xl text-gray-400 line-through">${precioOriginal.toFixed(2)}</p>
+                  <span className="bg-pink-100 text-pink-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                    Ahorras ${(precioOriginal - precioFinal).toFixed(2)}
+                  </span>
+                </div>
+                {/* Fecha de vigencia de la promoción */}
+                {fechaFin && (
+                  <p className="text-sm text-pink-600 font-medium">
+                    Promoción válida hasta el {new Date(fechaFin).toLocaleDateString('es-SV', {
+                      day: '2-digit', month: 'long', year: 'numeric'
+                    })}
+                  </p>
+                )}
               </div>
             ) : (
               <p className="text-3xl font-black text-gray-900">${precioOriginal.toFixed(2)}</p>

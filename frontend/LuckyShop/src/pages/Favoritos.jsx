@@ -1,3 +1,4 @@
+//Pagina de Favritos - Donde se encuentran los productos favoritos de los clientes
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'

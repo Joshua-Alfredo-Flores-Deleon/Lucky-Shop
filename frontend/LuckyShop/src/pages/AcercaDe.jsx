@@ -1,5 +1,4 @@
-// Productos.jsx — CRUD completo de productos de Lucky Shop
-// Fetch directo en la página, sin services, mismo patrón del proyecto de referencia
+//  AcercaDe.js - pagina de informacion
 import {useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'

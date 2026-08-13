@@ -376,9 +376,6 @@ const Productos = () => {
             <button className="pm-btn pm-btn-dark pm-btn-nuevo" onClick={handleNuevoProducto}>
               <span>＋</span> Nuevo producto
             </button>
-            <button className="pm-btn pm-btn-dark pm-btn-nuevo" onClick={() => setModalPromo(true)}>
-              <span>＋</span> Agregar promoción
-            </button>
           </div>
         </div>
 

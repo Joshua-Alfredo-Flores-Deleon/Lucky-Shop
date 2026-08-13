@@ -1,5 +1,4 @@
 // Productos.jsx — CRUD completo de productos de Lucky Shop
-// Fetch directo en la página, sin services, mismo patrón del proyecto de referencia
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Nav from '../../../../frontend-privada/LuckyShopPrivada/src/components/Nav'

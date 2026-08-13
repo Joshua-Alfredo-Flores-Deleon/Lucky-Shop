@@ -1,4 +1,4 @@
-// Home.jsx — página de inicio pública de Lucky Shop
+// Home.jsx — página de inicio pública
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
