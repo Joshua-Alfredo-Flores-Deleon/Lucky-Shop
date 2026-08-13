@@ -14,7 +14,7 @@ const Promociones = () => {
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const res  = await fetch(`${BASE_URL}/promotions/activas`, { credentials: 'include' })
+        const res  = await fetch(`${BASE_URL}/promociones/activas`, { credentials: 'include' })
         const data = await res.json()
 
         // Cada promo trae { idProducto: {...}, descuento, ... }.

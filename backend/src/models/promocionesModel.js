@@ -4,7 +4,7 @@ const promocionSchema = new Schema(
   {
     idProducto: {
       type: Schema.Types.ObjectId,
-      ref: "productos",
+      ref: "products",
       required: true,
     },
     descuento: {

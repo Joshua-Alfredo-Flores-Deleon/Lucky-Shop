@@ -1,4 +1,4 @@
-import "./PagosModals.css";
+
 
 export default function ModalExito({ abierto, mensaje, onCerrar }) {
   if (!abierto) return null;

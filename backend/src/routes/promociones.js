@@ -8,12 +8,13 @@ router.route("/")
   .post(promocionesController.insertPromocion);
 
 router.route("/activas")
-.get(promocionesController.getPromocionesActivas);
+  .get(promocionesController.getPromocionesActivas);
 
 router.route("/:id")
-.delete(promocionesController.deletePromocion);
+  .put(promocionesController.updatePromocion)
+  .delete(promocionesController.deletePromocion);
 
 router.route("/:id/toggle")
-.put(promocionesController.toggleEstado);
+  .put(promocionesController.toggleEstado);
 
 export default router;

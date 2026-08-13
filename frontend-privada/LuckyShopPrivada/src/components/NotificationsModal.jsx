@@ -1,4 +1,4 @@
-import { useNotificaciones } from "../hooksP/useNotificaciones";
+import { useNotificaciones } from "../hooks/useNotificaciones";
 import { useNavigate } from "react-router-dom";
 import "../NotificationModal.css";
 

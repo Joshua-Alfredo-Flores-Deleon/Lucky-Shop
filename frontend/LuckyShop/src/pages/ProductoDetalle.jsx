@@ -39,7 +39,7 @@ const ProductoDetalle = () => {
   useEffect(() => {
     const fetchPromo = async () => {
       try {
-        const res  = await fetch(`${BASE_URL}/promotions/activas`, { credentials: 'include' })
+        const res  = await fetch(`${BASE_URL}/promociones/activas`, { credentials: 'include' })
         const data = await res.json()
         const promo = Array.isArray(data)
           ? data.find((p) => p.idProducto && p.idProducto._id === id)

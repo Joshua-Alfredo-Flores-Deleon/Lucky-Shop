@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./PagosModals.css";
 
 const VALORES_INICIALES = { cantidadGasto: "", descripcionGasto: "", fechaGasto: "" };
 

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import Sidebar from '../components/sideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
+import PromoModal from '../components/PromoModal'
 import { useProductos } from '../hooks/useProductos'
 import '../sideBar.css'
 import '../productosPage.css'
@@ -260,9 +261,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
   )
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  COMPONENTE PRINCIPAL                                     */
-/* ────────────────────────────────────────────────────────── */
+
 const Productos = () => {
   const {
     productos: productosPagina,
@@ -287,6 +286,7 @@ const Productos = () => {
   const [modalForm, setModalForm] = useState(null)                // { modo: 'agregar'|'editar', producto? }
   const [modalConfirm, setModalConfirm] = useState(null)          // { mensaje, onConfirm }
   const [modalSuccess, setModalSuccess] = useState(null)          // mensaje string
+  const [modalPromo, setModalPromo] = useState(false)             // modal de promoción
 
   /* ── Helpers de confirm ── */
   const pedirConfirmacion = (mensaje, onConfirm) => {
@@ -375,6 +375,9 @@ const Productos = () => {
             </div>
             <button className="pm-btn pm-btn-dark pm-btn-nuevo" onClick={handleNuevoProducto}>
               <span>＋</span> Nuevo producto
+            </button>
+            <button className="pm-btn pm-btn-dark pm-btn-nuevo" onClick={() => setModalPromo(true)}>
+              <span>＋</span> Agregar promoción
             </button>
           </div>
         </div>
@@ -517,6 +520,15 @@ const Productos = () => {
         <SuccessModal
           mensaje={modalSuccess}
           onClose={() => setModalSuccess(null)}
+        />
+      )}
+
+      {/*Modal para gregar productos en promocion*/}
+
+      {modalPromo && (
+        <PromoModal
+          onClose={() => setModalPromo(false)}
+          onCreated={() => setModalSuccess('¡Promoción creada con éxito!')}
         />
       )}
 
