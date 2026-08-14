@@ -1,11 +1,11 @@
 /**
  * PerfilScreen.jsx
- * Pantalla de perfil del cliente. Muestra los datos REALES del usuario logueado
- * (nombre, correo) tomados del AuthContext, y permite cerrar sesión. El botón de
- * cerrar sesión limpia el token global y devuelve automáticamente al login.
+ * Pantalla de perfil / "Editar perfil". Muestra el avatar, el nombre y correo
+ * REALES del usuario logueado (AuthContext) y una lista de accesos en tarjetas
+ * (Términos, Lista de deseos, Ajustes, Videos). Abajo, el botón "Cerrar Sesión".
  */
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 
 import Logo from "../../components/Logo";
 import CustomButton from "../../components/CustomButton";
@@ -14,53 +14,66 @@ import Icon from "../../components/Icon";
 import { useAuth } from "../../context/AuthContext";
 import { colors } from "../../theme/colors";
 
-const PerfilScreen = () => {
+const PerfilScreen = ({ navigation }) => {
   const { cliente, cerrarSesion } = useAuth();
   const [confirmar, setConfirmar] = useState(false);
 
   const nombreCompleto = [cliente?.name, cliente?.lastName].filter(Boolean).join(" ") || "Cliente";
-  const inicial = (cliente?.name || "L").charAt(0).toUpperCase();
+  const inicial = (cliente?.name || cliente?.email || "L").charAt(0).toUpperCase();
 
-  // Opciones del menú de perfil (visuales para este avance).
+  // Opciones en tarjetas (según el diseño). Cada una con su icono y destino.
   const opciones = [
-    { icon: "heart-outline", label: "Mis favoritos" },
-    { icon: "cube-outline", label: "Mis pedidos" },
-    { icon: "location-outline", label: "Direcciones" },
-    { icon: "settings-outline", label: "Configuración" },
+    { icon: "card-outline", label: "Términos y Condiciones", ruta: null },
+    { icon: "heart-outline", label: "Lista de deseos", ruta: "Inicio" },
+    { icon: "create-outline", label: "Ajustes de cuenta", ruta: null },
+    { icon: "videocam-outline", label: "Videos", ruta: null },
   ];
 
   return (
     <View style={styles.pantalla}>
-      <View style={styles.header}>
-        <Logo size={22} mostrarSubtitulo={false} />
-      </View>
-
-      <Text style={styles.titulo}>Mi perfil</Text>
-
-      {/* Tarjeta del usuario */}
-      <View style={styles.tarjetaUsuario}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarTexto}>{inicial}</Text>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contenido}>
+        <View style={styles.header}>
+          <Logo size={22} mostrarSubtitulo={false} />
         </View>
-        <View style={styles.datos}>
-          <Text style={styles.nombre}>{nombreCompleto}</Text>
-          <Text style={styles.correo}>{cliente?.email || "sin correo"}</Text>
+
+        <Text style={styles.titulo}>Editar perfil</Text>
+
+        {/* Avatar + datos */}
+        <View style={styles.avatarWrap}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarTexto}>{inicial}</Text>
+          </View>
         </View>
-      </View>
+        <Text style={styles.nombre}>{nombreCompleto}</Text>
+        <Text style={styles.correo}>{cliente?.email || "sin correo"}</Text>
 
-      {/* Opciones */}
-      <View style={styles.opciones}>
-        {opciones.map((op) => (
-          <TouchableOpacity key={op.label} style={styles.opcion} activeOpacity={0.7}>
-            <Icon name={op.icon} size={20} color={colors.textGray} style={styles.opcionIcono} />
-            <Text style={styles.opcionLabel}>{op.label}</Text>
-            <Icon name="chevron-forward" size={20} color={colors.textLight} />
-          </TouchableOpacity>
-        ))}
-      </View>
+        {/* Opciones en tarjetas */}
+        <View style={styles.opciones}>
+          {opciones.map((op) => (
+            <TouchableOpacity
+              key={op.label}
+              style={styles.tarjeta}
+              activeOpacity={0.8}
+              onPress={() => op.ruta && navigation.navigate(op.ruta)}
+            >
+              <View style={styles.iconoCirculo}>
+                <Icon name={op.icon} size={18} color={colors.greenLogo} />
+              </View>
+              <Text style={styles.opcionLabel}>{op.label}</Text>
+              <Icon name="chevron-forward" size={20} color={colors.textLight} />
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
 
+      {/* Cerrar sesión (fijo abajo) */}
       <View style={styles.logoutWrap}>
-        <CustomButton title="Cerrar sesión" variant="outline" onPress={() => setConfirmar(true)} />
+        <CustomButton
+          title="Cerrar Sesión"
+          icon="log-out-outline"
+          variant="darkGreen"
+          onPress={() => setConfirmar(true)}
+        />
       </View>
 
       {/* Confirmación de cierre de sesión */}
@@ -83,39 +96,44 @@ export default PerfilScreen;
 
 const styles = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: colors.white },
-  header: { paddingTop: 54, paddingHorizontal: 20, paddingBottom: 6 },
-  titulo: { fontSize: 24, fontWeight: "800", color: colors.textDark, paddingHorizontal: 20, marginTop: 6 },
-  tarjetaUsuario: {
+  contenido: { paddingBottom: 20 },
+  header: { alignItems: "center", paddingTop: 54, paddingBottom: 6 },
+  titulo: { fontSize: 18, fontWeight: "800", color: colors.textDark, textAlign: "center", marginTop: 8 },
+  avatarWrap: { alignItems: "center", marginTop: 18 },
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: colors.pinkSoft,
+    borderWidth: 2,
+    borderColor: colors.greenSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarTexto: { color: colors.magenta, fontSize: 40, fontWeight: "800" },
+  nombre: { fontSize: 22, fontWeight: "800", color: colors.textDark, textAlign: "center", marginTop: 14 },
+  correo: { fontSize: 14, color: colors.textGray, textAlign: "center", marginTop: 2 },
+  opciones: { paddingHorizontal: 20, marginTop: 24 },
+  tarjeta: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.greenSoft,
-    marginHorizontal: 20,
-    marginTop: 18,
-    borderRadius: 20,
-    padding: 18,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.greenSoft,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    marginBottom: 14,
   },
-  avatar: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: colors.greenLogo,
+  iconoCirculo: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.greenSoft,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
   },
-  avatarTexto: { color: colors.white, fontSize: 24, fontWeight: "800" },
-  datos: { flex: 1 },
-  nombre: { fontSize: 17, fontWeight: "800", color: colors.textDark },
-  correo: { fontSize: 13, color: colors.textGray, marginTop: 2 },
-  opciones: { marginTop: 22, paddingHorizontal: 20 },
-  opcion: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  opcionIcono: { marginRight: 14 },
   opcionLabel: { flex: 1, fontSize: 15, color: colors.textDark, fontWeight: "600" },
-  logoutWrap: { paddingHorizontal: 20, marginTop: 30 },
+  logoutWrap: { paddingHorizontal: 20, paddingBottom: 20, paddingTop: 6 },
 });

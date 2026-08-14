@@ -18,7 +18,7 @@ import useProductos from "../../hooks/useProductos";
 import { categorias } from "../../utils/categorias";
 import { colors } from "../../theme/colors";
 
-const CategoriasScreen = ({ route }) => {
+const CategoriasScreen = ({ route, navigation }) => {
   // Slug inicial: el que venga por navegación o la primera categoría.
   const slugInicial = route?.params?.slug || categorias[0].slug;
   const [slug, setSlug] = useState(slugInicial);
@@ -63,7 +63,11 @@ const CategoriasScreen = ({ route }) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.grid}>
             {productos.map((p) => (
-              <ProductCard key={p._id} producto={p} onPress={() => {}} />
+              <ProductCard
+                key={p._id}
+                producto={p}
+                onPress={() => navigation.navigate("ProductoDetalle", { producto: p })}
+              />
             ))}
           </View>
           <View style={{ height: 24 }} />

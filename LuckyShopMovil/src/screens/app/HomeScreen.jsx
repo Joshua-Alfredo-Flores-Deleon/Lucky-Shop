@@ -1,7 +1,8 @@
 /**
  * HomeScreen.jsx
  * Pantalla principal (Home). Muestra:
- *  - Un saludo de bienvenida con el NOMBRE REAL del usuario logueado (AuthContext).
+ *  - Un saludo de bienvenida con el NOMBRE REAL del usuario logueado (tomado del
+ *    AuthContext).
  *  - Barra de búsqueda que filtra productos por texto.
  *  - Carrusel de categorías (datos reales por slug).
  *  - Sección "Bolsas de la suerte" (datos reales del endpoint /api/bolsas).
@@ -80,7 +81,10 @@ const HomeScreen = ({ navigation }) => {
             icon={cat.icon}
             index={i}
             onPress={() =>
-              navigation.navigate("Categorias", { slug: cat.slug, label: cat.label })
+              navigation.navigate("Categorias", {
+                screen: "CategoriasHome",
+                params: { slug: cat.slug, label: cat.label },
+              })
             }
           />
         ))}
@@ -128,7 +132,11 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <View style={styles.grid}>
           {productos.map((p) => (
-            <ProductCard key={p._id} producto={p} onPress={() => {}} />
+            <ProductCard
+              key={p._id}
+              producto={p}
+              onPress={() => navigation.navigate("ProductoDetalle", { producto: p })}
+            />
           ))}
         </View>
       )}
@@ -154,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 14,
   },
-  lupa: { marginRight: 8 },
+  lupa: { fontSize: 15, marginRight: 8 },
   buscadorInput: { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.textDark },
   categorias: { marginTop: 18 },
   categoriasContenido: { paddingHorizontal: 20 },
