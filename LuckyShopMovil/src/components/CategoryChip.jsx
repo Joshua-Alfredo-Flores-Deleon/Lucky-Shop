@@ -6,12 +6,13 @@
  *
  * Props:
  *  - label:  nombre de la categoría (Collares, Aritos, Anillos, Brazaletes)
- *  - icon:   emoji representativo
+ *  - icon:   nombre de icono Ionicons representativo
  *  - index:  posición para alternar el color de fondo
  *  - onPress: acción al seleccionar la categoría
  */
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const CategoryChip = ({ label, icon, index = 0, onPress }) => {
@@ -21,7 +22,7 @@ const CategoryChip = ({ label, icon, index = 0, onPress }) => {
   return (
     <TouchableOpacity style={styles.contenedor} onPress={onPress} activeOpacity={0.85}>
       <View style={[styles.cuadro, { backgroundColor: colorFondo }]}>
-        <Text style={styles.icono}>{icon}</Text>
+        <Icon name={icon} size={28} color={colors.white} />
       </View>
       <Text style={styles.label} numberOfLines={1}>
         {label}
@@ -41,6 +42,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  icono: { fontSize: 26 },
   label: { fontSize: 12, color: colors.textDark, marginTop: 6, fontWeight: "600" },
 });

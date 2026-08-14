@@ -10,6 +10,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Logo from "../../components/Logo";
 import CustomButton from "../../components/CustomButton";
 import AlertModal from "../../components/AlertModal";
+import Icon from "../../components/Icon";
 import { useAuth } from "../../context/AuthContext";
 import { colors } from "../../theme/colors";
 
@@ -22,10 +23,10 @@ const PerfilScreen = () => {
 
   // Opciones del menú de perfil (visuales para este avance).
   const opciones = [
-    { icon: "❤️", label: "Mis favoritos" },
-    { icon: "📦", label: "Mis pedidos" },
-    { icon: "📍", label: "Direcciones" },
-    { icon: "⚙️", label: "Configuración" },
+    { icon: "heart-outline", label: "Mis favoritos" },
+    { icon: "cube-outline", label: "Mis pedidos" },
+    { icon: "location-outline", label: "Direcciones" },
+    { icon: "settings-outline", label: "Configuración" },
   ];
 
   return (
@@ -51,9 +52,9 @@ const PerfilScreen = () => {
       <View style={styles.opciones}>
         {opciones.map((op) => (
           <TouchableOpacity key={op.label} style={styles.opcion} activeOpacity={0.7}>
-            <Text style={styles.opcionIcono}>{op.icon}</Text>
+            <Icon name={op.icon} size={20} color={colors.textGray} style={styles.opcionIcono} />
             <Text style={styles.opcionLabel}>{op.label}</Text>
-            <Text style={styles.flecha}>›</Text>
+            <Icon name="chevron-forward" size={20} color={colors.textLight} />
           </TouchableOpacity>
         ))}
       </View>
@@ -114,8 +115,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  opcionIcono: { fontSize: 18, marginRight: 14 },
+  opcionIcono: { marginRight: 14 },
   opcionLabel: { flex: 1, fontSize: 15, color: colors.textDark, fontWeight: "600" },
-  flecha: { fontSize: 22, color: colors.textLight },
   logoutWrap: { paddingHorizontal: 20, marginTop: 30 },
 });

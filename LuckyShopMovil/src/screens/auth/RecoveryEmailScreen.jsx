@@ -1,10 +1,8 @@
 /**
  * RecoveryEmailScreen.jsx
  * Paso 1 de la recuperación de contraseña: el usuario ingresa su correo y el
- * backend le envía un código PIN. Al enviarse correctamente, navegamos a la
- * pantalla del PIN pasando el hook por parámetros de navegación NO es posible,
- * por eso este flujo comparte el estado a través del componente contenedor
- * RecoveryFlow (ver navigation/AuthNavigator).
+ * backend le envía un código PIN. El estado del flujo se comparte vía
+ * RecoveryContext.
  *
  * Diseño basado en el Figma: fondo verde, tarjeta blanca con ícono de candado,
  * título, instrucciones, campo de correo y botón vino "Enviar código PIN".
@@ -23,6 +21,7 @@ import Logo from "../../components/Logo";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Notificacion from "../../components/Notificacion";
+import Icon from "../../components/Icon";
 import useNotificacion from "../../hooks/useNotificacion";
 import { useRecoveryContext } from "../../context/RecoveryContext";
 import { colors } from "../../theme/colors";
@@ -49,7 +48,7 @@ const RecoveryEmailScreen = ({ navigation }) => {
       {/* Encabezado con logo y botón de regreso */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Login")} hitSlop={12}>
-          <Text style={styles.volver}>←</Text>
+          <Icon name="arrow-back" size={22} color={colors.greenLogo} />
         </TouchableOpacity>
         <Logo size={20} mostrarSubtitulo={false} />
         <View style={{ width: 20 }} />
@@ -61,7 +60,7 @@ const RecoveryEmailScreen = ({ navigation }) => {
       >
         <View style={styles.tarjeta}>
           <View style={styles.iconoCirculo}>
-            <Text style={styles.icono}>🔒</Text>
+            <Icon name="lock-closed" size={24} color={colors.magenta} />
           </View>
 
           <Text style={styles.titulo}>Recuperación de contraseña</Text>
@@ -73,7 +72,7 @@ const RecoveryEmailScreen = ({ navigation }) => {
 
           <CustomInput
             label="Correo electrónico"
-            icon="✉️"
+            icon="mail-outline"
             value={email}
             onChangeText={setEmail}
             placeholder="ejemplo@correo.com"
@@ -82,7 +81,7 @@ const RecoveryEmailScreen = ({ navigation }) => {
 
           <CustomButton
             title="Enviar código PIN"
-            icon="➤"
+            icon="paper-plane-outline"
             variant="wine"
             onPress={manejarEnvio}
             loading={cargando}

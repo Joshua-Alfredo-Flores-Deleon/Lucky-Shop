@@ -17,6 +17,7 @@ import Logo from "../../components/Logo";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import Notificacion from "../../components/Notificacion";
+import Icon from "../../components/Icon";
 import useNotificacion from "../../hooks/useNotificacion";
 import { useRecoveryContext } from "../../context/RecoveryContext";
 import { colors } from "../../theme/colors";
@@ -42,7 +43,7 @@ const RecoveryNewPasswordScreen = ({ navigation }) => {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={styles.volver}>←</Text>
+          <Icon name="arrow-back" size={22} color={colors.greenLogo} />
         </TouchableOpacity>
         <Logo size={20} mostrarSubtitulo={false} />
         <View style={{ width: 20 }} />
@@ -56,12 +57,12 @@ const RecoveryNewPasswordScreen = ({ navigation }) => {
           <Text style={styles.titulo}>Nueva Contraseña</Text>
           <Text style={styles.descripcion}>
             Crea una contraseña nueva que sea fácil de recordar pero difícil de
-            adivinar. Te recomendamos usar una combinación de letras y números. 🍀
+            adivinar. Te recomendamos usar una combinación de letras y números.
           </Text>
 
           <CustomInput
             label="Nueva contraseña"
-            icon="🔒"
+            icon="lock-closed-outline"
             value={password}
             onChangeText={setPassword}
             placeholder="••••••••"
@@ -69,7 +70,7 @@ const RecoveryNewPasswordScreen = ({ navigation }) => {
           />
           <CustomInput
             label="Confirmar contraseña"
-            icon="🔁"
+            icon="refresh-outline"
             value={confirmar}
             onChangeText={setConfirmar}
             placeholder="••••••••"

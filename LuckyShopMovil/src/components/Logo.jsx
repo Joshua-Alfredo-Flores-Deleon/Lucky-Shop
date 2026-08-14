@@ -1,22 +1,27 @@
 /**
  * Logo.jsx
- * Componente reutilizable con el logotipo de LuckyShop: "Lucky" en magenta y
- * "sh🍀p" en verde (el trébol reemplaza la "o", igual que en el diseño de
- * Figma). Recibe un `size` opcional para reutilizarlo en distintas pantallas.
+ * Componente reutilizable con el logotipo de LuckyShop. Usa la imagen del
+ * wordmark ("Luckysh🍀p") para verse idéntico en todos los dispositivos,
+ * evitando depender de emojis. El `size` controla la altura del logo.
  */
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Image, Text, StyleSheet } from "react-native";
 import { colors } from "../theme/colors";
 
+// La imagen del wordmark tiene proporción ~3.83:1 (ancho:alto).
+const RELACION_ASPECTO = 3.83;
+
 const Logo = ({ size = 26, mostrarSubtitulo = true }) => {
+  // `size` se interpreta como la altura aproximada del texto del logo.
+  const alto = size * 1.15;
+  const ancho = alto * RELACION_ASPECTO;
+
   return (
     <View style={styles.contenedor}>
-      <Text style={[styles.texto, { fontSize: size }]}>
-        <Text style={styles.lucky}>Lucky</Text>
-        <Text style={styles.sh}>sh</Text>
-        <Text style={styles.trebol}>🍀</Text>
-        <Text style={styles.sh}>p</Text>
-      </Text>
+      <Image
+        source={require("../../assets/logo-wordmark.png")}
+        style={{ width: ancho, height: alto, resizeMode: "contain" }}
+      />
       {mostrarSubtitulo && <Text style={styles.subtitulo}>BY LESLIE</Text>}
     </View>
   );
@@ -26,10 +31,6 @@ export default Logo;
 
 const styles = StyleSheet.create({
   contenedor: { alignItems: "center" },
-  texto: { fontWeight: "800", letterSpacing: 0.5 },
-  lucky: { color: colors.magenta },
-  sh: { color: colors.greenLogo },
-  trebol: { fontSize: 16 },
   subtitulo: {
     fontSize: 8,
     letterSpacing: 3,

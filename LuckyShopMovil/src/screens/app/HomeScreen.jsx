@@ -1,8 +1,7 @@
 /**
  * HomeScreen.jsx
  * Pantalla principal (Home). Muestra:
- *  - Un saludo de bienvenida con el NOMBRE REAL del usuario logueado (tomado del
- *    AuthContext).
+ *  - Un saludo de bienvenida con el NOMBRE REAL del usuario logueado (AuthContext).
  *  - Barra de búsqueda que filtra productos por texto.
  *  - Carrusel de categorías (datos reales por slug).
  *  - Sección "Bolsas de la suerte" (datos reales del endpoint /api/bolsas).
@@ -26,6 +25,7 @@ import Logo from "../../components/Logo";
 import CategoryChip from "../../components/CategoryChip";
 import ProductCard from "../../components/ProductCard";
 import Loader from "../../components/Loader";
+import Icon from "../../components/Icon";
 import useProductos from "../../hooks/useProductos";
 import useBolsas from "../../hooks/useBolsas";
 import { useAuth } from "../../context/AuthContext";
@@ -51,12 +51,12 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* Saludo con nombre real */}
-      <Text style={styles.saludo}>Hola, {nombre} 👋</Text>
+      <Text style={styles.saludo}>Hola, {nombre}</Text>
       <Text style={styles.saludoSub}>Descubre tu próxima pieza de la suerte</Text>
 
       {/* Búsqueda */}
       <View style={styles.buscador}>
-        <Text style={styles.lupa}>🔍</Text>
+        <Icon name="search" size={16} color={colors.textGray} style={styles.lupa} />
         <TextInput
           style={styles.buscadorInput}
           value={busqueda}
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 14,
   },
-  lupa: { fontSize: 15, marginRight: 8 },
+  lupa: { marginRight: 8 },
   buscadorInput: { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.textDark },
   categorias: { marginTop: 18 },
   categoriasContenido: { paddingHorizontal: 20 },

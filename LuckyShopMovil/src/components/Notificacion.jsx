@@ -11,13 +11,14 @@
  *  - onHide:  callback cuando termina de ocultarse
  */
 import React, { useEffect, useRef } from "react";
-import { Animated, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, Text, StyleSheet, TouchableOpacity, View } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const CONFIG = {
-  success: { fondo: colors.success, icono: "✓" },
-  error: { fondo: colors.danger, icono: "!" },
-  info: { fondo: colors.greenBg, icono: "i" },
+  success: { fondo: colors.success, icono: "checkmark-circle" },
+  error: { fondo: colors.danger, icono: "alert-circle" },
+  info: { fondo: colors.greenBg, icono: "information-circle" },
 };
 
 const Notificacion = ({ visible, tipo = "info", mensaje, onHide }) => {
@@ -48,12 +49,12 @@ const Notificacion = ({ visible, tipo = "info", mensaje, onHide }) => {
     <Animated.View
       style={[styles.contenedor, { backgroundColor: config.fondo, transform: [{ translateY }] }]}
     >
-      <Text style={styles.icono}>{config.icono}</Text>
+      <Icon name={config.icono} size={20} color={colors.white} />
       <Text style={styles.mensaje} numberOfLines={2}>
         {mensaje}
       </Text>
       <TouchableOpacity onPress={ocultar} hitSlop={10}>
-        <Text style={styles.cerrar}>✕</Text>
+        <Icon name="close" size={18} color={colors.white} />
       </TouchableOpacity>
     </Animated.View>
   );
@@ -79,13 +80,5 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-  icono: {
-    color: colors.white,
-    fontWeight: "800",
-    fontSize: 16,
-    width: 22,
-    textAlign: "center",
-  },
   mensaje: { flex: 1, color: colors.white, fontSize: 14, fontWeight: "600", marginHorizontal: 8 },
-  cerrar: { color: colors.white, fontSize: 14, fontWeight: "700" },
 });

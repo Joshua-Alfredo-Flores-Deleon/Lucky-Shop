@@ -7,6 +7,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Logo from "../../components/Logo";
+import Icon from "../../components/Icon";
 import { colors } from "../../theme/colors";
 
 const CarritoScreen = () => {
@@ -19,7 +20,7 @@ const CarritoScreen = () => {
       <Text style={styles.titulo}>Tu carrito</Text>
 
       <View style={styles.centro}>
-        <Text style={styles.emoji}>🛒</Text>
+        <Icon name="cart-outline" size={54} color={colors.textLight} />
         <Text style={styles.vacioTitulo}>Tu carrito está vacío</Text>
         <Text style={styles.vacioTexto}>
           Explora la tienda y agrega tus piezas de la suerte favoritas.
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
   header: { paddingTop: 54, paddingHorizontal: 20, paddingBottom: 6 },
   titulo: { fontSize: 24, fontWeight: "800", color: colors.textDark, paddingHorizontal: 20, marginTop: 6 },
   centro: { flex: 1, alignItems: "center", justifyContent: "center", padding: 30 },
-  emoji: { fontSize: 54, marginBottom: 16 },
-  vacioTitulo: { fontSize: 18, fontWeight: "800", color: colors.textDark, marginBottom: 8 },
+  vacioTitulo: { fontSize: 18, fontWeight: "800", color: colors.textDark, marginBottom: 8, marginTop: 16 },
   vacioTexto: { fontSize: 14, color: colors.textGray, textAlign: "center", lineHeight: 20 },
 });

@@ -15,12 +15,13 @@
 import React from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
 import CustomButton from "./CustomButton";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const CONFIG = {
-  success: { fondo: colors.greenSoft, color: colors.greenLogo, icono: "✓" },
-  error: { fondo: "#FEE2E2", color: colors.danger, icono: "✕" },
-  info: { fondo: colors.pinkTint, color: colors.magenta, icono: "i" },
+  success: { fondo: colors.greenSoft, color: colors.greenLogo, icono: "checkmark-circle" },
+  error: { fondo: "#FEE2E2", color: colors.danger, icono: "close-circle" },
+  info: { fondo: colors.pinkTint, color: colors.magenta, icono: "information-circle" },
 };
 
 const AlertModal = ({
@@ -38,7 +39,7 @@ const AlertModal = ({
       <View style={styles.fondo}>
         <View style={styles.tarjeta}>
           <View style={[styles.iconoCirculo, { backgroundColor: config.fondo }]}>
-            <Text style={[styles.icono, { color: config.color }]}>{config.icono}</Text>
+            <Icon name={config.icono} size={34} color={config.color} />
           </View>
           <Text style={[styles.titulo, { color: config.color }]}>{titulo}</Text>
           {mensaje ? <Text style={styles.mensaje}>{mensaje}</Text> : null}
@@ -80,7 +81,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 16,
   },
-  icono: { fontSize: 30, fontWeight: "800" },
   titulo: { fontSize: 19, fontWeight: "800", textAlign: "center", marginBottom: 8 },
   mensaje: {
     fontSize: 14,

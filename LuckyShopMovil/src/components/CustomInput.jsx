@@ -5,7 +5,7 @@
  *
  * Props principales:
  *  - label:        etiqueta encima del campo
- *  - icon:         emoji/ícono a la izquierda (ej: "✉️", "🔒")
+ *  - icon:         nombre de icono Ionicons a la izquierda (ej: "mail-outline")
  *  - value/onChangeText: control del texto
  *  - placeholder:  texto de ayuda
  *  - secure:       si es true, oculta el texto y muestra el ojito
@@ -13,6 +13,7 @@
  */
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const CustomInput = ({
@@ -32,7 +33,7 @@ const CustomInput = ({
     <View style={styles.contenedor}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
       <View style={styles.caja}>
-        {icon ? <Text style={styles.icono}>{icon}</Text> : null}
+        {icon ? <Icon name={icon} size={18} color={colors.textGray} style={styles.icono} /> : null}
         <TextInput
           style={styles.input}
           value={value}
@@ -45,7 +46,7 @@ const CustomInput = ({
         />
         {secure ? (
           <TouchableOpacity onPress={() => setOculto((v) => !v)} hitSlop={10}>
-            <Text style={styles.ojo}>{oculto ? "👁️" : "🙈"}</Text>
+            <Icon name={oculto ? "eye-outline" : "eye-off-outline"} size={20} color={colors.textGray} />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -70,12 +71,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 14,
   },
-  icono: { fontSize: 16, marginRight: 8, color: colors.textGray },
+  icono: { marginRight: 8 },
   input: {
     flex: 1,
     paddingVertical: 14,
     fontSize: 15,
     color: colors.textDark,
   },
-  ojo: { fontSize: 18, paddingLeft: 8 },
 });

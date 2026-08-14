@@ -12,6 +12,7 @@
  */
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const ProductCard = ({ producto, onPress, esFavorito = false, onToggleFav }) => {
@@ -29,7 +30,11 @@ const ProductCard = ({ producto, onPress, esFavorito = false, onToggleFav }) => 
           <View style={[styles.imagen, styles.imagenVacia]} />
         )}
         <TouchableOpacity style={styles.favBtn} onPress={onToggleFav} hitSlop={8}>
-          <Text style={styles.favIcon}>{esFavorito ? "❤️" : "🤍"}</Text>
+          <Icon
+            name={esFavorito ? "heart" : "heart-outline"}
+            size={16}
+            color={esFavorito ? colors.magenta : colors.textGray}
+          />
         </TouchableOpacity>
       </View>
 
@@ -67,7 +72,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  favIcon: { fontSize: 15 },
   categoria: {
     fontSize: 10,
     color: colors.textGray,

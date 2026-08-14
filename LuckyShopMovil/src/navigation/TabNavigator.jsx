@@ -5,23 +5,23 @@
  * parte privada de la app (usuario ya logueado).
  */
 import React from "react";
-import { Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HomeScreen from "../screens/app/HomeScreen";
 import CategoriasScreen from "../screens/app/CategoriasScreen";
 import CarritoScreen from "../screens/app/CarritoScreen";
 import PerfilScreen from "../screens/app/PerfilScreen";
+import Icon from "../components/Icon";
 import { colors } from "../theme/colors";
 
 const Tab = createBottomTabNavigator();
 
-// Íconos de cada pestaña (emoji para no depender de fuentes externas).
+// Nombre de icono Ionicons para cada pestaña.
 const ICONOS = {
-  Inicio: "🏠",
-  Categorias: "🗂️",
-  Carrito: "🛒",
-  Perfil: "👤",
+  Inicio: "home",
+  Categorias: "grid",
+  Carrito: "cart",
+  Perfil: "person",
 };
 
 const TabNavigator = () => {
@@ -38,8 +38,12 @@ const TabNavigator = () => {
           borderTopColor: colors.border,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: "700" },
-        tabBarIcon: ({ color }) => (
-          <Text style={{ fontSize: 20, color }}>{ICONOS[route.name]}</Text>
+        tabBarIcon: ({ color, focused }) => (
+          <Icon
+            name={focused ? ICONOS[route.name] : `${ICONOS[route.name]}-outline`}
+            size={22}
+            color={color}
+          />
         ),
       })}
     >
