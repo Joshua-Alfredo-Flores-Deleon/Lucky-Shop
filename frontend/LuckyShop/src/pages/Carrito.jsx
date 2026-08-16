@@ -1,84 +1,30 @@
+//Carrito.jsx - Pagina de carrito donde estaran los productos que ordenara el cliente
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import Eliminar from '../assets/icons8-basura-50.png'
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const Carrito = () => {
+  // Productos en el carrito y funciones para modificarlo (viene del contexto global)
   const { items, removeItem, updateCantidad, total, clearCart } = useCart()
   const { cliente } = useAuth()
+
   const [loading, setLoading]  = useState(false)
   const [error,   setError]    = useState('')
-  const [success, setSuccess]  = useState(false)
+  const [success, setSuccess]  = useState(false) // true cuando el pago se completó (pantalla de éxito)
 
+  // Costo de envío fijo, solo se cobra si hay productos en el carrito
   const COSTO_ENVIO = items.length > 0 ? 4.00 : 0
   const totalFinal  = total + COSTO_ENVIO
 
-  const handleComprar = async () => {
-    // No debería ocurrir: esta página ya está protegida por PrivateRoute,
-    // pero validamos igual antes de golpear el backend.
-    const clienteId = cliente?._id
-    if (!clienteId) {
-      setError('Debes iniciar sesión para completar la compra')
-      return
-    }
+  // El flujo de compra se ha trasladado a la página dedicada de Pago (/pago)
 
-    setError('')
-    setLoading(true)
-
-    try {
-      // 1. Crear carrito en el backend
-      const carritoPayload = {
-        idCliente: clienteId,
-        productos: items.map((i) => ({
-          idProducto: i._id,
-          cantidad:   i.cantidad,
-          subtotal:   i.precio * i.cantidad,
-        })),
-        total: totalFinal,
-        estado: 'activo',
-      }
-
-      const resCarrito = await fetch(`${BASE_URL}/carrito`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ carrito: carritoPayload }),
-      })
-
-      if (!resCarrito.ok) throw new Error('Error al procesar el carrito')
-      const carritoData = await resCarrito.json()
-
-      // 2. Crear venta
-      const ventaPayload = {
-        IdCarrito:  carritoData._id || carritoData.id,
-        metodoPago: 'pendiente',
-        statusPago: false,
-        fecha:      new Date().toISOString(),
-        estado:     'pendiente',
-      }
-
-      const resVenta = await fetch(`${BASE_URL}/venta`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(ventaPayload),
-      })
-
-      if (!resVenta.ok) throw new Error('Error al crear la venta')
-
-      clearCart()
-      setSuccess(true)
-    } catch (err) {
-      setError(err.message || 'Error al procesar la compra')
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  // Pantalla de confirmación tras un pago exitoso
   if (success) return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -100,15 +46,16 @@ const Carrito = () => {
   )
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 flex-1">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Carrito de compras</h1>
 
         {items.length === 0 ? (
+          // Carrito vacío: invita a explorar productos
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">🛒</p>
+           
             <p className="text-gray-400 mb-6">Tu carrito está vacío</p>
             <Link to="/home" className="bg-pink-500 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-pink-600 transition-colors">
               Explorar productos
@@ -117,20 +64,20 @@ const Carrito = () => {
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
 
-            {/* Lista de productos */}
+            {/* Lista de productos en el carrito */}
             <div className="flex-1">
               <div className="rounded-2xl border border-gray-100 overflow-hidden">
-                {/* Encabezado tabla */}
+                {/* Encabezado de la tabla de productos */}
                 <div className="grid grid-cols-4 bg-pink-100 px-5 py-3 text-sm font-semibold text-gray-700">
                   <span className="col-span-2">Productos</span>
                   <span className="text-center">Cantidad</span>
                   <span className="text-center">Acción</span>
                 </div>
 
-                {/* Items */}
+                {/* Una fila por cada producto en el carrito */}
                 {items.map((item) => (
                   <div key={item._id} className="grid grid-cols-4 items-center px-5 py-4 border-b border-gray-50 last:border-0">
-                    {/* Producto */}
+                    {/* Imagen, nombre y precio del producto */}
                     <div className="col-span-2 flex items-center gap-3">
                       <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">
                         {item.imagenPresentacion ? (
@@ -145,31 +92,38 @@ const Carrito = () => {
                       </div>
                     </div>
 
-                    {/* Cantidad */}
+                    {/* Control de cantidad: restar, mostrar cantidad, sumar */}
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad - 1)}
                         className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
                       >
-                        −
+                      
                       </button>
                       <span className="w-8 text-center text-sm font-semibold">{item.cantidad}</span>
+                      {/* El botón de sumar se deshabilita si ya se alcanzó el stock disponible */}
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad + 1)}
-                        className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
+                        disabled={item.cantidad >= item.stock}
+                        className={`w-7 h-7 rounded-full border flex items-center justify-center font-bold transition-colors ${
+                          item.cantidad >= item.stock 
+                          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50' 
+                          : 'border-gray-300 text-gray-600 hover:border-pink-400 hover:text-pink-500'
+                        }`}
+                        title={item.cantidad >= item.stock ? "Stock máximo alcanzado" : "Aumentar cantidad"}
                       >
                         +
                       </button>
                     </div>
 
-                    {/* Eliminar */}
+                    {/* Botón para quitar el producto del carrito */}
                     <div className="flex justify-center">
                       <button
                         onClick={() => removeItem(item._id)}
                         className="text-gray-400 hover:text-red-500 transition-colors text-xl"
                         title="Eliminar"
                       >
-                        
+                        <img src={Eliminar} alt="" className='w-7'/>
                       </button>
                     </div>
                   </div>
@@ -177,7 +131,7 @@ const Carrito = () => {
               </div>
             </div>
 
-            {/* Resumen */}
+            {/* Resumen del pedido: subtotal, envío, total y botón de pago */}
             <div className="lg:w-72">
               <div className="rounded-2xl border border-gray-100 p-5 sticky top-24">
                 <h3 className="font-bold text-gray-900 mb-4">Resumen de pedido</h3>
@@ -203,13 +157,13 @@ const Carrito = () => {
 
                 {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
 
-                <button
-                  onClick={handleComprar}
-                  disabled={loading}
-                  className="w-full bg-gray-900 text-white py-3 rounded-2xl font-semibold text-sm hover:bg-gray-700 transition-colors disabled:opacity-60"
+                {/* Lleva a la página de pago dedicada, donde se completa la compra */}
+                <Link
+                  to="/pago"
+                  className="block w-full text-center bg-[#1e293b] hover:bg-[#0f172a] text-white py-3 rounded-2xl font-semibold text-sm transition-all hover:shadow-lg active:scale-98"
                 >
-                  {loading ? 'Procesando...' : 'Comprar'}
-                </button>
+                  Proceder al pago
+                </Link>
               </div>
             </div>
           </div>
@@ -221,4 +175,4 @@ const Carrito = () => {
   )
 }
 
-export default Carrito
+export default Carrito;

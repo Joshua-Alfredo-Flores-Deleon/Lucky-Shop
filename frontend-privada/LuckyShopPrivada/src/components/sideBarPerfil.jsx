@@ -1,17 +1,20 @@
-import { Link, useNavigate } from 'react-router-dom'
-import './sideBarPerfil.css'
+import { Link, useNavigate } from 'react'
+import './SideBarPerfil.css'
 
+// URL base de la API backend para solicitudes de autenticación
 const BASE_URL = 'http://localhost:4000/api'
 
-// Sidebar simplificado, solo para la pantalla de Perfil: sin el menú completo de secciones, únicamente "Inicio" (regresa al panel con todo el menú) y "Cerrar sesión".
+// Componente de barra lateral simplificado para la pantalla de Perfil.
+// Incluye navegación directa al Panel Principal y cierre seguro de sesión.
 const SideBarPerfil = () => {
   const navigate = useNavigate()
 
+  // Realiza la petición de cierre de sesión al servidor y limpia el almacenamiento local
   const cerrarSesion = async () => {
     try {
       await fetch(`${BASE_URL}/logout`, { method: 'POST', credentials: 'include' })
     } catch {
-      // aunque falle la petición, igual limpiamos la sesión local y navegamos al login
+      // Si la petición falla por red o servidor, continúa con la limpieza local
     } finally {
       localStorage.removeItem('luckyshop_token')
       localStorage.removeItem('luckyshop_user')
@@ -24,14 +27,20 @@ const SideBarPerfil = () => {
   return (
     <nav className="luckyshop-nav-container">
       <aside className="sidebar-perfil">
+        {/* Espacio superior para empujar las opciones hacia la base */}
         <div className="sidebar-perfil-espacio" />
 
+        {/* Sección inferior con enlace a Inicio y botón de Salir */}
         <div className="sidebar-perfil-footer">
           <div className="sidebar-perfil-divider"></div>
+
+          {/* Enlace de regreso al dashboard principal */}
           <Link to="/home" className="sidebar-perfil-link">
             <IconoCasa />
             <span>Inicio</span>
           </Link>
+
+          {/* Botón de acción para destruición de sesión */}
           <button onClick={cerrarSesion} className="sidebar-perfil-link sidebar-perfil-boton">
             <IconoSalir />
             <span>Cerrar sesión</span>
@@ -42,6 +51,7 @@ const SideBarPerfil = () => {
   )
 }
 
+// Icono vectorial SVG para la acción "Inicio"
 function IconoCasa() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -52,6 +62,7 @@ function IconoCasa() {
   )
 }
 
+// Icono vectorial SVG para la acción "Cerrar sesión"
 function IconoSalir() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -62,4 +73,4 @@ function IconoSalir() {
   )
 }
 
-export default SideBarPerfil
+export default SideBarPerfil;

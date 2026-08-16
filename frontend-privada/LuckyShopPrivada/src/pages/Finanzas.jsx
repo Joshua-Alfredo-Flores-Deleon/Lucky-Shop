@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
-import Sidebar from "../components/sideBar";
+import Sidebar from "../components/SideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
-import { useFinanzas } from "../hooksP/useFinanzas";
+import { useFinanzas } from "../hooks/useFinanzas";
 import ModalRegistrarGasto from "../components/ModalRegistrarGasto";
 import ModalExito from "../components/ModalExito";
 import ConfirmModal from "../components/ConfirmModal";
@@ -39,16 +39,19 @@ export default function Finanzas() {
   const [notifAbierta, setNotifAbierta] = useState(false);
   const [confirmEliminar, setConfirmEliminar] = useState(null); // { tipo: "gasto"|"ganancia", id, mensaje }
 
+  // Abre el modal en modo "crear" (sin gasto precargado)
   const abrirNuevoGasto = () => {
     setGastoEditando(null);
     setModalGastoAbierto(true);
   };
 
+  // Abre el modal en modo "editar", precargado con los datos del gasto seleccionado
   const abrirEditarGasto = (movimiento) => {
     setGastoEditando(movimiento.original);
     setModalGastoAbierto(true);
   };
 
+  // Guarda el gasto (crea uno nuevo o actualiza el existente según el modo)
   const manejarGuardarGasto = async (datosGasto) => {
     try {
       setErrorGasto(null);
@@ -64,12 +67,14 @@ export default function Finanzas() {
     }
   };
 
+  // Cierra el modal de éxito y limpia el estado relacionado al gasto recién guardado
   const cerrarModalExito = () => {
     setModalExitoAbierto(false);
     limpiarUltimoGasto();
     setGastoEditando(null);
   };
 
+  // Abre el modal de confirmación antes de eliminar un gasto
   const pedirEliminar = (movimiento) => {
     setConfirmEliminar({
       id: movimiento.id,
@@ -77,6 +82,7 @@ export default function Finanzas() {
     });
   };
 
+  // Elimina el gasto tras la confirmación del usuario
   const confirmarEliminar = async () => {
     if (!confirmEliminar) return;
     try {
@@ -103,6 +109,7 @@ export default function Finanzas() {
       ) : (
         <>
           <div className="finanzas-cuerpo-superior">
+            {/* Tarjeta con la gráfica de tendencia de ingresos/gastos */}
             <div className="finanzas-tarjeta">
               <p className="finanzas-tarjeta-titulo">Tendencia de ingresos mensuales</p>
               <div className="finanzas-grafica">
@@ -121,6 +128,7 @@ export default function Finanzas() {
               </button>
             </div>
 
+            {/* Tarjeta con el resumen numérico del período (ingresos, pérdidas, balance) */}
             <div className="finanzas-tarjeta">
               <p className="finanzas-tarjeta-titulo" style={{ borderLeft: "none", paddingLeft: 0 }}>
                 Resumen del periodo
@@ -142,6 +150,7 @@ export default function Finanzas() {
             </div>
           </div>
 
+          {/* Tabla de últimos movimientos (ganancias o gastos, según el filtro) */}
           <div className="finanzas-tabla-wrap">
             <div className="finanzas-tabla-encabezado">
               <p>
@@ -187,6 +196,7 @@ export default function Finanzas() {
         </>
       )}
 
+      {/* Modal para crear/editar un gasto */}
       <ModalRegistrarGasto
         abierto={modalGastoAbierto}
         gasto={gastoEditando}
@@ -194,6 +204,7 @@ export default function Finanzas() {
         onGuardar={manejarGuardarGasto}
         error={errorGasto}
       />
+      {/* Modal de confirmación tras guardar/actualizar un gasto exitosamente */}
       <ModalExito
         abierto={modalExitoAbierto}
         mensaje={
@@ -205,6 +216,7 @@ export default function Finanzas() {
         }
         onCerrar={cerrarModalExito}
       />
+      {/* Modal de confirmación antes de eliminar un gasto */}
       <ConfirmModal
         isOpen={!!confirmEliminar}
         title="Confirmación"
@@ -219,6 +231,8 @@ export default function Finanzas() {
   );
 }
 
+// Fila individual de la tabla de movimientos: si es un gasto, se puede expandir
+// para mostrar acciones de editar/eliminar (las ganancias no se editan aquí)
 function FilaMovimiento({ movimiento, abierta, onToggle, onEditar, onEliminar }) {
   const esGasto = movimiento.tipo === "gasto";
 
@@ -236,6 +250,7 @@ function FilaMovimiento({ movimiento, abierta, onToggle, onEditar, onEliminar })
         </td>
         <td>{movimiento.fecha ? new Date(movimiento.fecha).toLocaleDateString("es-SV") : "—"}</td>
         <td style={{ textAlign: "right" }}>
+          {/* El botón de expandir solo aparece en gastos (las ganancias no tienen acciones aquí) */}
           {esGasto && (
             <button className="finanzas-boton-expandir" onClick={onToggle} aria-label="Ver más detalles">
               <IconoChevron abierta={abierta} />
@@ -243,6 +258,7 @@ function FilaMovimiento({ movimiento, abierta, onToggle, onEditar, onEliminar })
           )}
         </td>
       </tr>
+      {/* Fila expandida con las acciones de editar/eliminar, solo para gastos */}
       {esGasto && abierta && (
         <tr className="finanzas-fila-detalle">
           <td colSpan={6}>
@@ -263,6 +279,7 @@ function FilaMovimiento({ movimiento, abierta, onToggle, onEditar, onEliminar })
   );
 }
 
+// Ícono de flecha (chevron), rota 180° cuando la fila está expandida
 function IconoChevron({ abierta }) {
   return (
     <svg
@@ -281,6 +298,7 @@ function IconoChevron({ abierta }) {
   );
 }
 
+// Ícono de lápiz (editar)
 function IconoLapiz() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -290,6 +308,7 @@ function IconoLapiz() {
   );
 }
 
+// Ícono de basura (eliminar)
 function IconoBasura() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

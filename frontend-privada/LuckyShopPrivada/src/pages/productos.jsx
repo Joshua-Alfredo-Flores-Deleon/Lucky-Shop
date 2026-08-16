@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react'
-import Sidebar from '../components/sideBar'
+import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
-import { useProductos } from '../hooksP/useProductos'
-import '../sideBar.css'
+import PromoModal from '../components/PromoModal'
+import { useProductos } from '../hooks/useProductos'
+import '../SideBar.css'
 import '../productosPage.css'
 
 const CATEGORIAS = ['Todo', 'Anillos', 'Pulseras', 'Aretes', 'Charms', 'Bolsas', 'Collares', 'Otros']
@@ -12,7 +13,7 @@ const ESTADOS = ['activo', 'inactivo', 'agotado']
 
 /*  SUBCOMPONENTES DE MODALES   */
 
-// Modal de confirmación
+// Modal de confirmación genérico (se usa antes de crear/editar/eliminar)
 const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   <div className="pm-overlay" onClick={onCancel}>
     <div className="pm-modal pm-confirm-modal" onClick={e => e.stopPropagation()}>
@@ -29,7 +30,7 @@ const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   </div>
 )
 
-// Modal de éxito
+// Modal de éxito, mostrado tras completar una acción (crear/editar/eliminar)
 const SuccessModal = ({ mensaje, onClose }) => (
   <div className="pm-overlay" onClick={onClose}>
     <div className="pm-modal pm-success-modal" onClick={e => e.stopPropagation()}>
@@ -46,7 +47,7 @@ const SuccessModal = ({ mensaje, onClose }) => (
   </div>
 )
 
-// Modal de detalles del producto
+// Modal de detalles completos de un producto (solo lectura)
 const DetallesModal = ({ producto, onClose }) => {
   if (!producto) return null
   return (
@@ -109,7 +110,7 @@ const DetallesModal = ({ producto, onClose }) => {
   )
 }
 
-// Modal de Agregar / Editar producto
+// Modal de Agregar / Editar producto (mismo formulario para ambos modos)
 const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
   const [form, setForm] = useState({
     nombre: producto?.nombre || '',
@@ -129,6 +130,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
+  // Guarda el archivo elegido y genera una vista previa local (sin subirlo todavía)
   const handleImageChange = e => {
     const file = e.target.files[0]
     if (!file) return
@@ -136,6 +138,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
     setImagenPreview(URL.createObjectURL(file))
   }
 
+  // Valida lo mínimo (nombre y precio) y delega la confirmación al componente padre
   const handleSubmit = () => {
     if (!form.nombre.trim() || !form.precio) return
     onConfirmRequest({ form, imageFile, productoId: producto?._id })
@@ -149,7 +152,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
           <h2>{modo === 'agregar' ? 'Nuevo producto' : 'Editar producto'}</h2>
         </div>
         <div className="pm-form-body">
-          {/* Columna imagen */}
+          {/* Columna imagen: haz clic para elegir un archivo */}
           <div className="pm-form-img-col">
             <div
               className="pm-form-img-box"
@@ -169,7 +172,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
             <p className="pm-form-img-label">Agregar foto</p>
           </div>
 
-          {/* Columna campos */}
+          {/* Columna de campos del formulario */}
           <div className="pm-form-fields">
             <div className="pm-field-group">
               <label>Nombre de producto</label>
@@ -260,9 +263,7 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
   )
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  COMPONENTE PRINCIPAL                                     */
-/* ────────────────────────────────────────────────────────── */
+
 const Productos = () => {
   const {
     productos: productosPagina,
@@ -287,6 +288,7 @@ const Productos = () => {
   const [modalForm, setModalForm] = useState(null)                // { modo: 'agregar'|'editar', producto? }
   const [modalConfirm, setModalConfirm] = useState(null)          // { mensaje, onConfirm }
   const [modalSuccess, setModalSuccess] = useState(null)          // mensaje string
+  const [modalPromo, setModalPromo] = useState(false)             // modal de promoción
 
   /* ── Helpers de confirm ── */
   const pedirConfirmacion = (mensaje, onConfirm) => {
@@ -295,11 +297,12 @@ const Productos = () => {
 
   /* ── CRUD handlers ── */
 
-  // AGREGAR: el formulario pide confirmación antes de enviar
+  // AGREGAR: abre el formulario vacío en modo "agregar"
   const handleNuevoProducto = () => {
     setModalForm({ modo: 'agregar', producto: null })
   }
 
+  // Se llama cuando el formulario (crear o editar) pide confirmación antes de guardar
   const handleFormConfirmRequest = ({ form, imageFile, productoId }) => {
     const esEditar = !!productoId
     pedirConfirmacion(
@@ -319,12 +322,12 @@ const Productos = () => {
     )
   }
 
-  // EDITAR
+  // EDITAR: abre el formulario precargado con los datos del producto
   const handleEditar = (producto) => {
     setModalForm({ modo: 'editar', producto })
   }
 
-  // ELIMINAR
+  // ELIMINAR: pide confirmación antes de borrar
   const handleEliminar = (producto) => {
     pedirConfirmacion(
       `¿Estás segura que deseas eliminar este producto?`,
@@ -341,6 +344,7 @@ const Productos = () => {
   }
 
   /* ── Etiqueta de estado ── */
+  // Traduce el estado interno (activo/inactivo/agotado) a un texto y color visible
   const estadoBadge = (estado) => {
     const map = { activo: 'Disponible', inactivo: 'Inactivo', agotado: 'Agotado' }
     const cls = { activo: 'badge-activo', inactivo: 'badge-inactivo', agotado: 'badge-agotado' }
@@ -354,7 +358,7 @@ const Productos = () => {
 
       <main className="pm-main">
         <Nav openNotifications={() => setNotifAbierta(true)} />
-        {/* ENCABEZADO */}
+        {/* ENCABEZADO: título + buscador + botón de nuevo producto */}
         <div className="pm-header">
           <div className="pm-title-wrap">
             <h1 className="pm-title">Productos</h1>
@@ -379,7 +383,7 @@ const Productos = () => {
           </div>
         </div>
 
-        {/* CATEGORÍAS */}
+        {/* Filtro por categoría */}
         <div className="pm-categorias">
           {CATEGORIAS.map(cat => (
             <button
@@ -392,7 +396,7 @@ const Productos = () => {
           ))}
         </div>
 
-        {/* CONTENIDO */}
+        {/* Estados: carga, error, vacío */}
         {loading && (
           <div className="pm-loading">
             <div className="pm-spinner"></div>
@@ -418,20 +422,20 @@ const Productos = () => {
           <div className="pm-grid">
             {productosPagina.map(prod => (
               <div key={prod._id} className="pm-card">
-                {/* Imagen */}
+                {/* Imagen del producto + badge de estado */}
                 <div className="pm-card-img-wrap">
                   {prod.imagenPresentacion
                     ? <img src={prod.imagenPresentacion} alt={prod.nombre} className="pm-card-img" />
                     : <div className="pm-card-no-img">Sin imagen</div>}
                   {estadoBadge(prod.estado)}
                 </div>
-                {/* Info */}
+                {/* Nombre, precio y stock */}
                 <div className="pm-card-info">
                   <p className="pm-card-nombre">{prod.nombre}</p>
                   <p className="pm-card-precio">${Number(prod.precio).toFixed(2)}</p>
                   <span className="pm-card-stock">{prod.stock} unidades</span>
                 </div>
-                {/* Acciones */}
+                {/* Botones de editar/eliminar y "ver detalles" */}
                 <div className="pm-card-actions">
                   <div className="pm-card-icons">
                     <button
@@ -517,6 +521,15 @@ const Productos = () => {
         <SuccessModal
           mensaje={modalSuccess}
           onClose={() => setModalSuccess(null)}
+        />
+      )}
+
+      {/*Modal para gregar productos en promocion*/}
+
+      {modalPromo && (
+        <PromoModal
+          onClose={() => setModalPromo(false)}
+          onCreated={() => setModalSuccess('¡Promoción creada con éxito!')}
         />
       )}
 

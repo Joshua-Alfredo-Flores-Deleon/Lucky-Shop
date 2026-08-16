@@ -1,15 +1,16 @@
+//Controlador para la gestión de productos
 import productsModel from "../models/productos.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const productosController = {};
 
-//gET ALL
+//GET - Obtener todos los productos con filtros opcionales por categoría, estado y nombre
 productosController.getProductos = async (req, res) => {
   try {
     const { categoria, estado, search } = req.query;
     const filter = {};
 
-    if (categoria) filter.idCategoria = categoria;
+    if (categoria) filter.idCategoria = { $regex: new RegExp(`^${categoria}$`, "i") };
     if (estado) filter.estado = estado;
     if (search) filter.nombre = { $regex: search, $options: "i" };
 
@@ -21,7 +22,7 @@ productosController.getProductos = async (req, res) => {
   }
 };
 
-//GET BY ID
+//GET - Obtener un producto por su ID
 productosController.getProductoById = async (req, res) => {
   try {
     const producto = await productsModel.findById(req.params.id);
@@ -35,7 +36,7 @@ productosController.getProductoById = async (req, res) => {
   }
 };
 
-//INSERT
+//POST - Insertar un nuevo producto con sus imágenes
 productosController.insertProducto = async (req, res) => {
   try {
     let {
@@ -96,7 +97,7 @@ productosController.insertProducto = async (req, res) => {
   }
 };
 
-//UPDATE
+//PUT - Actualizar un producto por su ID, manteniendo imágenes existentes y agregando nuevas
 productosController.updateProducto = async (req, res) => {
   try {
     let {
@@ -171,7 +172,7 @@ productosController.updateProducto = async (req, res) => {
   }
 };
 
-// DELETE 
+//DELETE - Eliminar un producto y sus imágenes de Cloudinary
 productosController.deleteProducto = async (req, res) => {
   try {
     const producto = await productsModel.findById(req.params.id);
@@ -200,7 +201,7 @@ productosController.deleteProducto = async (req, res) => {
   }
 };
 
-//TOGGLE ESTADO 
+//PATCH - Cambiar el estado del producto entre activo e inactivo
 productosController.toggleEstado = async (req, res) => {
   try {
     const producto = await productsModel.findById(req.params.id);
@@ -222,4 +223,5 @@ productosController.toggleEstado = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default productosController;

@@ -1,3 +1,6 @@
+/* Home.css — estilos de la página "Panel de control" (Home.jsx) del panel admin */
+
+/* Encabezado: título + acciones (campana, avatar), uno a cada lado */
 .home-encabezado {
   display: flex;
   align-items: flex-start;
@@ -14,6 +17,7 @@
   padding-bottom: 8px;
 }
 
+/* Línea decorativa corta debajo del título */
 .home-titulo::after {
   content: '';
   display: block;
@@ -38,6 +42,7 @@
   padding: 4px;
 }
 
+/* Punto rojo de notificación sobre la campana */
 .home-campana-punto {
   position: absolute;
   top: 2px;
@@ -74,6 +79,7 @@
   padding: 24px 0;
 }
 
+/* Grilla de las 3 tarjetas de estadísticas (ventas, clientes, productos) */
 .home-tarjetas {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -106,6 +112,7 @@
   margin: 0;
 }
 
+/* Ícono redondeado dentro de cada tarjeta de estadística */
 .home-tarjeta-icono {
   width: 34px;
   height: 34px;
@@ -123,6 +130,7 @@
   color: #3b6d11;
 }
 
+/* Línea de tendencia (ej. "+3 más este mes") debajo del valor de una tarjeta */
 .home-tendencia-linea {
   display: flex;
   align-items: center;
@@ -132,6 +140,7 @@
   margin: 6px 0 0;
 }
 
+/* Cuerpo principal: gráfica de tendencia + tarjeta de resumen con foto de fondo */
 .home-cuerpo {
   display: grid;
   grid-template-columns: 1fr 260px;
@@ -159,6 +168,7 @@
   margin: 0;
 }
 
+/* Selector tipo "pill" para alternar entre vista Mensual/Semanal */
 .home-toggle {
   display: flex;
   background: #f3f4f6;
@@ -184,6 +194,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
+/* Gráfica de barras "hecha a mano" con CSS (no usa librería de gráficas) */
 .home-grafica-barras {
   display: flex;
   align-items: flex-end;
@@ -201,6 +212,7 @@
   position: relative;
 }
 
+/* Globo con el valor exacto, se muestra al pasar el mouse sobre la barra */
 .home-barra-globo {
   background: #111111;
   color: #ffffff;
@@ -218,6 +230,7 @@
   background: #0d2237;
 }
 
+/* Color distinto para la barra sobre la que está el mouse */
 .home-barra.activa {
   background: #0f6e56;
 }
@@ -228,6 +241,7 @@
   margin-top: 8px;
 }
 
+/* Tarjeta de resumen con imagen de fondo y degradado oscuro encima */
 .home-tarjeta-resumen {
   border-radius: 12px;
   overflow: hidden;
@@ -267,6 +281,7 @@
   margin: 12px 0 0;
 }
 
+/* En pantallas pequeñas, las tarjetas y el cuerpo pasan a una sola columna */
 @media (max-width: 860px) {
   .home-tarjetas {
     grid-template-columns: 1fr;

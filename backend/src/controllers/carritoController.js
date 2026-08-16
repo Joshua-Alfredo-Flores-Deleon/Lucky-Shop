@@ -1,10 +1,10 @@
-//Creo un array de funciones
+//Controlador para la gestión del carrito de compras
 const carritoController = {};
 //importo la colección que voy a utilizar
 import carritoModel from "../models/carrito.js";
 
 
-//SELECT
+//GET - Obtener todos los carritos de la base de datos
 carritoController.getCarrito = async (req, res) => {
     try {
         const carrito = await carritoModel.find()
@@ -15,7 +15,7 @@ carritoController.getCarrito = async (req, res) => {
     }
 }
 
-//SELECT POR ID
+//GET - Obtener un carrito por su ID
 carritoController.getCarritoById = async (req, res) => {
     try {
         const carrito = await carritoModel.findById(req.params.id)
@@ -31,10 +31,9 @@ carritoController.getCarritoById = async (req, res) => {
     }
 }
 
-//INSERT
+//POST - Insertar un nuevo carrito de compras
 carritoController.insertCarrito = async (req, res) => {
     try {
-
         const { idCliente, productos, total, estado } = req.body;
 
         const newCarrito = new carritoModel({
@@ -46,15 +45,14 @@ carritoController.insertCarrito = async (req, res) => {
 
         await newCarrito.save()
 
-        return res.status(200).json({message: "carrito Saved"})
-
+        return res.status(200).json(newCarrito) // 👈 ahora devuelve el carrito completo, con su _id
     } catch (error) {
         console.log("error"+error)
         return res.status(500).json({message: "Internal Server Error"})
     }
 }
 
-//ACTUALIZAR
+//PUT - Actualizar un carrito existente por su ID
 carritoController.updateCarrito = async (req, res) => {
     try {
         const { idCliente, productos, total, estado } = req.body;
@@ -76,7 +74,7 @@ carritoController.updateCarrito = async (req, res) => {
     }
 }
 
-//ELIMINAR
+//DELETE - Eliminar un carrito por su ID
 carritoController.deleteCarrito = async (req, res) => {
     try {
     const carritoDeleted = await carritoModel.findByIdAndDelete(req.params.id)
@@ -93,4 +91,5 @@ carritoController.deleteCarrito = async (req, res) => {
     }
 }
 
+//Exportamos el controlador para usarlo en las rutas
 export default carritoController;

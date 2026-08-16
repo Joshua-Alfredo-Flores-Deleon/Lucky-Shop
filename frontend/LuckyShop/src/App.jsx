@@ -14,35 +14,55 @@ import Register from './pages/Register.jsx'
 import BolsasSuerte from './pages/BolsasSuerte.jsx'
 import LoginCliente from './pages/LoginCliente.jsx'
 import RecuperarPassword from './pages/RecuperarPassword.jsx'
-import Anillos from './pages/Anillos.jsx'
 import AcercaDe from './pages/AcercaDe.jsx'
 import Perfil from './pages/Perfil.jsx'
+import Contactanos from './pages/contactanos.jsx'
+import Politicas from './pages/Politicas.jsx'
+import Pago from './pages/Pago.jsx'
+import Favoritos from './pages/Favoritos.jsx'
+import Promociones from './pages/Promociones.jsx'
+import GuiaRegalo from './pages/GuiaRegalo.jsx'
+import Videos from './pages/Videos.jsx'
 
+// App.jsx — punto de entrada del sitio público de Lucky Shop.
+// Define todas las rutas: las públicas (catálogo, login, etc.) y las privadas
+// (carrito, pago, perfil, etc.), protegidas por PrivateRoute.
 function App() {
   return (
+    // AuthProvider da acceso a la sesión del cliente en toda la app
     <AuthProvider>
+      {/* CartProvider da acceso al carrito de compras en toda la app */}
       <CartProvider>
         <Router>
           <Routes>
 
-            {/* ── Rutas públicas: catálogo navegable sin sesión ── */}
-            <Route path="/"                            element={<Navigate to="/home" replace />} />
-            <Route path="/login"                      element={<LoginCliente />} />
-            <Route path="/register"                    element={<Register />} />
-            <Route path="/recuperar-password"           element={<RecuperarPassword />} />
+            {/*Rutas públicas: catálogo navegable sin sesión */}
+            <Route path="/"                 element={<Navigate to="/home" replace />} />
+            <Route path="/login"            element={<LoginCliente />} />
+            <Route path="/register"         element={<Register />} />
+            <Route path="/recuperar-password"  element={<RecuperarPassword />} />
             <Route path="/home"                element={<HomeCliente />} />
             <Route path="/buscar"          element={<Buscar />} />
             <Route path="/categoria/:cat"  element={<Categoria />} />
             <Route path="/producto/:id"    element={<ProductoDetalle />} />
-            <Route path="/anillos"         element={<Anillos />} />
+            <Route path="/anillos"         element={<Navigate to="/categoria/anillos" replace />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
-            <Route path="/acercaDe"       element={<AcercaDe />} />
+            <Route path="/acercaDe"        element={<AcercaDe />} />
+            <Route path="/contactanos"     element={<Contactanos />} />
+            <Route path="/politicas"       element={<Politicas />} />
+            <Route path="/guia-regalo"     element={<GuiaRegalo />} />
+            <Route path="/promociones"     element={<Promociones />} />
 
-            {/* ── Requieren sesión: comprar / ver historial ── */}
+            {/* Requieren sesión — envueltas en PrivateRoute, que redirige a /login si no hay sesión */}
             <Route element={<PrivateRoute />}>
               <Route path="/carrito"         element={<Carrito />} />
+              <Route path="/pago"            element={<Pago />} />
               <Route path="/historial"       element={<Historial />} />
               <Route path="/perfil"          element={<Perfil />} />
+              <Route path="/favoritos"       element={<Favoritos />} />
+              <Route path="/Favoritos"       element={<Favoritos />} />
+              <Route path="/videos"          element={<Videos />} />
+              
             </Route>
           </Routes>
         </Router>

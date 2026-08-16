@@ -1,9 +1,10 @@
+//Controlador para gestionar el perfil del cliente
 import clientsModel from "../models/Clientes.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const perfilClienteController = {};
 
-// GET /api/perfilCliente — trae los datos del cliente autenticado (via cookie)
+//GET - Obtener los datos del cliente autenticado
 perfilClienteController.getMyProfile = async (req, res) => {
   try {
     const cliente = await clientsModel.findById(req.user.id).select("-password");
@@ -19,8 +20,7 @@ perfilClienteController.getMyProfile = async (req, res) => {
   }
 };
 
-// PUT /api/perfilCliente — actualiza los datos del cliente autenticado
-// Acepta un archivo opcional "avatar" (multer + cloudinary) para la foto de perfil.
+//PUT - Actualizar los datos del cliente autenticado
 perfilClienteController.updateMyProfile = async (req, res) => {
   try {
     let { name, lastName, gender, phone, birthdate, email } = req.body;
@@ -81,6 +81,7 @@ perfilClienteController.updateMyProfile = async (req, res) => {
   }
 };
 
+//GET - Obtener la lista de productos favoritos del cliente
 perfilClienteController.getFavoritos = async (req, res) => {
   try {
     const cliente = await clientsModel.findById(req.user.id).populate("favoritos");
@@ -94,7 +95,7 @@ perfilClienteController.getFavoritos = async (req, res) => {
   }
 };
 
-// POST /api/perfilCliente/favoritos/:productoId — agrega/quita un producto de favoritos (toggle)
+//POST - Agregar o quitar un producto de favoritos
 perfilClienteController.toggleFavorito = async (req, res) => {
   try {
     const { productoId } = req.params;
@@ -119,4 +120,5 @@ perfilClienteController.toggleFavorito = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default perfilClienteController;

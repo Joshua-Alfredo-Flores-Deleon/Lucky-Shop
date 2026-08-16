@@ -1,3 +1,4 @@
+//Controlador para la autenticación de clientes
 import cleintesModel from "../models/Clientes.js";
 
 import bcrypt from "bcryptjs";
@@ -7,8 +8,9 @@ import { config } from "../../config.js";
 
 const loginClientesController = {};
 
+//POST - Iniciar sesión como cliente
 loginClientesController.login = async (req, res) => {
-  const { password } = req.body;
+  const { password, recordarme } = req.body;
   // Normalizamos el correo igual que en el registro (sin espacios, minusculas)
   // para que coincida sin importar como lo haya escrito el usuario
   const email = req.body.email?.trim().toLowerCase();
@@ -38,6 +40,7 @@ loginClientesController.login = async (req, res) => {
       if (clienteFound.loginAttemps >= 5) {
         clienteFound.timeOut = Date.now() + 5 * 60 * 1000;
         clienteFound.loginAttemps = 0;
+        clienteFound.ultimoAcceso = new Date();   // registra la fecha de este login
 
         await clienteFound.save();
 
@@ -56,25 +59,46 @@ loginClientesController.login = async (req, res) => {
     clienteFound.loginAttemps = 0;
     clienteFound.timeOut = null;
 
+    // Si "recordarme" está marcado, la sesión dura 30 días; si no, solo 1 día.
+    //Esto es para cuando el cliente marque "Recordar contraseña se guarde"
+    const duracion = recordarme ? "30d" : "1d";
+    const maxAgeMs = recordarme ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
     const token = jsonwebtoken.sign(
       { id: clienteFound._id, userType: "Clientes" },
       config.JWT.secret,
-      { expiresIn: "30d" },
+      { expiresIn: duracion },
     );
 
-    res.cookie("authCookie", token);
+    res.cookie("authCookie", token, { maxAge: maxAgeMs });
 
-    return res.status(200).json({ message: "Login exitoso" });
+    // La web usa la cookie de arriba. Para la app móvil devolvemos también el
+    // token y los datos del cliente en el cuerpo de la respuesta, de modo que
+    // el móvil pueda guardarlos y enviarlos como Authorization: Bearer.
+    return res.status(200).json({
+      message: "Login exitoso",
+      token,
+      cliente: {
+        _id: clienteFound._id,
+        email: clienteFound.email,
+        name: clienteFound.name,
+        lastName: clienteFound.lastName,
+      },
+    });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-// Verifica si hay una sesión de cliente activa (usado por el frontend para proteger rutas)
+//GET - Verificar si hay una sesión de cliente activa
 loginClientesController.checkSession = async (req, res) => {
   try {
-    const token = req.cookies.authCookie;
+    // Aceptamos el token desde la cookie (web) o desde el header Bearer (móvil).
+    const bearer = req.headers.authorization?.startsWith("Bearer ")
+      ? req.headers.authorization.slice(7)
+      : null;
+    const token = req.cookies.authCookie || bearer;
 
     if (!token) {
       return res.status(401).json({ message: "No autenticado" });
@@ -94,11 +118,17 @@ loginClientesController.checkSession = async (req, res) => {
 
     return res.status(200).json({
       message: "Sesión activa",
-      cliente: { _id: clienteFound._id, email: clienteFound.email, name: clienteFound.name },
+      cliente: {
+        _id: clienteFound._id,
+        email: clienteFound.email,
+        name: clienteFound.name,
+        lastName: clienteFound.lastName,
+      },
     });
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default loginClientesController;

@@ -1,9 +1,10 @@
 // RecoveryPassword.jsx — flujo de recuperación de contraseña del panel admin
 import { useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react'
 import AdminLogo from './AdminLogo.jsx'
 import trebolFondo from '../assets/trebol-fondo.png'
 
+// URL base para peticiones a la API
 const BASE_URL = 'http://localhost:4000/api'
 
 // userType se mantiene por compatibilidad, pero en este proyecto (frontend-privada)
@@ -11,13 +12,15 @@ const BASE_URL = 'http://localhost:4000/api'
 const RecoveryPassword = ({ userType = 'admin' }) => {
   const navigate = useNavigate()
 
+  // Configuración de rutas según el tipo de usuario
   const isAdmin = userType === 'admin'
   const apiBase = isAdmin ? `${BASE_URL}/recoveryPasswordAdmin` : `${BASE_URL}/recoveryPassword`
   const backToLoginPath = isAdmin ? '/' : '/login'
 
-  // step: 'email' | 'code' | 'newPassword' | 'success'
+  // Control de estado de la interfaz: 'email' | 'code' | 'newPassword' | 'success'
   const [step, setStep] = useState('email')
 
+  // Estados de datos del formulario
   const [email, setEmail] = useState('')
   const [code, setCode] = useState(['', '', '', '', '', ''])
   const inputsRef = useRef([])
@@ -25,14 +28,16 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  // Estados de carga y manejo de errores
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Enmascara el correo para proteger la privacidad en la vista del PIN
   const maskedEmail = email.length
     ? email.replace(/^(.).*(@.*)$/, (_, first, domain) => first + '*'.repeat(10) + domain)
     : ''
 
-  // ── Paso 1: solicitar código ──
+  // ── Paso 1: solicitar código de verificación ──
   const handleRequestCode = async (e) => {
     e.preventDefault()
     setError('')
@@ -63,7 +68,8 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
     }
   }
 
-  // ── Paso 2: verificar PIN ──
+  // ── Paso 2: interacción y verificación de PIN ──
+  // Maneja la entrada de cada dígito y salta al siguiente campo automáticamente
   const handleCodeChange = (index, value) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return
     const next = [...code]
@@ -75,12 +81,14 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
     }
   }
 
+  // Permite retroceder el enfoque al presionar la tecla de borrado
   const handleCodeKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
       inputsRef.current[index - 1]?.focus()
     }
   }
 
+  // Envía el código de 6 dígitos ingresado al servidor
   const handleVerifyCode = async (e) => {
     e.preventDefault()
     setError('')
@@ -112,6 +120,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
     }
   }
 
+  // Solicita el reenvío de un nuevo PIN al correo registrado
   const handleResend = async () => {
     setError('')
     setLoading(true)
@@ -133,7 +142,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
     }
   }
 
-  // ── Paso 3: nueva contraseña ──
+  // ── Paso 3: establecer nueva contraseña ──
   const handleNewPassword = async (e) => {
     e.preventDefault()
     setError('')
@@ -176,7 +185,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
       {/* Overlay verde oscuro para mantener el texto legible */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1a3d29]/80 via-[#1f4d33]/70 to-[#0f2a1b]/85" />
       <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
+        {/* Logo del panel de administración */}
         <div className="mb-6">
           <AdminLogo size="lg" />
           <div className="w-full h-px bg-white/30 mt-4" />
@@ -360,6 +369,7 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
           )}
         </div>
 
+        {/* Opción para regresar al login en pasos anteriores al éxito */}
         {step !== 'success' && (
           <div className="mt-4">
             <Link to={backToLoginPath} className="text-sm text-white/80 hover:text-white hover:underline">
@@ -372,4 +382,4 @@ const RecoveryPassword = ({ userType = 'admin' }) => {
   )
 }
 
-export default RecoveryPassword
+export default RecoveryPassword;

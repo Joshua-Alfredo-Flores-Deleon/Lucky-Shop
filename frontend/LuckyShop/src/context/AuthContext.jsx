@@ -6,12 +6,15 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 const BASE_URL = 'http://localhost:4000/api'
 
+// Contexto de autenticación del cliente, compartido en toda la app
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
   const [cliente, setCliente] = useState(null) // { email, name } | null
   const [loading, setLoading] = useState(true) // true mientras se valida la sesión inicial
 
+  // Consulta al backend si la cookie de sesión sigue siendo válida,
+  // y actualiza el estado del cliente según la respuesta.
   const checkSession = useCallback(async () => {
     try {
       const res = await fetch(`${BASE_URL}/loginClientes/checkSession`, {
@@ -25,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       setCliente(data.cliente || null)
       return data.cliente || null
     } catch {
+      // Si falla la petición (ej. sin conexión), se asume que no hay sesión
       setCliente(null)
       return null
     } finally {
@@ -43,6 +47,7 @@ export const AuthProvider = ({ children }) => {
     return checkSession()
   }, [checkSession])
 
+  // Cierra la sesión: avisa al backend para invalidar la cookie y limpia el estado local
   const logout = useCallback(async () => {
     try {
       await fetch(`${BASE_URL}/logout`, {
@@ -56,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
+  // Valores y funciones expuestas a través del contexto
   const value = {
     cliente,
     isAuthenticated: !!cliente,
@@ -68,6 +74,7 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+// Hook para consumir el contexto de autenticación desde cualquier componente
 export const useAuth = () => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth debe usarse dentro de un <AuthProvider>')

@@ -1,40 +1,58 @@
-import { useState } from 'react'
-import Sidebar from '../components/sideBar'
+import { useState, useMemo, useCallback } from 'react'
+import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
-import { useClientes } from '../hooksP/useClientes'
-import '../sideBar.css'
+import { useClientes } from '../hooks/useClientes'
+import '../SideBar.css'
 import '../clientes.css'
 
-const getInitials = (name, lastName) => {
-  const n = name ? name[0].toUpperCase() : ''
-  const l = lastName ? lastName[0].toUpperCase() : ''
+// Límite de días sin ingresar para considerar a un cliente como activo
+const DIAS_ACTIVIDAD = 30 
+
+// Extrae las iniciales del nombre y apellido para el avatar
+const getInitials = (name = '', lastName = '') => {
+  const n = name.trim()[0]?.toUpperCase() || ''
+  const l = lastName.trim()[0]?.toUpperCase() || ''
   return (n + l) || '?'
 }
 
+// Determina si el cliente ha iniciado sesión dentro del límite establecido
+const estaActivo = (ultimoAcceso) => {
+  if (!ultimoAcceso) return false
+  const dias = (Date.now() - new Date(ultimoAcceso).getTime()) / (1000 * 60 * 60 * 24)
+  return dias <= DIAS_ACTIVIDAD
+}
+
+// Da formato legible a la fecha del último acceso
+const formatoUltimoAcceso = (fecha) => {
+  if (!fecha) return 'Nunca'
+  return new Date(fecha).toLocaleDateString('es-SV', { 
+    day: '2-digit', 
+    month: 'short', 
+    year: 'numeric' 
+  })
+}
+
 const Clientes = () => {
+  // Datos y lógica obtenidos desde el hook personalizado
   const {
     clientes: clientesFiltrados,
     busqueda,
     setBusqueda,
     loading,
-    actualizarCliente,
     eliminarCliente,
   } = useClientes()
 
-  const [clienteEditar, setClienteEditar] = useState(null)
+  // Estados locales para el control de la interfaz y modales
+  const [clienteVer, setClienteVer] = useState(null)
   const [clienteEliminar, setClienteEliminar] = useState(null)
   const [notifAbierta, setNotifAbierta] = useState(false)
 
-  const handleGuardarCliente = async (id, datos) => {
-    const ok = await actualizarCliente(id, datos)
-    if (ok) setClienteEditar(null)
-  }
-
-  const handleEliminarCliente = async (id) => {
+  // Función memorizada para procesar la eliminación y cerrar el modal
+  const handleEliminarCliente = useCallback(async (id) => {
     const ok = await eliminarCliente(id)
     if (ok) setClienteEliminar(null)
-  }
+  }, [eliminarCliente])
 
   return (
     <div className="clientes-wrapper">
@@ -42,14 +60,17 @@ const Clientes = () => {
 
       <main className="clientes-content-area">
         <Nav openNotifications={() => setNotifAbierta(true)} />
-        <div className="clientes-header">
+        
+        {/* Encabezado de la página */}
+        <header className="clientes-header">
           <h1 className="clientes-title">Clientes</h1>
           <p className="clientes-subtitle">
             Consulta y administra fácilmente la información de tus clientes
           </p>
-        </div>
+        </header>
 
-        <div className="clientes-search-row">
+        {/* Campo de búsqueda */}
+        <section className="clientes-search-row">
           <div className="clientes-search-wrapper">
             <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
@@ -63,14 +84,16 @@ const Clientes = () => {
               className="clientes-search-input"
             />
           </div>
-        </div>
+        </section>
 
-        <div className="clientes-table-container">
+        {/* Tabla principal de datos */}
+        <section className="clientes-table-container">
           <table className="clientes-table">
             <thead>
               <tr>
                 <th>Nombre</th>
                 <th>Estado</th>
+                <th>Último acceso</th>
                 <th>Correo</th>
                 <th>Acciones</th>
               </tr>
@@ -78,70 +101,33 @@ const Clientes = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="loading-cell">Cargando clientes...</td>
+                  <td colSpan="5" className="loading-cell">Cargando clientes...</td>
                 </tr>
               ) : clientesFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="empty-cell">No se encontraron clientes</td>
+                  <td colSpan="5" className="empty-cell">No se encontraron clientes</td>
                 </tr>
               ) : (
+                /* Mapeo de la lista de clientes utilizando el subcomponente ClienteRow */
                 clientesFiltrados.map(cliente => (
-                  <tr key={cliente._id} className="cliente-row">
-                    <td>
-                      <div className="cliente-nombre-cell">
-                        <div className="cliente-avatar">
-                          {getInitials(cliente.name, cliente.lastName)}
-                        </div>
-                        <span className="cliente-nombre">
-                          {`${cliente.name || ''} ${cliente.lastName || ''}`.trim() || 'Sin nombre'}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`estado-badge ${cliente.isVerified ? 'activo' : 'inactivo'}`}>
-                        {cliente.isVerified ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
-                    <td className="cliente-email">{cliente.email || '—'}</td>
-                    <td>
-                      <div className="acciones-cell">
-                        <button
-                          className="accion-btn editar-btn"
-                          onClick={() => setClienteEditar(cliente)}
-                          title="Editar cliente"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          className="accion-btn eliminar-btn"
-                          onClick={() => setClienteEliminar(cliente)}
-                          title="Eliminar cliente"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14H6L5 6" />
-                            <path d="M10 11v6M14 11v6" />
-                            <path d="M9 6V4h6v2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <ClienteRow 
+                    key={cliente._id} 
+                    cliente={cliente} 
+                    onVer={setClienteVer} 
+                    onEliminar={setClienteEliminar} 
+                  />
                 ))
               )}
             </tbody>
           </table>
-        </div>
+        </section>
       </main>
 
-      {clienteEditar && (
-        <EditModal
-          cliente={clienteEditar}
-          onClose={() => setClienteEditar(null)}
-          onGuardar={handleGuardarCliente}
+      {/* Rendering condicional de modales */}
+      {clienteVer && (
+        <VerClienteModal
+          cliente={clienteVer}
+          onClose={() => setClienteVer(null)}
         />
       )}
 
@@ -158,95 +144,105 @@ const Clientes = () => {
   )
 }
 
-const EditModal = ({ cliente, onClose, onGuardar }) => {
-  const [form, setForm] = useState({
-    name: cliente.name || '',
-    lastName: cliente.lastName || '',
-    email: cliente.email || '',
-    isVerified: cliente.isVerified || false,
-    password: cliente.password || '',
-    birthdate: cliente.birthdate || new Date('1990-01-01').toISOString(),
-    loginAttemps: cliente.loginAttemps || 0,
-    timeOut: cliente.timeOut || null,
-  })
+// Componente para renderizar la fila individual de un cliente
+const ClienteRow = ({ cliente, onVer, onEliminar }) => {
+  // Cálculo memorizado del estado activo/inactivo para evitar reevaluaciones en cada render
+  const activo = useMemo(() => estaActivo(cliente.ultimoAcceso), [cliente.ultimoAcceso])
+  const nombreCompleto = `${cliente.name || ''} ${cliente.lastName || ''}`.trim() || 'Sin nombre'
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-  }
+  return (
+    <tr className="cliente-row">
+      <td>
+        <div className="cliente-nombre-cell">
+          <div className="cliente-avatar">
+            {getInitials(cliente.name, cliente.lastName)}
+          </div>
+          <span className="cliente-nombre">{nombreCompleto}</span>
+        </div>
+      </td>
+      <td>
+        <span className={`estado-badge ${activo ? 'activo' : 'inactivo'}`}>
+          {activo ? 'Activo' : 'Inactivo'}
+        </span>
+      </td>
+      <td className="cliente-email">{formatoUltimoAcceso(cliente.ultimoAcceso)}</td>
+      <td className="cliente-email">{cliente.email || '—'}</td>
+      <td>
+        <div className="acciones-cell">
+          <button
+            className="accion-btn editar-btn"
+            onClick={() => onVer(cliente)}
+            title="Ver cliente"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+          <button
+            className="accion-btn eliminar-btn"
+            onClick={() => onEliminar(cliente)}
+            title="Eliminar cliente"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14H6L5 6" />
+              <path d="M10 11v6M14 11v6" />
+              <path d="M9 6V4h6v2" />
+            </svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    onGuardar(cliente._id, form)
-  }
+// Modal para visualizar la información detallada del cliente (solo lectura)
+const VerClienteModal = ({ cliente, onClose }) => {
+  const activo = estaActivo(cliente.ultimoAcceso)
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Editar Cliente</h2>
+          <h2>Información del Cliente</h2>
           <button className="modal-close-btn" onClick={onClose}>×</button>
         </div>
-        <form onSubmit={handleSubmit} className="modal-form">
+        <div className="modal-form">
           <div className="form-row">
             <div className="form-group">
               <label>Nombre</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Nombre"
-                required
-              />
+              <input value={cliente.name || ''} readOnly disabled />
             </div>
             <div className="form-group">
               <label>Apellido</label>
-              <input
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                placeholder="Apellido"
-              />
+              <input value={cliente.lastName || ''} readOnly disabled />
             </div>
           </div>
           <div className="form-group">
             <label>Correo electrónico</label>
-            <input
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="correo@ejemplo.com"
-              required
-            />
+            <input value={cliente.email || ''} readOnly disabled />
           </div>
-          <div className="form-group-check">
-            <input
-              type="checkbox"
-              name="isVerified"
-              id="isVerified"
-              checked={form.isVerified}
-              onChange={handleChange}
-            />
-            <label htmlFor="isVerified">Cliente activo / verificado</label>
+          <div className="form-group">
+            <label>Último acceso</label>
+            <input value={formatoUltimoAcceso(cliente.ultimoAcceso)} readOnly disabled />
+          </div>
+          <div className="form-group">
+            <label>Estado</label>
+            <input value={activo ? 'Activo' : 'Inactivo'} readOnly disabled />
           </div>
           <div className="modal-actions">
             <button type="button" className="btn-cancelar" onClick={onClose}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn-guardar">
-              Guardar cambios
+              Cerrar
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
 }
 
+// Modal de confirmación para eliminar un cliente
 const ConfirmDeleteModal = ({ cliente, onClose, onConfirm }) => {
   const nombre = `${cliente.name || ''} ${cliente.lastName || ''}`.trim() || 'este cliente'
 

@@ -1,13 +1,14 @@
 // Categoria.jsx — listado de productos por categoría con subcategorías
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import CategoryBanner from '../components/CategoryBanner.jsx'
+import { useCategoria } from '../hooks/useCategoria.jsx'
 
-const BASE_URL = 'http://localhost:4000/api'
-
+// Configuración de cada categoría: título, descripción y subcategorías (si tiene).
+// La clave de cada entrada corresponde al valor de la URL (/categoria/:cat)
 const CONFIG_CATEGORIAS = {
   anillos: {
     titulo: 'Anillos',
@@ -17,61 +18,53 @@ const CONFIG_CATEGORIAS = {
     titulo: 'Pulseras',
     descripcion: 'No es solo una joya, es un recordatorio tangible de que la suerte no ocurre por azar, sino porque llevas contigo la energía necesaria para atraerla; deja que esta pulsera sea el amuleto que sintonice tu destino con tus deseos.',
     subcategorias: [
-      { value: 'Tobilleras',   label: 'Tobileras'},
+      { value: 'Tobilleras', label: 'Tobilleras' },
     ],
   },
-  pendientes: {
-    titulo: 'Pendientes',
+  aritos: {
+    titulo: 'Aretes',
     descripcion: 'La distinción no es una coincidencia, es una elección. Estos pendientes han sido grabados con la firme convicción de que la elegancia es el imán definitivo de la fortuna.',
+    apiCategoria: 'Aretes', // En la BD se guardan como "Aretes"
   },
   collares: {
     titulo: 'Collares',
     descripcion: 'El destino se rinde ante quienes caminan con seguridad; deja que este collar sea el destello que ilumine tu camino y atraiga hacia ti las sincronías perfectas que el universo tiene preparadas para quienes se atreven a brillar.',
     subcategorias: [
-      { value: 'Set',    label: 'Set'},
+      { value: 'Set', label: 'Set' },
     ],
   },
   otros: {
     titulo: 'Otros',
     descripcion: 'Accesorios únicos y especiales para completar tu look.',
-    subcategorias: [],
+    subcategorias: [
+      { value: 'Bolsas', label: 'Bolsas' },
+    ],
   },
 }
 
 const Categoria = () => {
+  // Categoría actual, tomada del parámetro de la URL (ej: /categoria/anillos -> "anillos")
   const { cat } = useParams()
+  // Si la categoría no está en la config, se usa un fallback genérico
   const config = CONFIG_CATEGORIAS[cat] || { titulo: cat, descripcion: '', subcategorias: [] }
 
-  const [productos,    setProductos]    = useState([])
-  const [loading,      setLoading]      = useState(true)
+  // Usar el nombre de categoría de la API si existe un mapeo, sino usar el param de la URL
+  const categoriaApi = config.apiCategoria || cat
+  const { productos, loading, error } = useCategoria(categoriaApi)
+
+  // Subcategoría seleccionada por el usuario (ej: "Set", "Tobilleras"); vacío = sin filtro
   const [subcatActiva, setSubcatActiva] = useState('')
 
-  useEffect(() => {
-    setLoading(true)
-    setSubcatActiva('')
-    const fetchProductos = async () => {
-      try {
-        const res  = await fetch(`${BASE_URL}/productos?categoria=${cat}&estado=activo`, { credentials: 'include' })
-        const data = await res.json()
-        setProductos(Array.isArray(data) ? data : [])
-      } catch {
-        setProductos([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProductos()
-  }, [cat])
-
+  // Si hay una subcategoría activa, filtra los productos que coincidan con ella
   const productosFiltrados = subcatActiva
-    ? productos.filter((p) => p.subCategoria?.toLowerCase() === subcatActiva)
+    ? productos.filter((p) => p.subCategoria?.toLowerCase() === subcatActiva.toLowerCase())
     : productos
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Banner de categoría */}
+      {/* Banner con el título, descripción y filtros de subcategoría de la categoría actual */}
       <CategoryBanner
         titulo={config.titulo}
         descripcion={config.descripcion}
@@ -80,19 +73,30 @@ const Categoria = () => {
         onSubcat={setSubcatActiva}
       />
 
-      {/* Productos */}
-      <div className="container mx-auto px-6 py-8">
+      {/* Grilla de productos de la categoría (ya filtrados por subcategoría si aplica) */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-3 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+          // Estado de carga
+          <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-400">
+            <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+            <p className="text-sm font-medium">Cargando productos...</p>
+          </div>
+        ) : error ? (
+          // Estado de error al cargar productos
+          <div className="rounded-2xl bg-red-50 border border-red-200 px-6 py-8 text-center text-red-700 text-sm">
+            <p className="font-semibold mb-2">Hubo un problema al cargar los productos</p>
+            <p className="text-xs">{error}</p>
           </div>
         ) : productosFiltrados.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-4xl mb-3"></p>
-            <p>No hay productos en esta categoría</p>
+          // Sin productos que coincidan con la categoría/subcategoría seleccionada
+          <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+            <span className="text-5xl mb-4 opacity-40"></span>
+          
+            <p className="text-sm font-medium">No hay productos en esta categoría</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+          // Grilla responsiva de tarjetas de producto
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 sm:gap-6">
             {productosFiltrados.map((p) => (
               <ProductCard key={p._id} producto={p} />
             ))}
@@ -105,4 +109,4 @@ const Categoria = () => {
   )
 }
 
-export default Categoria
+export default Categoria;

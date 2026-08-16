@@ -8,21 +8,30 @@ const BASE_URL = 'http://localhost:4000/api'
 
 const Historial = () => {
   const { cliente } = useAuth()
-  const [ventas,   setVentas]   = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [detalle,  setDetalle]  = useState(null)
+  const [ventas, setVentas] = useState([])           // Ventas del cliente
+  const [loading, setLoading] = useState(true)
+  const [selectedVenta, setSelectedVenta] = useState(null) // Venta seleccionada para ver su detalle
 
   const clienteId = cliente?._id
 
+  // Carga todas las ventas y filtra solo las del cliente actual,
+  // comparando por el idCliente guardado dentro del carrito de cada venta
   useEffect(() => {
     if (!clienteId) return
 
     const fetchVentas = async () => {
       try {
-        const res  = await fetch(`${BASE_URL}/venta`, { credentials: 'include' })
+        const res = await fetch(`${BASE_URL}/venta`, { credentials: 'include' })
         const data = await res.json()
         // Filtrar ventas del cliente (por idCliente en el carrito)
-        setVentas(Array.isArray(data) ? data : [])
+        const filtered = Array.isArray(data)
+          ? data.filter(
+              (v) =>
+                v.IdCarrito?.idCliente?._id === clienteId ||
+                v.IdCarrito?.idCliente === clienteId
+            )
+          : []
+        setVentas(filtered)
       } catch {
         setVentas([])
       } finally {
@@ -32,102 +41,276 @@ const Historial = () => {
     fetchVentas()
   }, [clienteId])
 
+  // Da formato legible a una fecha (ej: "15 de julio de 2026")
   const formatFecha = (fecha) => {
     if (!fecha) return '—'
-    return new Date(fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+    return new Date(fecha).toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
+
+  // Obtener la primera imagen de producto de una venta para mostrar en el resumen de la tabla
+  const getVentaRepresentativaImage = (venta) => {
+    const primerProducto = venta.IdCarrito?.productos?.[0]?.idProducto
+    return primerProducto?.imagenPresentacion || ''
+  }
+
+  // Obtener nombre del primer producto (o un resumen del pedido si son varios)
+  const getVentaResumenNombre = (venta) => {
+    const productos = venta.IdCarrito?.productos || []
+    if (productos.length === 0) return `Pedido #${venta._id?.slice(-6)}`
+    const primerNombre = productos[0]?.idProducto?.nombre || 'Producto'
+    if (productos.length > 1) {
+      return `${primerNombre} y ${productos.length - 1} más`
+    }
+    return primerNombre
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col font-sans">
       <Navbar />
 
-      <div className="container mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Historial de compras</h1>
+      <main className="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-10">
+        {/* Encabezado Principal: cambia el subtítulo según si hay un pedido seleccionado */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              Historial de compras
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {selectedVenta
+                ? `Detalles del pedido #${selectedVenta._id?.slice(-6)}`
+                : 'Revisa el detalle de tus compras y pedidos realizados'}
+            </p>
+          </div>
+          {/* Botón para volver al listado general, solo visible al ver el detalle de un pedido */}
+          {selectedVenta && (
+            <button
+              onClick={() => setSelectedVenta(null)}
+              className="flex items-center gap-2 text-sm font-semibold text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100/80 px-4 py-2 rounded-full transition-all"
+            >
+              <span>←</span> Volver al historial
+            </button>
+          )}
+        </div>
 
         {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-3 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+          // Estado de carga
+          <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-400">
+            <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+            <p className="text-sm font-medium">Cargando tu historial...</p>
           </div>
         ) : ventas.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-4xl mb-3"></p>
-            <p>No tienes compras registradas</p>
+          // Sin compras registradas
+          <div className="flex flex-col items-center justify-center py-20 text-gray-400 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+        
+            <p className="text-base font-semibold text-gray-700">
+              No tienes compras registradas
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              ¡Visita nuestra tienda para encontrar tu accesorio de la suerte!
+            </p>
+          </div>
+        ) : !selectedVenta ? (
+          /* ======================================================== */
+          /* VISTA 1: LISTADO GENERAL DE COMPRAS                     */
+          /* ======================================================== */
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-pink-100/60 border-b border-pink-100 text-gray-700 font-bold text-sm">
+                    <th className="px-6 py-4 text-center">Producto</th>
+                    <th className="px-6 py-4 text-center">Fecha</th>
+                    <th className="px-6 py-4 text-center">Precio</th>
+                    <th className="px-6 py-4 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {/* Una fila por cada venta del cliente */}
+                  {ventas.map((venta) => {
+                    const imgUrl = getVentaRepresentativaImage(venta)
+                    const nombre = getVentaResumenNombre(venta)
+                    return (
+                      <tr
+                        key={venta._id}
+                        className="hover:bg-gray-50/30 transition-colors"
+                      >
+                        {/* Producto (Imagen + Nombre + Estado) */}
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-xl bg-pink-50 border border-pink-100/70 p-2 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                              {imgUrl ? (
+                                <img
+                                  src={imgUrl}
+                                  alt={nombre}
+                                  className="w-full h-full object-contain"
+                                />
+                              ) : (
+                                <span className="text-2xl">💍</span>
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-gray-800 line-clamp-1">
+                                {nombre}
+                              </p>
+                              <span className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-pink-50 text-pink-600">
+                                {venta.estado || 'pendiente'}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Fecha de la venta */}
+                        <td className="px-6 py-5 text-center text-sm font-medium text-gray-600">
+                          {formatFecha(venta.fecha || venta.createdAt)}
+                        </td>
+
+                        {/* Precio total del pedido (viene del carrito asociado a la venta) */}
+                        <td className="px-6 py-5 text-center text-base font-bold text-gray-900">
+                          ${Number(venta.IdCarrito?.total || 0).toFixed(2)}
+                        </td>
+
+                        {/* Botón para ver el detalle de esa venta */}
+                        <td className="px-6 py-5 text-center">
+                          <button
+                            onClick={() => setSelectedVenta(venta)}
+                            className="bg-[#1e293b] hover:bg-[#0f172a] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-all shadow-sm hover:shadow active:scale-95"
+                          >
+                            Ver detalle
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-gray-100 overflow-hidden">
-            {/* Encabezado */}
-            <div className="grid grid-cols-4 bg-pink-100 px-6 py-3 text-sm font-semibold text-gray-700">
-              <span className="col-span-2 text-center">Producto</span>
-              <span className="text-center">Fecha</span>
-              <span className="text-center">Precio</span>
-              <span className="text-center sr-only">Acciones</span>
+          /* ======================================================== */
+          /* VISTA 2: DESGLOSE DE PRODUCTOS DEL PEDIDO                */
+          /* ======================================================== */
+          <div className="space-y-6">
+            {/* Detalles rápidos de envío, teléfono, método de pago y estado */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-pink-50/40 border border-pink-100/60 rounded-2xl p-5 text-sm">
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                  Dirección de Envío
+                </p>
+                <p className="text-gray-800 font-medium mt-1">
+                  {selectedVenta.direcion || '—'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                  Teléfono
+                </p>
+                <p className="text-gray-800 font-medium mt-1">
+                  {selectedVenta.phone || selectedVenta.telefono || '—'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                  Método de Pago
+                </p>
+                <p className="text-gray-800 font-medium mt-1 capitalize">
+                  {selectedVenta.metodoPago || '—'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                  Pago / Estado
+                </p>
+                <p className="text-gray-800 font-semibold mt-1">
+                  {selectedVenta.statusPago ? 'Pagado' : 'Pendiente'} /{' '}
+                  <span className="capitalize text-pink-600">
+                    {selectedVenta.estado || '—'}
+                  </span>
+                </p>
+              </div>
             </div>
 
-            {/* Filas */}
-            {ventas.map((venta) => (
-              <div key={venta._id} className="border-b border-gray-50 last:border-0">
-                <div className="grid grid-cols-5 items-center px-6 py-4">
-                  {/* Imagen placeholder */}
-                  <div className="col-span-1 flex justify-center">
-                    <div className="w-14 h-14 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center overflow-hidden">
-                      <span className="text-2xl"></span>
-                    </div>
-                  </div>
+            {/* Tabla con cada producto comprado en este pedido */}
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-pink-100/60 border-b border-pink-100 text-gray-700 font-bold text-sm">
+                      <th className="px-6 py-4 text-center">Productos</th>
+                      <th className="px-6 py-4">Descripción</th>
+                      <th className="px-6 py-4 text-center">Precio</th>
+                      <th className="px-6 py-4 text-center">Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {(selectedVenta.IdCarrito?.productos || []).map((item) => {
+                      const prod = item.idProducto || {}
+                      return (
+                        <tr
+                          key={item._id}
+                          className="hover:bg-gray-50/20 transition-colors"
+                        >
+                          {/* Imagen del producto */}
+                          <td className="px-6 py-5">
+                            <div className="flex justify-center">
+                              <div className="w-16 h-16 rounded-xl bg-pink-50 border border-pink-100/70 p-2 flex items-center justify-center overflow-hidden">
+                                {prod.imagenPresentacion ? (
+                                  <img
+                                    src={prod.imagenPresentacion}
+                                    alt={prod.nombre}
+                                    className="w-full h-full object-contain"
+                                  />
+                                ) : (
+                                  <span className="text-2xl">💍</span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
 
-                  {/* Nombre/referencia */}
-                  <div className="col-span-1">
-                    <p className="text-sm font-medium text-gray-800">
-                      {venta.referencia || `Pedido #${venta._id?.slice(-6)}`}
-                    </p>
-                    <p className="text-xs text-gray-400 capitalize">{venta.estado || 'pendiente'}</p>
-                  </div>
+                          {/* Nombre y descripción del producto */}
+                          <td className="px-6 py-5">
+                            <p className="text-sm font-semibold text-gray-800">
+                              {prod.nombre || 'Producto no disponible'}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2 max-w-sm">
+                              {prod.descripcion || 'Sin descripción adicional.'}
+                            </p>
+                          </td>
 
-                  {/* Fecha */}
-                  <div className="col-span-1 text-center">
-                    <p className="text-sm text-gray-600">{formatFecha(venta.fecha || venta.createdAt)}</p>
-                  </div>
+                          {/* Precio unitario (o calculado a partir del subtotal si no viene directo) */}
+                          <td className="px-6 py-5 text-center text-sm font-bold text-gray-900">
+                            ${Number(prod.precio || item.subtotal / item.cantidad || 0).toFixed(2)}
+                          </td>
 
-                  {/* Precio */}
-                  <div className="col-span-1 text-center">
-                    <p className="text-sm font-bold text-gray-900">
-                      {venta.total ? `$${Number(venta.total).toFixed(2)}` : '—'}
-                    </p>
-                  </div>
-
-                  {/* Acción */}
-                  <div className="col-span-1 flex justify-center">
-                    <button
-                      onClick={() => setDetalle(detalle?._id === venta._id ? null : venta)}
-                      className="bg-gray-900 text-white text-xs font-medium px-4 py-2 rounded-full hover:bg-gray-700 transition-colors"
-                    >
-                      Ver detalle
-                    </button>
-                  </div>
-                </div>
-
-                {/* Detalle expandido */}
-                {detalle?._id === venta._id && (
-                  <div className="bg-pink-50 px-6 py-4 border-t border-pink-100">
-                    <h4 className="font-semibold text-sm text-gray-900 mb-3">Detalle del pedido</h4>
-                    <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                      <div><span className="font-medium">Dirección:</span> {venta.direcion || '—'}</div>
-                      <div><span className="font-medium">Teléfono:</span> {venta.phone || venta.telefono || '—'}</div>
-                      <div><span className="font-medium">Método de pago:</span> {venta.metodoPago || '—'}</div>
-                      <div><span className="font-medium">Estado de pago:</span> {venta.statusPago ? 'Pagado' : 'Pendiente'}</div>
-                      <div><span className="font-medium">Referencia:</span> {venta.referencia || '—'}</div>
-                      <div><span className="font-medium">Estado:</span> <span className="capitalize">{venta.estado || '—'}</span></div>
-                    </div>
-                  </div>
-                )}
+                          {/* Cantidad comprada de ese producto */}
+                          <td className="px-6 py-5 text-center text-sm font-semibold text-gray-700">
+                            {item.cantidad || 0}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
-            ))}
+
+              {/* Total final del pedido (viene del carrito asociado a la venta) */}
+              <div className="bg-gray-50/50 px-6 py-5 flex justify-end items-center gap-4 border-t border-gray-100">
+                <span className="text-sm text-gray-500 font-semibold">Total del pedido:</span>
+                <span className="text-xl font-extrabold text-gray-900">
+                  ${Number(selectedVenta.IdCarrito?.total || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
           </div>
         )}
-      </div>
+      </main>
 
       <Footer />
     </div>
   )
 }
 
-export default Historial
+export default Historial;

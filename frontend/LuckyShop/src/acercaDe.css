@@ -1,7 +1,11 @@
+/* acercaDe.css — estilos de la página "Acerca de" (AcercaDe.jsx) */
+
+/* Fondo blanco general de la sección de contenido */
 .Definitivo{
     background-color: white;
 }
 
+/* Encabezado: título "¿Quiénes somos?" + logo, uno a cada lado */
 .contenedor1{
     display: flex;
     justify-content: space-between;
@@ -19,6 +23,7 @@
     height: 150px;
 }
 
+/* Bloque de la historia de la marca, junto con la foto de la dueña */
 .contenedor2{
     display: flex;
     margin-left: 100px;
@@ -39,6 +44,7 @@
     font-size: 30px;
 }
 
+/* Imagen de la dueña dentro del bloque de historia */
 .contenedor2 img{
     width: 200px;
     margin-left: 300px;
@@ -47,6 +53,7 @@
     margin-right: 200px;
 }
 
+/* Sección de Misión y Visión, con fondo gris claro */
 .contenedorS{
     display: flex;
     justify-content: space-evenly;

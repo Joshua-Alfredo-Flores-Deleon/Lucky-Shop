@@ -1,20 +1,22 @@
 import { useState, useRef } from 'react'
-import Sidebar from '../components/sideBar'
+import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
-import { useBolsas } from '../hooksP/useBolsas'
-import '../sideBar.css'
+import { useBolsas } from '../hooks/useBolsas'
+import '../SideBar.css'
 import '../productosPage.css'
 
+// Opciones de estado disponibles para el catálogo de bolsas de la suerte
 const ESTADOS = ['activo', 'inactivo', 'agotado']
 
-/* ── Iconos ── */
+//Iconos SVG inline
 const IconoLapiz = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
   </svg>
 )
+
 const IconoBasura = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="3 6 5 6 21 6" />
@@ -23,6 +25,7 @@ const IconoBasura = () => (
     <path d="M9 6V4h6v2" />
   </svg>
 )
+
 const IconoBolsaVacia = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8Z" />
@@ -30,8 +33,9 @@ const IconoBolsaVacia = () => (
   </svg>
 )
 
-/*  SUBCOMPONENTES DE MODALES   */
+//Componentes Modales Secundarios 
 
+// Modal para confirmar acciones críticas (creación, edición y eliminación)
 const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   <div className="pm-overlay" onClick={onCancel}>
     <div className="pm-modal pm-confirm-modal" onClick={e => e.stopPropagation()}>
@@ -48,13 +52,14 @@ const ConfirmModal = ({ mensaje, onConfirm, onCancel }) => (
   </div>
 )
 
+// Modal de notificación de éxito
 const SuccessModal = ({ mensaje, onClose }) => (
   <div className="pm-overlay" onClick={onClose}>
     <div className="pm-modal pm-success-modal" onClick={e => e.stopPropagation()}>
       <div className="pm-success-icon">
         <svg viewBox="0 0 52 52" fill="none">
-          <circle cx="26" cy="26" r="25" stroke="#22c55e" strokeWidth="2"/>
-          <path d="M14 26l9 9 15-18" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="26" cy="26" r="25" stroke="#22c55e" strokeWidth="2" />
+          <path d="M14 26l9 9 15-18" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
       <h2 className="pm-success-title">¡Completado!</h2>
@@ -64,9 +69,11 @@ const SuccessModal = ({ mensaje, onClose }) => (
   </div>
 )
 
+// Modal para consultar los detalles y la cantidad de unidades de la bolsa seleccionada
 const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
   if (!bolsa) return null
   const cantidadUnidades = bolsa.cantidadUnidades || 6
+
   return (
     <div className="pm-overlay" onClick={onClose}>
       <div className="pm-modal pm-form-modal" onClick={e => e.stopPropagation()}>
@@ -77,9 +84,11 @@ const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
         <div className="pm-form-body">
           <div className="pm-detalle-col-izq">
             <div className="pm-form-img-box pm-form-img-box-static">
-              {bolsa.imagenPresentacion
-                ? <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} />
-                : <span className="pm-no-img">Sin imagen</span>}
+              {bolsa.imagenPresentacion ? (
+                <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} />
+              ) : (
+                <span className="pm-no-img">Sin imagen</span>
+              )}
             </div>
             <div className="pm-field-group pm-detalle-desc">
               <label>Descripción</label>
@@ -120,6 +129,7 @@ const DetallesModal = ({ bolsa, onClose, onSelectVariante }) => {
   )
 }
 
+// Modal de formulario para registrar nuevas bolsas o modificar existentes
 const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
   const [form, setForm] = useState({
     nombre: bolsa?.nombre || '',
@@ -134,7 +144,7 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
   const [imageFile, setImageFile] = useState(null)
   const fileRef = useRef()
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
   }
@@ -143,7 +153,7 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
     setForm(prev => ({ ...prev, cantidadUnidades: valor }))
   }
 
-  const handleImageChange = e => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (!file) return
     setImageFile(file)
@@ -168,9 +178,11 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
               className="pm-form-img-box"
               onClick={() => fileRef.current?.click()}
             >
-              {imagenPreview
-                ? <img src={imagenPreview} alt="preview" />
-                : <span className="pm-img-plus">＋</span>}
+              {imagenPreview ? (
+                <img src={imagenPreview} alt="preview" />
+              ) : (
+                <span className="pm-img-plus">＋</span>
+              )}
             </div>
             <input
               ref={fileRef}
@@ -286,7 +298,7 @@ const FormModal = ({ modo, bolsa, onClose, onConfirmRequest }) => {
   )
 }
 
-/* ────────────────────────────────────────────────────────── */
+//Vista Principal: Gestión de Bolsas de la Suerte 
 const Bolsas = () => {
   const {
     bolsas: bolsasPagina,
@@ -303,13 +315,14 @@ const Bolsas = () => {
     actualizarVariante,
   } = useBolsas()
 
+  // Control de estado para los modales
   const [notifAbierta, setNotifAbierta] = useState(false)
-
   const [modalDetalles, setModalDetalles] = useState(null)
   const [modalForm, setModalForm] = useState(null)
   const [modalConfirm, setModalConfirm] = useState(null)
   const [modalSuccess, setModalSuccess] = useState(null)
 
+  // Despliega el modal de confirmación antes de ejecutar una acción en la API
   const pedirConfirmacion = (mensaje, onConfirm) => {
     setModalConfirm({ mensaje, onConfirm })
   }
@@ -352,7 +365,7 @@ const Bolsas = () => {
 
   const handleEliminar = (bolsa) => {
     pedirConfirmacion(
-      `¿Estás segura que deseas eliminar esta bolsa?`,
+      '¿Estás segura que deseas eliminar esta bolsa?',
       async () => {
         setModalConfirm(null)
         try {
@@ -365,6 +378,7 @@ const Bolsas = () => {
     )
   }
 
+  // Genera las etiquetas visuales (badges) de estado
   const estadoBadge = (estado) => {
     const map = { activo: 'Disponible', inactivo: 'Inactivo', agotado: 'Agotado' }
     const cls = { activo: 'badge-activo', inactivo: 'badge-inactivo', agotado: 'badge-agotado' }
@@ -386,8 +400,8 @@ const Bolsas = () => {
           <div className="pm-header-actions">
             <div className="pm-search-wrap">
               <svg className="pm-search-icon" viewBox="0 0 24 24" fill="none">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2"/>
-                <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+                <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               <input
                 className="pm-search-input"
@@ -402,6 +416,7 @@ const Bolsas = () => {
           </div>
         </div>
 
+        {/* Indicador de carga */}
         {loading && (
           <div className="pm-loading">
             <div className="pm-spinner"></div>
@@ -409,6 +424,7 @@ const Bolsas = () => {
           </div>
         )}
 
+        {/* Mensaje de error con opción de reintento */}
         {error && !loading && (
           <div className="pm-error">
             <span>⚠ {error}</span>
@@ -416,6 +432,7 @@ const Bolsas = () => {
           </div>
         )}
 
+        {/* Estado vacío */}
         {!loading && !error && bolsasPagina.length === 0 && (
           <div className="pm-empty">
             <div className="pm-empty-icon"><IconoBolsaVacia /></div>
@@ -423,14 +440,17 @@ const Bolsas = () => {
           </div>
         )}
 
+        {/* Cuadrícula de tarjetas de bolsas de la suerte */}
         {!loading && !error && bolsasPagina.length > 0 && (
           <div className="pm-grid">
             {bolsasPagina.map(bolsa => (
               <div key={bolsa._id} className="pm-card">
                 <div className="pm-card-img-wrap">
-                  {bolsa.imagenPresentacion
-                    ? <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} className="pm-card-img" />
-                    : <div className="pm-card-no-img">Sin imagen</div>}
+                  {bolsa.imagenPresentacion ? (
+                    <img src={bolsa.imagenPresentacion} alt={bolsa.nombre} className="pm-card-img" />
+                  ) : (
+                    <div className="pm-card-no-img">Sin imagen</div>
+                  )}
                   {estadoBadge(bolsa.estado)}
                 </div>
                 <div className="pm-card-info">
@@ -466,6 +486,7 @@ const Bolsas = () => {
           </div>
         )}
 
+        {/* Controles de paginación */}
         {totalPaginas > 1 && (
           <div className="pm-pagination">
             <button
@@ -495,6 +516,7 @@ const Bolsas = () => {
         )}
       </main>
 
+      {/* Renderizado condicional de modales */}
       {modalDetalles && (
         <DetallesModal
           bolsa={modalDetalles}

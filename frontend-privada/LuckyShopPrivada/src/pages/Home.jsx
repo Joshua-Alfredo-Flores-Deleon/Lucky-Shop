@@ -1,6 +1,6 @@
-import { useHome } from "../hooksP/useHome";
+import { useHome } from "../hooks/useHome";
 import { useState } from "react";
-import Sidebar from "../components/sideBar";
+import Sidebar from "../components/SideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
 import "../AdminShell.css";
@@ -12,7 +12,9 @@ const formatoMoneda = (n) =>
 export default function Home() {
   const { cargando, error, resumen, tendencia, granularidad, cambiarGranularidad } = useHome();
   const [notifAbierta, setNotifAbierta] = useState(false);
+  const [barraHover, setBarraHover] = useState(null); // índice de la barra sobre la que está el mouse
 
+  // Mientras se cargan los datos del panel
   if (cargando) {
     return (
       <div className="admin-shell">
@@ -25,6 +27,7 @@ export default function Home() {
     );
   }
 
+  // Si falló la carga de datos
   if (error) {
     return (
       <div className="admin-shell">
@@ -37,8 +40,30 @@ export default function Home() {
     );
   }
 
+  // Valor más alto de la tendencia, usado para escalar la altura de las barras
   const valorMaximo = Math.max(...tendencia.map((t) => t.valor), 1);
-  const indiceActivo = tendencia.length - 2 >= 0 ? tendencia.length - 2 : tendencia.length - 1;
+
+  // Mensaje de resumen dinámico: compara el último período con el anterior
+  const generarResumen = () => {
+    if (tendencia.length < 2) {
+      return "Aún estamos reuniendo datos de ventas de este mes.";
+    }
+    const actual = tendencia[tendencia.length - 1].valor;
+    const anterior = tendencia[tendencia.length - 2].valor;
+
+    if (anterior === 0 && actual === 0) {
+      return "Todavía no hay ventas registradas en este período.";
+    }
+    if (actual > anterior) {
+      return "¡Luckyshop ha aumentado su popularidad este último mes!";
+    }
+    if (actual < anterior) {
+      return "Las ventas bajaron un poco respecto al período anterior. ¡A darle con todo!";
+    }
+    return "Las ventas se mantienen estables respecto al período anterior.";
+  };
+
+  const mensajeResumen = generarResumen();
 
   return (
     <div className="admin-shell">
@@ -51,6 +76,7 @@ export default function Home() {
       </div>
       <p className="home-subtitulo">Bienvenido de nuevo, aquí está el resumen de este mes</p>
 
+      {/* Tarjetas de estadísticas rápidas */}
       <div className="home-tarjetas">
         <div className="home-tarjeta">
           <div className="home-tarjeta-fila">
@@ -96,6 +122,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Gráfica de tendencia + tarjeta de resumen con mensaje dinámico */}
       <div className="home-cuerpo">
         <div className="home-tarjeta-grafica">
           <div className="home-grafica-encabezado">
@@ -119,12 +146,18 @@ export default function Home() {
           {tendencia.length === 0 ? (
             <p className="home-estado">Todavía no hay ventas registradas para graficar.</p>
           ) : (
+            // Gráfica de barras casera: cada barra muestra su valor exacto al pasar el mouse
             <div className="home-grafica-barras">
               {tendencia.map((punto, i) => (
-                <div key={punto.etiqueta + i} className="home-barra-columna">
-                  {i === indiceActivo && <span className="home-barra-globo">{formatoMoneda(punto.valor)}</span>}
+                <div
+                  key={punto.etiqueta + i}
+                  className="home-barra-columna"
+                  onMouseEnter={() => setBarraHover(i)}
+                  onMouseLeave={() => setBarraHover(null)}
+                >
+                  {barraHover === i && <span className="home-barra-globo">{formatoMoneda(punto.valor)}</span>}
                   <div
-                    className={`home-barra ${i === indiceActivo ? "activa" : ""}`}
+                    className={`home-barra ${barraHover === i ? "activa" : ""}`}
                     style={{ height: `${Math.max((punto.valor / valorMaximo) * 100, 4)}%` }}
                   />
                   <span className="home-barra-etiqueta">{punto.etiqueta}</span>
@@ -134,12 +167,13 @@ export default function Home() {
           )}
         </div>
 
+        {/* Tarjeta de resumen con foto de fondo y mensaje generado dinámicamente */}
         <div
           className="home-tarjeta-resumen"
           style={{ backgroundImage: "url(https://picsum.photos/seed/luckyshop/400/600)" }}
         >
           <p className="home-resumen-titulo">Resumen</p>
-          <p className="home-resumen-texto">¡Luckyshop ha aumentado su popularidad este último mes!</p>
+          <p className="home-resumen-texto">{mensajeResumen}</p>
         </div>
       </div>
         </div>
@@ -149,6 +183,7 @@ export default function Home() {
   );
 }
 
+// Ícono de billete/dinero (tarjeta "Ventas totales")
 function IconoDinero() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -158,6 +193,7 @@ function IconoDinero() {
   );
 }
 
+// Ícono de personas (tarjeta "Clientes activos")
 function IconoPersonas() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -169,6 +205,7 @@ function IconoPersonas() {
   );
 }
 
+// Ícono de caja (tarjeta "Productos nuevos")
 function IconoCaja() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -179,6 +216,7 @@ function IconoCaja() {
   );
 }
 
+// Ícono de flecha hacia arriba, usado como indicador de crecimiento
 function IconoFlechaArriba({ inline }) {
   return (
     <svg

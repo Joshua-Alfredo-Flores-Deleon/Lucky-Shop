@@ -1,16 +1,17 @@
 import jsonwebtoken from "jsonwebtoken"; 
 import bcrypt from "bcryptjs"; 
 import crypto from "crypto"; 
-import nodemailer from "nodemailer";
 
 import HTMLRecoveryEmail from "../utils/sendMailRecovery.js";
-
+import { sendEmail } from "../utils/sendMailMailjet.js"; // nuevo metodo de envio de correos
 import { config } from "../../config.js";
 
+// Controlador para manejar la recuperación de contraseña de clientes
 import clientesModel from "../models/Clientes.js";
 
 const recoveryPasswordController = {};
 
+//POST - Solicitar un código de recuperación y enviarlo al correo del cliente
 recoveryPasswordController.requestCode = async (req, res) => {
   try {
     const email = req.body.email?.trim().toLowerCase();
@@ -31,40 +32,33 @@ recoveryPasswordController.requestCode = async (req, res) => {
 
     res.cookie("recoveryCookie", token, { maxAge: 15 * 60 * 1000 });
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: config.email.user_email,
-        pass: config.email.user_password,
-      },
-    });
+    // Enviamos el código de recuperación usando Mailjet
+    try {
+      await sendEmail(
+        email,
+        "Código de recuperación",
+        HTMLRecoveryEmail(randomCode)
+      );
+    } catch (mailError) {
+      console.log("error enviando correo: " + mailError);
+      return res.status(500).json({ message: "Error sending email" });
+    }
 
-    const mailOptions = {
-      from: config.email.user_email,
-      to: email,
-      subject: "Código de recuperación",
-      body: "El código expira en 15 minutos",
-      html: HTMLRecoveryEmail(randomCode),
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).json({ message: "Error sending email" });
-      }
-    });
-
-    return res.status(200).json({ message: "email sent" });
+    // Devolvemos el token también en el body para la app móvil (sin cookies).
+    return res.status(200).json({ message: "email sent", recoveryToken: token });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+//POST - Verificar que el código ingresado sea correcto
 recoveryPasswordController.verifyCode = async (req, res) => {
   try {
-    const { code } = req.body;
+    // Aceptamos el código y, opcionalmente, el token del body (móvil sin cookies).
+    const { code, recoveryToken } = req.body;
 
-    const token = req.cookies.recoveryCookie;
+    const token = req.cookies.recoveryCookie || recoveryToken;
     const decoded = jsonwebtoken.verify(token, config.JWT.secret);
 
     if (code !== decoded.randomCode) {
@@ -79,22 +73,25 @@ recoveryPasswordController.verifyCode = async (req, res) => {
 
     res.cookie("recoveryCookie", newToken, { maxAge: 15 * 60 * 1000 });
 
-    return res.status(200).json({ message: "Code verified successfully" });
+    // Devolvemos el token renovado (verificado) también en el body para móvil.
+    return res.status(200).json({ message: "Code verified successfully", recoveryToken: newToken });
   } catch (error) {
     console.log("error" + error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+//POST - Establecer una nueva contraseña después de verificar el código
 recoveryPasswordController.newPassword = async (req, res) => {
   try {
-    const { newPassword, confirmNewPassword } = req.body;
+    const { newPassword, confirmNewPassword, recoveryToken } = req.body;
 
     if (newPassword !== confirmNewPassword) {
       return res.status(400).json({ message: "password doesnt match" });
     }
 
-    const token = req.cookies.recoveryCookie;
+    // Token desde la cookie (web) o desde el body (móvil, sin cookies).
+    const token = req.cookies.recoveryCookie || recoveryToken;
     const decoded = jsonwebtoken.verify(token, config.JWT.secret);
 
     if (!decoded.verified) {
@@ -118,4 +115,5 @@ recoveryPasswordController.newPassword = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default recoveryPasswordController;

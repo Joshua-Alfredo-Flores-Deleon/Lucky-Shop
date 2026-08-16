@@ -1,5 +1,6 @@
 /* Nav.css — barra superior del panel admin (notificaciones + perfil) */
 
+/* Contenedor principal de la barra de navegación */
 .navbar {
   display: flex;
   align-items: center;
@@ -7,6 +8,7 @@
   margin-bottom: 24px;
 }
 
+/* Sección derecha que agrupa los botones y acciones */
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -14,6 +16,7 @@
   margin-left: auto;
 }
 
+/* Botón circular para el icono de notificaciones */
 .notification-button {
   position: relative;
   display: flex;
@@ -30,11 +33,13 @@
   transition: all 0.2s ease;
 }
 
+/* Efecto al pasar el cursor sobre el botón de notificaciones */
 .notification-button:hover {
   background: rgba(0, 230, 118, 0.08);
   border-color: rgba(0, 230, 118, 0.25);
 }
 
+/* Indicador o punto rojo para notificaciones no leídas */
 .notification-dot {
   position: absolute;
   top: 8px;
@@ -46,6 +51,7 @@
   border: 2px solid #ffffff;
 }
 
+/* Imagen de perfil de usuario */
 .profile-image {
   width: 40px;
   height: 40px;
@@ -56,10 +62,12 @@
   transition: border-color 0.2s ease;
 }
 
+/* Efecto de borde al pasar el cursor sobre la foto de perfil */
 .profile-image:hover {
   border-color: #00e676;
 }
 
+/* Avatar alternativo con las iniciales del usuario cuando no hay foto */
 .profile-image-iniciales {
   display: flex;
   align-items: center;

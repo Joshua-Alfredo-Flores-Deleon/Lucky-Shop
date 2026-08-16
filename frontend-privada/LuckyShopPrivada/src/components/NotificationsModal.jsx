@@ -1,11 +1,14 @@
-import { useNotificaciones } from "../hooksP/useNotificaciones";
+import { useNotificaciones } from "../hooks/useNotificaciones";
 import { useNavigate } from "react-router-dom";
 import "../NotificationModal.css";
 
+// Componente modal para desplegar el listado de notificaciones del sistema
 export default function NotificacionesModal({ abierto, onCerrar }) {
+  // Hook personalizado para obtener la lista de notificaciones y sus estados
   const { notificaciones, cargando, error } = useNotificaciones(abierto);
   const navigate = useNavigate();
 
+  // Redirige a la ruta especificada y cierra el modal si existe un enlace
   const handleClick = (enlace) => {
     if (enlace) {
       navigate(enlace);
@@ -13,17 +16,22 @@ export default function NotificacionesModal({ abierto, onCerrar }) {
     }
   };
 
+  // Si el modal está cerrado, no se muestra nada
   if (!abierto) return null;
 
   return (
+    // Fondo semitransparente que cierra el modal al hacer clic en él
     <div className="notif-fondo" onClick={onCerrar}>
+      {/* Panel principal del modal; detiene la propagación del evento para evitar su cierre al dar clic dentro */}
       <div className="notif-panel" onClick={(e) => e.stopPropagation()}>
         {/* Cabecera */}
         <div className="notif-cabecera">
           <h2 className="notif-titulo">Notificaciones</h2>
+          {/* Muestra el contador total de notificaciones cuando están cargadas */}
           {!cargando && !error && notificaciones.length > 0 && (
             <span className="notif-conteo">{notificaciones.length}</span>
           )}
+          {/* Botón para cerrar la ventana modal */}
           <button className="notif-cerrar" onClick={onCerrar} aria-label="Cerrar notificaciones">
             <IconoX />
           </button>
@@ -46,6 +54,7 @@ export default function NotificacionesModal({ abierto, onCerrar }) {
             {notificaciones.length === 0 ? (
               <p className="notif-vacio">No tienes notificaciones nuevas.</p>
             ) : (
+              // Iteración sobre la lista de notificaciones para renderizar cada ítem
               notificaciones.map((n) => (
                 <div 
                   key={n.id} 
@@ -57,6 +66,7 @@ export default function NotificacionesModal({ abierto, onCerrar }) {
                   <div className="notif-item-contenido">
                     <p className="notif-item-titulo">{n.titulo}</p>
                     <p className="notif-item-descripcion">{n.descripcion}</p>
+                    {/* Indicador visual si la notificación incluye enlace a otra página */}
                     {n.enlace && (
                       <span className="notif-ver-mas" style={{ fontSize: "12px", color: "var(--color-primary-pink)", fontWeight: "600", marginTop: "4px", display: "inline-block" }}>
                         Ver detalles →
@@ -73,6 +83,7 @@ export default function NotificacionesModal({ abierto, onCerrar }) {
   );
 }
 
+// Icono en formato SVG para la acción de cerrar
 function IconoX() {
   return (
     <svg

@@ -1,3 +1,4 @@
+//Controlador para gestionar las ventas y pagos
 import ventaModel from "../models/venta.js";
 import gananciasModel from "../models/Ganancias.js";
 
@@ -7,7 +8,7 @@ const POPULATE_CARRITO = {
   path: "IdCarrito",
   populate: [
     { path: "idCliente", select: "name lastName email" },
-    { path: "productos.idProducto", select: "nombre" },
+    { path: "productos.idProducto", select: "nombre precio imagenPresentacion descripcion" },
   ],
 };
 
@@ -36,10 +37,16 @@ const enriquecerVenta = (venta) => {
   };
 };
 
-// Crea o actualiza la ganancia vinculada a una venta cuando esta queda "Completado"
+// Crea, actualiza o elimina la ganancia vinculada a una venta según su estado.
+// Si la venta está "Completado", crea/actualiza la ganancia con el monto y fecha actuales.
+// Si deja de estar "Completado" (se cancela, se pone pendiente), elimina la ganancia asociada
+// para que no siga sumando al balance en Finanzas.
 const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
   try {
-    if (estado !== "Completado") return;
+    if (estado !== "Completado") {
+      await gananciasModel.deleteOne({ "ventas.idVenta": ventaId });
+      return;
+    }
 
     await gananciasModel.findOneAndUpdate(
       { "ventas.idVenta": ventaId }, // busca si ya existe una ganancia para esta venta
@@ -47,10 +54,10 @@ const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
         $setOnInsert: {
           ventas: [{ idVenta: ventaId }],
           gastos: [],
-          fecha: fecha || new Date(),
         },
         $set: {
           totalGanancias: monto,
+          fecha: fecha || new Date(),
         },
       },
       { upsert: true, new: true }
@@ -60,6 +67,7 @@ const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
   }
 };
 
+//GET - Obtener todas las ventas con filtros opcionales por estado y nombre del cliente
 ventaController.getVenta = async (req, res) => {
   try {
     const { estado, search } = req.query;
@@ -93,9 +101,15 @@ ventaController.getVenta = async (req, res) => {
   }
 };
 
+//POST - Insertar una nueva venta y sincronizar la ganancia
 ventaController.insertVenta = async (req, res) => {
   try {
     const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
+
+    if (!IdCarrito) {
+      return res.status(400).json({ message: "IdCarrito es obligatorio para registrar una venta" });
+    }
+
     const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status });
     await newVenta.save();
 
@@ -111,12 +125,16 @@ ventaController.insertVenta = async (req, res) => {
   }
 };
 
+//DELETE - Eliminar una venta por su ID y su ganancia asociada (si existe)
 ventaController.deleteVenta = async (req, res) => {
   try {
     const ventaEliminada = await ventaModel.findByIdAndDelete(req.params.id);
     if (!ventaEliminada) {
       return res.status(404).json({ message: "Venta no encontrada" });
     }
+
+    await gananciasModel.deleteOne({ "ventas.idVenta": req.params.id });
+
     return res.status(200).json({ message: "Venta deleted" });
   } catch (error) {
     console.error("deleteVenta error:", error);
@@ -124,6 +142,7 @@ ventaController.deleteVenta = async (req, res) => {
   }
 };
 
+//PUT - Actualizar una venta por su ID y sincronizar la ganancia
 ventaController.updateVenta = async (req, res) => {
   try {
     const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
@@ -148,6 +167,7 @@ ventaController.updateVenta = async (req, res) => {
   }
 };
 
+//GET - Obtener una venta por su ID
 ventaController.getVentaById = async (req, res) => {
   try {
     const venta = await ventaModel.findById(req.params.id).populate(POPULATE_CARRITO);
@@ -161,6 +181,7 @@ ventaController.getVentaById = async (req, res) => {
   }
 };
 
+//POST - Buscar ventas por nombre de referencia
 ventaController.searchByName = async (req, res) => {
   try {
     const { referencia } = req.body;
@@ -180,4 +201,5 @@ ventaController.searchByName = async (req, res) => {
   }
 };
 
+//Exportamos el controlador para usarlo en las rutas
 export default ventaController;

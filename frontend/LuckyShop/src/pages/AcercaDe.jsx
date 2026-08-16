@@ -1,27 +1,24 @@
-// Productos.jsx — CRUD completo de productos de Lucky Shop
-// Fetch directo en la página, sin services, mismo patrón del proyecto de referencia
-import {useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+//  AcercaDe.js - pagina de informacion
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import logoNegro from '../assets/LogoNegro-removebg-preview.png'
-import '../acercaDe.css'
+import '../AcercaDe.css'
 import dueña from '../assets/dueña.jpeg'
 
 const AcercaDe = () => {
-
-
 
   return (
     <div className="min-h-screen bg-pink-50">
       <Navbar />
 
+        {/* Encabezado con título y logo */}
         <div className='contenedor1'>
             <h1 className='titulo'><b>¿Quiénes somos?</b></h1>
             <img src={logoNegro} alt="Logo de lucky SHop en color negro" className='logo' />
         </div>
 
         <div className='Definitivo'>
+            {/* Historia de la marca, junto con la foto de la dueña */}
             <div className='contenedor2'>
                 <div className='historia'>  
                     <p><b>LuckyShop</b> es el resultado del sueño de una madre apasionada por el significado de los detalles y el poder de los símbolos de buena fortuna. Nuestra marca nace con el deseo de compartir piezas de joyería que no solo adornan, sino que también actúan como amuletos de luz, protección y alegría. Cada joya en Luckyshop es seleccionada con el amor y la dedicación que solo una madre puede poner, buscando que cada persona que use nuestras piezas lleve consigo un pedacito de suerte y confianza en su camino.</p>
@@ -29,6 +26,7 @@ const AcercaDe = () => {
                 <img src={dueña} alt="Dueña de la empresa Lucky Shop" />
             </div>
 
+            {/* Misión y visión de la empresa */}
             <div className='contenedorS'>
                 <div className='contenedor3'>
                     <h1 className='titulo2'><b>MISIÓN</b></h1>
@@ -47,4 +45,4 @@ const AcercaDe = () => {
   ) 
 }
 
-export default AcercaDe
+export default AcercaDe;

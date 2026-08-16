@@ -1,3 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Base ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
+/* ── Scrollbar oculta ── */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Animaciones bokeh / partículas del banner ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-18px) scale(1.08); }
+}
+
+@keyframes shimmer {
+  0%   { opacity: 0.4; transform: scale(0.95); }
+  50%  { opacity: 0.8; transform: scale(1.05); }
+  100% { opacity: 0.4; transform: scale(0.95); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(12px, -8px); }
+  50%      { transform: translate(-6px, -16px); }
+  75%      { transform: translate(-12px, 4px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift 10s ease-in-out infinite;
+}
+
+/* ── Partículas de bokeh para el banner ── */
+.bokeh-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+/* ── Hover elevate para cards ── */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px rgba(236, 72, 153, 0.15), 0 8px 16px -8px rgba(0,0,0,0.06);
+}
+
+/* ── Gradiente de texto ── */
+.text-gradient-pink {
+  background: linear-gradient(135deg, #ec4899, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Transición suave para enlaces del nav ── */
+.nav-link-fancy {
+  position: relative;
+}
+.nav-link-fancy::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ec4899, #f472b6);
+  border-radius: 2px;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+.nav-link-fancy:hover::after,
+.nav-link-fancy.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* ── Botón rosa con pulse ── */
+.btn-pink-pulse:hover {
+  animation: none;
+  box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4);
+}
+.btn-pink-pulse:active {
+  transform: scale(0.97);
+}
