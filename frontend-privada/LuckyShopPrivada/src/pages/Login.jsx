@@ -1,5 +1,5 @@
 // Login.jsx — login del panel de administración de Lucky Shop
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import AdminLogo from '../components/AdminLogo.jsx'
 
@@ -15,14 +15,8 @@ const Login = () => {
   const [mostrarPassword, setMostrarPassword] = useState(false) // controla si la contraseña se ve en texto plano
   const navigate = useNavigate()
 
-  // Si ya hay un token guardado (sesión activa previa), salta directo al panel
-  useEffect(() => {
-    const token = localStorage.getItem('luckyshop_token') || sessionStorage.getItem('luckyshop_token')
-    if (token) navigate('/home')
-  }, [navigate])
-
-  // Envía las credenciales al backend y, si son correctas, guarda un indicador
-  // local de sesión activa (en localStorage o sessionStorage según "Recordarme")
+  // Envía las credenciales al backend. Si son correctas, el backend deja
+  // una cookie httpOnly (authCookie) con la duración según "rememberMe".
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -39,7 +33,7 @@ const Login = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // necesario para que el backend pueda setear la cookie authCookie
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email: email.trim(), password, recordarme: rememberMe }),
       })
 
       const data = await res.json()
@@ -48,12 +42,7 @@ const Login = () => {
         throw new Error(data.message || 'Email o contraseña incorrectos.')
       }
 
-      // El backend ya dejó la sesión en una cookie httpOnly (authCookie).
-      // Aquí solo guardamos un indicador local para que la UI sepa que hay sesión activa.
-      const storage = rememberMe ? localStorage : sessionStorage
-      storage.setItem('luckyshop_token', 'session-active')
-      storage.setItem('luckyshop_user', email.trim())
-
+      // La cookie httpOnly ya quedó seteada por el backend; navegamos al panel.
       navigate('/home')
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión.')

@@ -25,6 +25,7 @@ import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
 import wompiRoutes from "./src/routes/wompi.js"
 import promocionesRoutes from "./src/routes/promociones.js"
+import videosComboRoutes from "./src/routes/videosComboRoute.js";
 
 // Inicialización de la aplicación Express
 const app = express();
@@ -68,4 +69,6 @@ app.use("/api/productos", productosRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
 app.use("/api/wompi", wompiRoutes);
 app.use("/api/promociones", promocionesRoutes);
+app.use("/api/videosCombo", videosComboRoutes );
+
 export default app;

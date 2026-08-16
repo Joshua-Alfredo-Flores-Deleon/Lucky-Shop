@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { AdminAuthProvider } from './context/AdminAuthContext.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 import Login from './pages/Login.jsx'
@@ -15,78 +16,87 @@ import PromocionesAdmin from './pages/Promociones.jsx'
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/recovery-password" element={<RecoveryPasswordAdmin />} />
-        <Route path="/perfilAdmin" element={<PerfilAdmin/>}/>
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute userType="admin">
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ventas"
-          element={
-            <ProtectedRoute userType="admin">
-              <Ventas />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/productos"
-          element={
-            <ProtectedRoute userType="admin">
-              <Productos />
-            </ProtectedRoute>
-          }
-        />
-         <Route
-          path="/promociones"
-          element={
-            <ProtectedRoute userType="admin">
-              <PromocionesAdmin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/clientes"
-          element={
-            <ProtectedRoute userType="admin">
-              <Clientes />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/bolsasSuerte"
-          element={
-            <ProtectedRoute userType="admin">
-              <Bolsas />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/videosCombos"
-          element={
-            <ProtectedRoute userType="admin">
-              <VideosCombos />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/finanzas"
-          element={
-            <ProtectedRoute userType="admin">
-              <Finanzas />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <AdminAuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/recovery-password" element={<RecoveryPasswordAdmin />} />
+          <Route
+            path="/perfilAdmin"
+            element={
+              <ProtectedRoute>
+                <PerfilAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ventas"
+            element={
+              <ProtectedRoute>
+                <Ventas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/productos"
+            element={
+              <ProtectedRoute>
+                <Productos />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/promociones"
+            element={
+              <ProtectedRoute>
+                <PromocionesAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clientes"
+            element={
+              <ProtectedRoute>
+                <Clientes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bolsasSuerte"
+            element={
+              <ProtectedRoute>
+                <Bolsas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/videosCombos"
+            element={
+              <ProtectedRoute>
+                <VideosCombos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finanzas"
+            element={
+              <ProtectedRoute>
+                <Finanzas />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AdminAuthProvider>
   )
 }
 
-export default App;
+export default App;;

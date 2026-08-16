@@ -1,3 +1,6 @@
+/* PerfilPriv.css — estilos de la página de perfil del administrador */
+
+/* Contenedor con sidebar + contenido, usado en un diseño alternativo con sidebar propio */
 .perfil-contenedor {
   display: flex;
   min-height: 560px;
@@ -37,6 +40,7 @@
   background: #efefef;
 }
 
+/* Banner de color sólido en la parte superior de la página */
 .perfil-banner {
   height: 140px;
   background: #a9c2ad;
@@ -46,6 +50,7 @@
   padding: 0 32px 32px;
 }
 
+/* Fila del avatar: se monta parcialmente sobre el banner (margin-top negativo) */
 .perfil-fila-avatar {
   display: flex;
   align-items: flex-end;
@@ -62,6 +67,7 @@
   background: #d9d9d9;
 }
 
+/* Variante del avatar que muestra iniciales en vez de una foto */
 .perfil-avatar-iniciales {
   display: flex;
   align-items: center;
@@ -85,6 +91,7 @@
   margin: 4px 0 0;
 }
 
+/* Contenedor de la tarjeta de información, ocupa todo el ancho disponible */
 .perfil-grid {
   display: block;
   margin-top: 32px;
@@ -120,6 +127,7 @@
   color: #111111;
 }
 
+/* Grilla de 2 columnas para mostrar los campos (Nombre, Correo, etc.) */
 .perfil-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -138,6 +146,7 @@
   margin: 0;
 }
 
+/* Estilos para inputs (si en algún momento se reactiva el modo edición) */
 .perfil-input {
   width: 100%;
   border-radius: 8px;

@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import "./Nav.css";
 
+// URL base de la API backend
 const BASE_URL = "http://localhost:4000/api";
 
+// Función auxiliar para obtener hasta dos iniciales en mayúsculas a partir del nombre completo
 function iniciales(nombre = '') {
   return nombre
     .split(' ')
@@ -17,8 +19,10 @@ function iniciales(nombre = '') {
 
 export default function Nav({ openNotifications }) {
   const navigate = useNavigate();
+  // Estado para guardar el nombre del administrador logueado
   const [nombreAdmin, setNombreAdmin] = useState("");
 
+  // Petición al backend para verificar la sesión activa y obtener los datos del admin
   useEffect(() => {
     let activo = true;
     fetch(`${BASE_URL}/loginAdmin/checkSession`, { credentials: "include" })
@@ -40,17 +44,17 @@ export default function Nav({ openNotifications }) {
       <div></div>
 
       <div className="navbar-actions">
-        {/* Botón de notificaciones */}
+        {/* Botón para abrir el panel de notificaciones */}
         <button
           className="notification-button"
           onClick={openNotifications}
         >
           <FaBell />
-          {/* Indicador de notificaciones */}
+          {/* Indicador visual de notificaciones pendientes */}
           <span className="notification-dot"></span>
         </button>
 
-        {/* Avatar con iniciales del administrador */}
+        {/* Avatar interactivo con las iniciales que redirige al perfil del admin */}
         <div
           className="profile-image profile-image-iniciales"
           onClick={() => navigate("/perfilAdmin")}

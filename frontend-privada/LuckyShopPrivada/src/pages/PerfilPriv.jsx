@@ -1,11 +1,14 @@
-import SidebarPerfil from "../components/sideBarPerfil";
+// Perfil.jsx — página de perfil del administrador (solo lectura: nombre y correo)
+import SidebarPerfil from "../components/SideBarPerfil";
 import { usePerfil } from "../hooks/usePerfilP";
 import "../AdminShell.css";
 import "./PerfilPriv.css";
 
 export default function Perfil() {
+  // Datos del administrador, obtenidos de la sesión activa (checkSession)
   const { perfil, cargando, error } = usePerfil();
 
+  // Mientras se carga el perfil
   if (cargando) {
     return (
       <div className="admin-shell">
@@ -17,6 +20,7 @@ export default function Perfil() {
     );
   }
 
+  // Si falló la carga o no hay datos de perfil
   if (error || !perfil) {
     return (
       <div className="admin-shell">
@@ -38,6 +42,7 @@ export default function Perfil() {
       <div className="perfil-banner" />
 
       <div className="perfil-contenido">
+        {/* Avatar (foto real, o iniciales del nombre si no hay foto) + nombre y rol */}
         <div className="perfil-fila-avatar">
           {perfil.avatarUrl ? (
             <img src={perfil.avatarUrl} alt={`Foto de perfil de ${nombreMostrado}`} className="perfil-avatar" />
@@ -52,6 +57,7 @@ export default function Perfil() {
           </div>
         </div>
 
+        {/* Tarjeta con la información de la cuenta (nombre y correo, solo lectura) */}
         <div className="perfil-grid">
           <div className="perfil-tarjeta">
             <p className="perfil-titulo-tarjeta">Información de cuenta</p>
@@ -75,6 +81,8 @@ export default function Perfil() {
   );
 }
 
+// Genera las iniciales del nombre completo (máximo 2 letras), para usarlas como avatar
+// cuando no hay una foto de perfil real
 function iniciales(nombre = '') {
   return nombre
     .split(' ')

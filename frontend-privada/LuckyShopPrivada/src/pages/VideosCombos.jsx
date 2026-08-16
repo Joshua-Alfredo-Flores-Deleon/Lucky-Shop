@@ -1,11 +1,13 @@
-import { useState } from 'react'
-import Sidebar from '../components/sideBar'
+import { useState, useEffect, useRef } from 'react'
+import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
 import { useVideosCombos } from '../hooks/useVideosCombos'
 import '../sideBar.css'
 import '../productosPage.css'
 import '../videosCombosPage.css'
+
+const BASE_URL = 'http://localhost:4000/api'
 
 /* ── Helpers ── */
 const formatFecha = (fecha) => {
@@ -20,13 +22,7 @@ const formatFecha = (fecha) => {
 const getNombreCliente = (idCliente) => {
   if (!idCliente) return 'Sin cliente'
   if (typeof idCliente === 'string') return idCliente
-  return idCliente.nombre || idCliente.name || idCliente.email || 'Sin nombre'
-}
-
-const getNombreCombo = (idCombo, index) => {
-  if (!idCombo) return `Combo suerte ${index + 1}`
-  if (typeof idCombo === 'string') return `Combo suerte ${index + 1}`
-  return idCombo.nombre || `Combo suerte ${index + 1}`
+  return `${idCliente.name || ''} ${idCliente.lastName || ''}`.trim() || idCliente.email || 'Sin nombre'
 }
 
 const getStatusInfo = (status) => {
@@ -72,7 +68,7 @@ const VideoModal = ({ combo, onClose }) => {
     <div className="vc-modal-overlay" onClick={onClose}>
       <div className="vc-modal-box" onClick={e => e.stopPropagation()}>
         <div className="vc-modal-header">
-          <h3>{combo._nombre}</h3>
+          <h3>{getNombreCliente(combo.idCliente)}</h3>
           <button className="vc-modal-close" onClick={onClose}><IconoCerrar /></button>
         </div>
         {combo.urlVideo ? (
@@ -87,7 +83,7 @@ const VideoModal = ({ combo, onClose }) => {
   )
 }
 
-/* ── Modal: detalles + acciones de aceptar/denegar ── */
+/*Modal: detalles + acciones de aceptar/denegar */
 const DetalleModal = ({ combo, onClose, onAceptar, onDenegar }) => {
   if (!combo) return null
   const { label, clase } = getStatusInfo(combo.status)
@@ -99,16 +95,20 @@ const DetalleModal = ({ combo, onClose, onAceptar, onDenegar }) => {
         <h2>Detalles del combo</h2>
 
         <div className="vc-detalle-row">
-          <div className="vc-detalle-label">Combo</div>
-          <div className="vc-detalle-val">{combo._nombre}</div>
-        </div>
-        <div className="vc-detalle-row">
           <div className="vc-detalle-label">Cliente</div>
           <div className="vc-detalle-val">{getNombreCliente(combo.idCliente)}</div>
         </div>
         <div className="vc-detalle-row">
           <div className="vc-detalle-label">Fecha</div>
           <div className="vc-detalle-val">{formatFecha(combo.createdAt)}</div>
+        </div>
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Dirección</div>
+          <div className="vc-detalle-val">{combo.direccion || '—'}</div>
+        </div>
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Tipo</div>
+          <div className="vc-detalle-val">{combo.idProducto?.nombre || '—'}</div>
         </div>
         <div className="vc-detalle-row">
           <div className="vc-detalle-label">Estado actual</div>
@@ -138,7 +138,7 @@ const DetalleModal = ({ combo, onClose, onAceptar, onDenegar }) => {
   )
 }
 
-/* ── Modal: confirmación de eliminación ── */
+/* Modal: confirmación de eliminación  */
 const ConfirmEliminarModal = ({ combo, onClose, onConfirm }) => (
   <div className="vc-modal-overlay" onClick={onClose}>
     <div className="vc-confirm-modal" onClick={e => e.stopPropagation()}>
@@ -160,9 +160,168 @@ const ConfirmEliminarModal = ({ combo, onClose, onConfirm }) => (
   </div>
 )
 
-/* ════════════════════════════════════════════════════════════
-   Página principal: Videos Combos
-   ════════════════════════════════════════════════════════════ */
+/* Modal: agregar nuevo video combo */
+const NuevoComboModal = ({ onClose, onCrear }) => {
+  const [clientes, setClientes] = useState([])
+  const [bolsas, setBolsas] = useState([])
+  const [form, setForm] = useState({
+    idCliente: '',
+    idProducto: '',
+    mensaje: '',
+    direccion: '',
+  })
+  const [videoFile, setVideoFile] = useState(null)
+  const [videoPreview, setVideoPreview] = useState(null)
+  const [guardando, setGuardando] = useState(false)
+  const [error, setError] = useState('')
+  const fileRef = useRef()
+
+  // Carga la lista de clientes y de bolsas de la suerte para los selects
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        const [resClientes, resBolsas] = await Promise.all([
+          fetch(`${BASE_URL}/clientes`, { credentials: 'include' }),
+          fetch(`${BASE_URL}/productos?categoria=bolsas`, { credentials: 'include' }),
+        ])
+        const dataClientes = await resClientes.json()
+        const dataBolsas = await resBolsas.json()
+        setClientes(Array.isArray(dataClientes) ? dataClientes : [])
+        setBolsas(Array.isArray(dataBolsas) ? dataBolsas : [])
+      } catch {
+        setClientes([])
+        setBolsas([])
+      }
+    }
+    cargarDatos()
+  }, [])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setVideoFile(file)
+    setVideoPreview(URL.createObjectURL(file))
+  }
+
+  const handleSubmit = async () => {
+    setError('')
+    if (!form.idCliente) {
+      setError('Selecciona un cliente.')
+      return
+    }
+    if (!videoFile) {
+      setError('Selecciona un video.')
+      return
+    }
+
+    setGuardando(true)
+    try {
+      await onCrear({ ...form, videoFile })
+      onClose()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setGuardando(false)
+    }
+  }
+
+  return (
+    <div className="vc-modal-overlay" onClick={onClose}>
+      <div className="vc-detalle-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 560 }}>
+        <span className="vc-detalle-bar" />
+        <h2>Nuevo video combo</h2>
+
+        {/* Selector/preview del video */}
+        <div
+          onClick={() => fileRef.current?.click()}
+          style={{
+            border: '2px dashed #c4d4c8',
+            borderRadius: 12,
+            background: '#f4f7f5',
+            height: 160,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            marginBottom: 16,
+            overflow: 'hidden',
+          }}
+        >
+          {videoPreview ? (
+            <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+          ) : (
+            <span style={{ color: '#9cad9d', fontSize: '0.9rem' }}>Toca para elegir un video</span>
+          )}
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="video/*"
+          style={{ display: 'none' }}
+          onChange={handleVideoChange}
+        />
+
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Cliente</div>
+          <select name="idCliente" value={form.idCliente} onChange={handleChange} className="pm-input">
+            <option value="">Selecciona un cliente</option>
+            {clientes.map((c) => (
+              <option key={c._id} value={c._id}>{c.name} {c.lastName}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Bolsa de la suerte</div>
+          <select name="idProducto" value={form.idProducto} onChange={handleChange} className="pm-input">
+            <option value="">Selecciona una bolsa</option>
+            {bolsas.map((b) => (
+              <option key={b._id} value={b._id}>{b.nombre}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Mensaje para el cliente</div>
+          <textarea
+            name="mensaje"
+            value={form.mensaje}
+            onChange={handleChange}
+            className="pm-input pm-textarea"
+            placeholder="Ej: Tu combo está listo, mira qué suerte te tocó hoy"
+          />
+        </div>
+
+        <div className="vc-detalle-row">
+          <div className="vc-detalle-label">Dirección de entrega</div>
+          <input
+            name="direccion"
+            value={form.direccion}
+            onChange={handleChange}
+            className="pm-input"
+            placeholder="Ej: Calle Ricaldone"
+          />
+        </div>
+
+        {error && <p style={{ color: '#991b1b', fontSize: '0.85rem' }}>{error}</p>}
+
+        <div className="vc-detalle-actions">
+          <button className="vc-btn-cerrar" onClick={onClose}>Cancelar</button>
+          <button className="vc-btn-aceptar" onClick={handleSubmit} disabled={guardando}>
+            {guardando ? 'Subiendo...' : 'Subir video'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
 const VideosCombos = () => {
   const {
     combos,
@@ -174,6 +333,7 @@ const VideosCombos = () => {
     filtroStatus,
     setFiltroStatus,
     fetchCombos,
+    crearCombo,
     actualizarStatus,
     eliminarCombo,
   } = useVideosCombos()
@@ -182,8 +342,9 @@ const VideosCombos = () => {
   const [modalVideo, setModalVideo]     = useState(null)
   const [modalDetalle, setModalDetalle] = useState(null)
   const [modalEliminar, setModalEliminar] = useState(null)
+  const [modalNuevo, setModalNuevo] = useState(false)
 
-  /* ── Acciones CRUD ── */
+  /* Acciones CRUD */
   const handleAceptar = async (id) => {
     try { await actualizarStatus(id, true) }
     catch (err) { alert('Error: ' + err.message) }
@@ -203,6 +364,10 @@ const VideosCombos = () => {
     }
   }
 
+  const handleCrear = async (datos) => {
+    await crearCombo(datos)
+  }
+
   const FILTROS = ['Todos', 'Aceptada', 'Denegada']
 
   return (
@@ -212,15 +377,20 @@ const VideosCombos = () => {
       <main className="pm-main">
         <Nav openNotifications={() => setNotifAbierta(true)} />
 
-        {/* ── Encabezado ── */}
+        {/*  Encabezado */}
         <div className="pm-header">
           <div className="pm-title-wrap">
             <h1 className="pm-title">Videos combos</h1>
             <div className="pm-title-underline" />
           </div>
+          <div className="pm-header-actions">
+            <button className="pm-btn pm-btn-dark pm-btn-nuevo" onClick={() => setModalNuevo(true)}>
+              <span>＋</span> Nuevo video
+            </button>
+          </div>
         </div>
 
-        {/* ── Toolbar: filtros + búsqueda ── */}
+        {/* Toolbar: filtros + búsqueda*/}
         <div className="vc-toolbar">
           <div className="vc-filter-group">
             {FILTROS.map((f) => (
@@ -248,7 +418,7 @@ const VideosCombos = () => {
           </div>
         </div>
 
-        {/* ── Error ── */}
+        {/* Error */}
         {error && !loading && (
           <div className="pm-error">
             <span>⚠ {error}</span>
@@ -256,7 +426,7 @@ const VideosCombos = () => {
           </div>
         )}
 
-        {/* ── Lista ── */}
+        {/*Lista */}
         {!error && (
           <div className="vc-list">
 
@@ -273,12 +443,9 @@ const VideosCombos = () => {
               </div>
             )}
 
-            {!loading && combos.map((combo, index) => {
+            {!loading && combos.map((combo) => {
               const { label, clase } = getStatusInfo(combo.status)
-              const nombreCombo  = getNombreCombo(combo.idCombo, index)
               const nombreCliente = getNombreCliente(combo.idCliente)
-              // Enriquecemos el objeto con el nombre calculado para pasarlo a modales
-              const comboConNombre = { ...combo, _nombre: nombreCombo }
 
               return (
                 <div className="vc-card" key={combo._id}>
@@ -286,7 +453,7 @@ const VideosCombos = () => {
                   {/* Miniatura del video */}
                   <div
                     className="vc-video-thumb"
-                    onClick={() => setModalVideo(comboConNombre)}
+                    onClick={() => setModalVideo(combo)}
                     title="Ver video"
                   >
                     {combo.urlVideo ? (
@@ -303,7 +470,7 @@ const VideosCombos = () => {
 
                   {/* Info del combo */}
                   <div className="vc-info">
-                    <p className="vc-combo-nombre">{nombreCombo}</p>
+                    <p className="vc-combo-nombre">{combo.idProducto?.nombre || 'Combo suerte'}</p>
                     <div className="vc-meta">
                       <span><strong>Cliente:</strong> {nombreCliente}</span>
                       <span><strong>Fecha:</strong> {formatFecha(combo.createdAt)}</span>
@@ -322,14 +489,14 @@ const VideosCombos = () => {
                   <div className="vc-acciones">
                     <button
                       className="vc-btn-detalle"
-                      onClick={() => setModalDetalle(comboConNombre)}
+                      onClick={() => setModalDetalle(combo)}
                     >
                       Ver detalles &gt;
                     </button>
                     <button
                       className="vc-icon-btn"
                       title="Eliminar"
-                      onClick={() => setModalEliminar(comboConNombre)}
+                      onClick={() => setModalEliminar(combo)}
                     >
                       <IconoBasura />
                     </button>
@@ -341,7 +508,7 @@ const VideosCombos = () => {
         )}
       </main>
 
-      {/* ── Modales ── */}
+      {/*Modales */}
       {modalVideo && (
         <VideoModal combo={modalVideo} onClose={() => setModalVideo(null)} />
       )}
@@ -363,9 +530,16 @@ const VideosCombos = () => {
         />
       )}
 
+      {modalNuevo && (
+        <NuevoComboModal
+          onClose={() => setModalNuevo(false)}
+          onCrear={handleCrear}
+        />
+      )}
+
       <NotificacionesModal abierto={notifAbierta} onCerrar={() => setNotifAbierta(false)} />
     </div>
   )
 }
 
-export default VideosCombos
+export default VideosCombos;

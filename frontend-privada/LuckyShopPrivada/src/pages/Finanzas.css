@@ -1,3 +1,4 @@
+/* Título de la sección */
 .finanzas-titulo {
   position: relative;
   font-size: 2.2rem;
@@ -7,6 +8,7 @@
   padding-bottom: 8px;
 }
 
+/* Línea decorativa inferior del título */
 .finanzas-titulo::after {
   content: '';
   display: block;
@@ -16,24 +18,28 @@
   margin-top: 8px;
 }
 
+/* Mensajes de estado (Carga / Informativo) */
 .finanzas-estado {
   font-size: 14px;
   color: #6b7280;
   padding: 12px 0;
 }
 
+/* Mensaje de estado de error */
 .finanzas-estado-error {
   font-size: 14px;
   color: #dc2626;
   padding: 12px 0;
 }
 
+/* Disposición de la sección superior (Gráfica y Resumen lateral) */
 .finanzas-cuerpo-superior {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 16px;
 }
 
+/* Contenedores tipo tarjeta */
 .finanzas-tarjeta {
   border: 1px solid #e5e5e5;
   border-radius: 12px;
@@ -41,6 +47,7 @@
   background: #ffffff;
 }
 
+/* Encabezado dentro de las tarjetas */
 .finanzas-tarjeta-titulo {
   font-size: 14px;
   font-weight: 600;
@@ -50,6 +57,7 @@
   border-left: 4px solid #0d2818;
 }
 
+/* Área contenedora de la gráfica de barras */
 .finanzas-grafica {
   height: 160px;
   display: flex;
@@ -57,6 +65,7 @@
   gap: 4px;
 }
 
+/* Botón secundario para registrar gastos */
 .finanzas-boton-gasto {
   width: 100%;
   margin-top: 16px;
@@ -74,6 +83,7 @@
   background: #f2f5f2;
 }
 
+/* Estructura del bloque lateral de métricas/resumen */
 .finanzas-resumen-linea {
   display: flex;
   flex-direction: column;
@@ -82,6 +92,7 @@
   padding-left: 16px;
 }
 
+/* Separadores entre cada métrica */
 .finanzas-resumen-linea > div {
   padding-top: 8px;
   border-top: 1px solid #e5e5e5;
@@ -92,26 +103,31 @@
   border-top: none;
 }
 
+/* Etiquetas de métricas (Ingresos, Gastos, etc.) */
 .finanzas-resumen-etiqueta {
   font-size: 12px;
   color: #6b7280;
   margin: 0;
 }
 
+/* Valores numéricos principales */
 .finanzas-resumen-valor {
   font-size: 18px;
   font-weight: 600;
   margin: 4px 0 0;
 }
 
+/* Indicador de balance positivo/ingreso */
 .finanzas-resumen-valor.verde {
   color: #3b6d11;
 }
 
+/* Indicador de balance negativo/gasto */
 .finanzas-resumen-valor.rojo {
   color: #dc2626;
 }
 
+/* Envoltorio principal de la tabla de movimientos */
 .finanzas-tabla-wrap {
   margin-top: 16px;
   border: 1px solid #e5e5e5;
@@ -119,6 +135,7 @@
   overflow: hidden;
 }
 
+/* Barra superior de la tabla (Filtros y Controles) */
 .finanzas-tabla-encabezado {
   display: flex;
   align-items: center;
@@ -129,6 +146,7 @@
   color: #374151;
 }
 
+/* Elementos redondeados estilo 'pill' para filtros */
 .finanzas-tabla-encabezado .pill {
   border: 1px solid #9ca3af;
   border-radius: 999px;
@@ -136,6 +154,7 @@
   margin: 0 4px;
 }
 
+/* Selector desplegable de filtros */
 .pill-select {
   background: #ffffff;
   color: #374151;
@@ -144,6 +163,7 @@
   cursor: pointer;
 }
 
+/* Botón 'Ver todo' en el encabezado de la tabla */
 .finanzas-boton-vertodo {
   background: none;
   border: none;
@@ -157,6 +177,7 @@
   text-decoration: underline;
 }
 
+/* Tabla de registros */
 .finanzas-tabla {
   width: 100%;
   border-collapse: collapse;
@@ -175,10 +196,12 @@
   border-top: 1px solid #f1f1f1;
 }
 
+/* Resaltado para montos de tipo gasto */
 .finanzas-monto-gasto {
   color: #dc2626;
 }
 
+/* Etiqueta distintiva de tipo/categoría */
 .finanzas-badge {
   display: inline-block;
   padding: 3px 12px;
@@ -189,6 +212,7 @@
   color: #3b6d11;
 }
 
+/* Botón para desplegar más detalles de la fila */
 .finanzas-boton-expandir {
   background: none;
   border: none;
@@ -196,12 +220,14 @@
   color: #9ca3af;
 }
 
+/* Fila desplegable con información extendida */
 .finanzas-fila-detalle {
   background: #f9fafb;
   font-size: 12px;
   color: #6b7280;
 }
 
+/* Contenedor de acciones dentro de la fila desplegada */
 .finanzas-fila-acciones {
   display: flex;
   align-items: center;
@@ -209,6 +235,7 @@
   padding: 4px 0;
 }
 
+/* Botones de acción (Editar, Ver, etc.) */
 .finanzas-icono-accion {
   display: flex;
   align-items: center;
@@ -228,11 +255,13 @@
   background: #eaf3de;
 }
 
+/* Variación del botón de acción para eliminar */
 .finanzas-icono-accion.eliminar:hover {
   color: #dc2626;
   background: #fdecea;
 }
 
+/* Adaptación para pantallas pequeñas (Móviles / Tablets) */
 @media (max-width: 860px) {
   .finanzas-cuerpo-superior {
     grid-template-columns: 1fr;

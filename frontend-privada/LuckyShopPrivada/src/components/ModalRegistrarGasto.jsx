@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 
+// Estado inicial del formulario para cuando se registra un nuevo gasto
 const VALORES_INICIALES = { cantidadGasto: "", descripcionGasto: "", fechaGasto: "" };
 
-// Sirve para crear (gasto=null) y para editar (gasto={ _id, cantidadGasto, descripcionGasto, fechaGasto }).
+// Modal para crear un nuevo gasto o editar uno existente
 export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuardar, error }) {
+  // Estado local para los campos del formulario
   const [form, setForm] = useState(VALORES_INICIALES);
+  
+  // Determina si el modal está en modo edición o creación
   const esEditar = !!gasto;
 
-  // Cada vez que el modal se abre, arranca en blanco (crear) o con los datos del gasto (editar)
+  // Actualiza los datos del formulario según si se pasa un gasto para editar o si es nuevo
   useEffect(() => {
     if (!abierto) return;
     if (gasto) {
@@ -21,10 +25,13 @@ export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuarda
     }
   }, [abierto, gasto]);
 
+  // Si el modal está cerrado, no se muestra en pantalla
   if (!abierto) return null;
 
+  // Función para actualizar un campo específico del formulario
   const actualizar = (campo, valor) => setForm((prev) => ({ ...prev, [campo]: valor }));
 
+  // Procesa el envío del formulario formateando el monto a número
   const manejarGuardar = (e) => {
     e.preventDefault();
     if (!form.cantidadGasto || !form.fechaGasto) return;
@@ -32,11 +39,16 @@ export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuarda
   };
 
   return (
+    // Fondo oscuro que cubre la pantalla
     <div className="modal-fondo">
+      {/* Contenedor principal del modal */}
       <div className="modal-panel mediano">
+        {/* Título dinámico según la acción */}
         <h2 className="modal-titulo">{esEditar ? "Editar gasto" : "Registrar gasto"}</h2>
 
+        {/* Formulario de registro/edición */}
         <form onSubmit={manejarGuardar} className="modal-form una-columna">
+          {/* Campo de ingreso del monto */}
           <div>
             <label className="modal-campo-label">Monto del gasto</label>
             <div className="modal-precio-input">
@@ -54,6 +66,7 @@ export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuarda
             </div>
           </div>
 
+          {/* Campo de descripción opcional */}
           <div>
             <label className="modal-campo-label">Descripción</label>
             <input
@@ -64,6 +77,7 @@ export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuarda
             />
           </div>
 
+          {/* Campo de selección de fecha */}
           <div>
             <label className="modal-campo-label">Fecha</label>
             <input
@@ -75,8 +89,10 @@ export default function ModalRegistrarGasto({ abierto, gasto, onCerrar, onGuarda
             />
           </div>
 
+          {/* Muestra mensaje de error en caso de existir */}
           {error && <p className="modal-error">{error}</p>}
 
+          {/* Botones de acción del formulario */}
           <div className="modal-acciones">
             <button type="button" className="modal-boton-secundario" onClick={onCerrar}>
               Cancelar

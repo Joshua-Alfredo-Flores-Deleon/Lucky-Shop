@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useVentas } from '../hooks/useVentas'
-import Sidebar from "../components/sideBar";
+import Sidebar from "../components/SideBar";
 import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
 import '../productosPage.css'
@@ -9,6 +9,7 @@ import '../sideBar.css'
 
 const ESTADOS_FILTRO = ['Todos', 'Completado', 'Pendiente', 'Cancelado']
 
+// Genera las iniciales (máx 2 letras) a partir de un nombre, para el avatar circular
 const iniciales = (nombre = '') =>
   nombre.split(' ').filter(Boolean).map(p => p[0]).slice(0, 2).join('').toUpperCase() || '?'
 
@@ -147,6 +148,7 @@ const EditarVentaModal = ({ venta, onClose, onGuardar }) => {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
+  // Convierte el estado elegido (texto) a los dos booleanos que espera el backend
   const handleSubmit = () => {
     const estadoBooleanos = {
       Completado: { status: true, statusPago: true },
@@ -252,13 +254,14 @@ const Ventas = () => {
     }
   }
 
+  // Traduce el estado de la venta a la clase CSS del badge correspondiente
   const badgeClase = (estado) => ({
     Completado: 'completado',
     Pendiente: 'pendiente',
     Cancelado: 'cancelado',
   }[estado] || 'pendiente')
 
-  /* ── RENDER ── */
+  /* RENDER  */
   return (
     <div className="pm-page">
       <Sidebar />
@@ -273,6 +276,7 @@ const Ventas = () => {
           </div>
         </div>
 
+        {/* Tarjeta con el método de pago más usado (resumen rápido) */}
         <div className="vt-stat-card">
   <p className="vt-stat-label">Método más usado</p>
   {metodoMasUsado ? (
@@ -287,6 +291,7 @@ const Ventas = () => {
   )}
 </div>
 
+       {/* Filtros por estado (botones) + buscador */}
        <div className="vt-toolbar">
   <div className="vt-filtros-wrap">
     {ESTADOS_FILTRO.map(e => (
@@ -321,6 +326,7 @@ const Ventas = () => {
           </div>
         )}
 
+        {/* Tabla principal de ventas */}
         {!error && (
           <div className="vt-table-wrap">
             <table className="vt-table">
@@ -369,6 +375,7 @@ const Ventas = () => {
               </tbody>
             </table>
 
+            {/* Paginación */}
             {!loading && totalVentas > 0 && (
               <div className="vt-footer">
                 <span className="vt-footer-texto">

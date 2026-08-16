@@ -1,20 +1,21 @@
 // PromocionesAdmin.jsx — gestión de promociones (admin)
 import { useState, useEffect } from 'react'
-import Sidebar from '../components/sideBar'
+import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
-import '../sideBar.css'
+import '../SideBar.css'
 import '../productosPage.css'
 
 const BASE_URL = 'http://localhost:4000/api'
 const POR_PAGINA = 10
 
+// Da formato corto a una fecha (ej: "15 jul. 2026")
 const formatoFecha = (f) => (f ? new Date(f).toLocaleDateString('es-SV', { day: '2-digit', month: 'short', year: 'numeric' }) : '—')
 
-/* ── Modal para crear / editar promoción ── */
+//Modal para crear / editar promoción 
 const PromocionModal = ({ promocion, onClose, onGuardado }) => {
   const esEditar = !!promocion
-  const [productos, setProductos] = useState([])
+  const [productos, setProductos] = useState([])  // Lista de productos activos para elegir cuál promocionar
   const [form, setForm] = useState({
     idProducto: promocion?.idProducto?._id || '',
     descuento: promocion?.descuento || '',
@@ -24,6 +25,7 @@ const PromocionModal = ({ promocion, onClose, onGuardado }) => {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
+  // Carga los productos activos disponibles para asignarles una promoción
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -42,6 +44,7 @@ const PromocionModal = ({ promocion, onClose, onGuardado }) => {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
+  // Valida el formulario y crea o actualiza la promoción según corresponda
   const handleSubmit = async () => {
     setError('')
     if (!form.idProducto || !form.descuento || !form.fechaInicio || !form.fechaFin) {
@@ -136,7 +139,7 @@ const PromocionModal = ({ promocion, onClose, onGuardado }) => {
   )
 }
 
-/* ── Modal de confirmación de eliminación ── */
+/* Modal de confirmación de eliminación */
 const ConfirmEliminarModal = ({ promocion, onClose, onConfirm }) => (
   <div className="pm-overlay" onClick={onClose}>
     <div className="pm-modal pm-confirm-modal" onClick={e => e.stopPropagation()}>
@@ -153,7 +156,7 @@ const ConfirmEliminarModal = ({ promocion, onClose, onConfirm }) => (
   </div>
 )
 
-/* ────────────────────────────────────────────────────────── */
+
 const PromocionesAdmin = () => {
   const [promociones, setPromociones] = useState([])
   const [loading, setLoading] = useState(true)
@@ -161,9 +164,10 @@ const PromocionesAdmin = () => {
   const [notifAbierta, setNotifAbierta] = useState(false)
   const [paginaActual, setPaginaActual] = useState(1)
 
-  const [modalPromo, setModalPromo] = useState(null)
+  const [modalPromo, setModalPromo] = useState(null)      // null = cerrado, {} = crear, objeto = editar
   const [modalEliminar, setModalEliminar] = useState(null)
 
+  // Carga todas las promociones registradas
   const fetchPromociones = async () => {
     setLoading(true)
     setError('')
@@ -182,6 +186,7 @@ const PromocionesAdmin = () => {
     fetchPromociones()
   }, [])
 
+  // Elimina la promoción seleccionada tras confirmar
   const handleEliminar = async () => {
     try {
       await fetch(`${BASE_URL}/promociones/${modalEliminar._id}`, { method: 'DELETE', credentials: 'include' })
@@ -192,13 +197,13 @@ const PromocionesAdmin = () => {
     }
   }
 
-  // ¿La promo está vigente hoy?
+  // Determina si una promoción está vigente hoy: activa y dentro del rango de fechas
   const estaVigente = (p) => {
     const hoy = new Date()
     return p.estado === 'activa' && new Date(p.fechaInicio) <= hoy && new Date(p.fechaFin) >= hoy
   }
 
-  // Paginación
+  // Paginación de la tabla de promociones
   const totalPaginas = Math.max(1, Math.ceil(promociones.length / POR_PAGINA))
   const inicio = (paginaActual - 1) * POR_PAGINA
   const promocionesPagina = promociones.slice(inicio, inicio + POR_PAGINA)
@@ -238,6 +243,7 @@ const PromocionesAdmin = () => {
           </div>
         ) : !error && (
           <>
+            {/* Tabla de promociones registradas */}
             <div className="vt-table-wrap">
               <table className="vt-table">
                 <thead>
@@ -314,6 +320,7 @@ const PromocionesAdmin = () => {
         )}
       </main>
 
+      {/* modalPromo !== null: {} para crear, objeto de promoción para editar */}
       {modalPromo !== null && (
         <PromocionModal
           promocion={modalPromo._id ? modalPromo : null}
@@ -335,4 +342,4 @@ const PromocionesAdmin = () => {
   )
 }
 
-export default PromocionesAdmin
+export default PromocionesAdmin;

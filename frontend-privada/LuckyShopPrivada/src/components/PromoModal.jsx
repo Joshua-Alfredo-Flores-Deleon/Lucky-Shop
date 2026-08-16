@@ -1,20 +1,27 @@
-//PromocionModal.jsx — modal para crear una promoción (admin, estilo pm-)
+// PromocionModal.jsx — modal para crear una promoción (admin, estilo pm-)
 import { useState, useEffect } from 'react'
 
+// URL base de la API backend
 const BASE_URL = 'http://localhost:4000/api'
 
+// Componente modal para el registro de nuevas promociones
 const PromoModal = ({ onClose, onCreated }) => {
+  // Lista de productos obtenidos de la API para el selector
   const [productos, setProductos] = useState([])
+  
+  // Estado local para almacenar los datos del formulario
   const [form, setForm] = useState({
     idProducto: '',
     descuento: '',
     fechaInicio: '',
     fechaFin: '',
   })
+  
+  // Estados para gestionar la carga al guardar y mensajes de validación/error
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  // Cargar productos activos para el select
+  // Efecto para obtener la lista de productos activos al montar el componente
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -28,21 +35,26 @@ const PromoModal = ({ onClose, onCreated }) => {
     fetchProductos()
   }, [])
 
+  // Manejador genérico para actualizar los valores de las entradas del formulario
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
+  // Valida los campos e interactúa con la API para crear la promoción
   const handleSubmit = async () => {
     setError('')
+    // Validación de campos vacíos
     if (!form.idProducto || !form.descuento || !form.fechaInicio || !form.fechaFin) {
       setError('Completa todos los campos.')
       return
     }
+    // Validación del rango permitido para el porcentaje
     if (Number(form.descuento) < 1 || Number(form.descuento) > 99) {
       setError('El descuento debe estar entre 1 y 99.')
       return
     }
+    // Validación de coherencia de fechas
     if (new Date(form.fechaFin) < new Date(form.fechaInicio)) {
       setError('La fecha fin no puede ser anterior a la de inicio.')
       return
@@ -50,6 +62,7 @@ const PromoModal = ({ onClose, onCreated }) => {
 
     setSaving(true)
     try {
+      // Petición HTTP POST para guardar la promoción en base de datos
       const res = await fetch(`${BASE_URL}/promociones`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,6 +76,8 @@ const PromoModal = ({ onClose, onCreated }) => {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'No se pudo crear la promoción')
+      
+      // Notifica la creación exitosa y cierra el modal
       onCreated?.()
       onClose()
     } catch (err) {
@@ -73,14 +88,19 @@ const PromoModal = ({ onClose, onCreated }) => {
   }
 
   return (
+    // Fondo transparente del modal con cierre al hacer clic exterior
     <div className="pm-overlay" onClick={onClose}>
+      {/* Contenedor principal del modal; detiene la propagación de eventos */}
       <div className="pm-modal pm-form-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Encabezado con estilo visual */}
         <div className="pm-form-header">
           <span className="pm-detalles-bar"></span>
           <h2>Nueva promoción</h2>
         </div>
 
+        {/* Campos de entrada del formulario */}
         <div className="pm-form-fields">
+          {/* Selección de producto */}
           <div className="pm-field-group">
             <label>Producto</label>
             <select name="idProducto" value={form.idProducto} onChange={handleChange} className="pm-input">
@@ -91,6 +111,7 @@ const PromoModal = ({ onClose, onCreated }) => {
             </select>
           </div>
 
+          {/* Porcentaje de descuento */}
           <div className="pm-field-group">
             <label>Descuento (%)</label>
             <input
@@ -100,6 +121,7 @@ const PromoModal = ({ onClose, onCreated }) => {
             />
           </div>
 
+          {/* Fila con las fechas de inicio y fin */}
           <div className="pm-field-row">
             <div className="pm-field-group">
               <label>Fecha inicio</label>
@@ -111,11 +133,13 @@ const PromoModal = ({ onClose, onCreated }) => {
             </div>
           </div>
 
+          {/* Muestra mensajes de error de validación o del servidor */}
           {error && (
             <p style={{ color: '#991b1b', fontSize: '0.85rem', margin: 0 }}>{error}</p>
           )}
         </div>
 
+        {/* Botones para cancelar o procesar el registro */}
         <div className="pm-form-actions">
           <button className="pm-btn pm-btn-cancel" onClick={onClose}>Cancelar</button>
           <button className="pm-btn pm-btn-dark" onClick={handleSubmit} disabled={saving}>
@@ -127,4 +151,4 @@ const PromoModal = ({ onClose, onCreated }) => {
   )
 }
 
-export default PromoModal
+export default PromoModal;

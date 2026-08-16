@@ -1,48 +1,13 @@
-// ProtectedRoute.jsx — guard de rutas que valida sesión contra el backend
-// antes de mostrar el contenido protegido.
-import { useState, useEffect } from 'react'
+// ProtectedRoute.jsx — guard de rutas: lee la sesión ya validada del
+// AdminAuthContext, sin volver a llamar al backend en cada navegación.
 import { Navigate } from 'react-router-dom'
+import { useAdminAuth } from '../context/AdminAuthContext.jsx'
 
-const BASE_URL = 'http://localhost:4000/api'
+const ProtectedRoute = ({ children }) => {
+  const { autenticado, loading } = useAdminAuth()
 
-// userType: 'admin' | 'cliente'
-const ProtectedRoute = ({ userType, children }) => {
-  const [status, setStatus] = useState('checking') // 'checking' | 'authorized' | 'unauthorized'
-
-  const checkEndpoint = userType === 'admin'
-    ? `${BASE_URL}/loginAdmin/checkSession`
-    : `${BASE_URL}/loginClientes/checkSession`
-
-  const redirectPath = userType === 'admin' ? '/' : '/login'
-
-  useEffect(() => {
-    let isMounted = true
-
-    const verifySession = async () => {
-      try {
-        const res = await fetch(checkEndpoint, {
-          method: 'GET',
-          credentials: 'include', // manda la cookie authCookie
-        })
-
-        if (!isMounted) return
-
-        if (res.ok) {
-          setStatus('authorized')
-        } else {
-          setStatus('unauthorized')
-        }
-      } catch (error) {
-        if (isMounted) setStatus('unauthorized')
-      }
-    }
-
-    verifySession()
-
-    return () => { isMounted = false }
-  }, [checkEndpoint])
-
-  if (status === 'checking') {
+  // Vista temporal mientras se confirma el estado de la sesión (solo pasa una vez, al cargar la app)
+  if (loading) {
     return (
       <div className="min-h-screen bg-pink-50 flex items-center justify-center">
         <p className="text-sm text-gray-400">Verificando sesión...</p>
@@ -50,11 +15,13 @@ const ProtectedRoute = ({ userType, children }) => {
     )
   }
 
-  if (status === 'unauthorized') {
-    return <Navigate to={redirectPath} replace />
+  // Sin sesión válida: redirige al login
+  if (!autenticado) {
+    return <Navigate to="/" replace />
   }
 
+  // Con sesión válida: renderiza el contenido protegido
   return children
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

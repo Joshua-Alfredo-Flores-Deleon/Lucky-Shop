@@ -22,15 +22,21 @@ import Pago from './pages/Pago.jsx'
 import Favoritos from './pages/Favoritos.jsx'
 import Promociones from './pages/Promociones.jsx'
 import GuiaRegalo from './pages/GuiaRegalo.jsx'
+import Videos from './pages/Videos.jsx'
 
+// App.jsx — punto de entrada del sitio público de Lucky Shop.
+// Define todas las rutas: las públicas (catálogo, login, etc.) y las privadas
+// (carrito, pago, perfil, etc.), protegidas por PrivateRoute.
 function App() {
   return (
+    // AuthProvider da acceso a la sesión del cliente en toda la app
     <AuthProvider>
+      {/* CartProvider da acceso al carrito de compras en toda la app */}
       <CartProvider>
         <Router>
           <Routes>
 
-            {/* ── Rutas públicas: catálogo navegable sin sesión ── */}
+            {/*Rutas públicas: catálogo navegable sin sesión */}
             <Route path="/"                 element={<Navigate to="/home" replace />} />
             <Route path="/login"            element={<LoginCliente />} />
             <Route path="/register"         element={<Register />} />
@@ -47,7 +53,7 @@ function App() {
             <Route path="/guia-regalo"     element={<GuiaRegalo />} />
             <Route path="/promociones"     element={<Promociones />} />
 
-            {/* Requieren sesión*/}
+            {/* Requieren sesión — envueltas en PrivateRoute, que redirige a /login si no hay sesión */}
             <Route element={<PrivateRoute />}>
               <Route path="/carrito"         element={<Carrito />} />
               <Route path="/pago"            element={<Pago />} />
@@ -55,6 +61,7 @@ function App() {
               <Route path="/perfil"          element={<Perfil />} />
               <Route path="/favoritos"       element={<Favoritos />} />
               <Route path="/Favoritos"       element={<Favoritos />} />
+              <Route path="/videos"          element={<Videos />} />
               
             </Route>
           </Routes>
