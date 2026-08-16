@@ -10,10 +10,11 @@
  *  - variant:   "darkGreen" | "wine" | "pink" | "outline"  (default: darkGreen)
  *  - loading:   muestra spinner y deshabilita el botón
  *  - disabled:  deshabilita el botón
- *  - icon:      texto/emoji opcional al final del título (ej: "→")
+ *  - icon:      nombre de icono Ionicons opcional al final del título (ej: "arrow-forward")
  */
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const CustomButton = ({
@@ -39,7 +40,9 @@ const CustomButton = ({
       ) : (
         <View style={styles.fila}>
           <Text style={[styles.texto, estiloVariante.texto]}>{title}</Text>
-          {icon ? <Text style={[styles.texto, estiloVariante.texto, styles.icono]}>{icon}</Text> : null}
+          {icon ? (
+            <Icon name={icon} size={18} color={estiloVariante.texto.color} style={styles.icono} />
+          ) : null}
         </View>
       )}
     </TouchableOpacity>

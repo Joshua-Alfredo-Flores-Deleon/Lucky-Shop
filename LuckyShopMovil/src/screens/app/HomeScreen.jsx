@@ -26,6 +26,7 @@ import Logo from "../../components/Logo";
 import CategoryChip from "../../components/CategoryChip";
 import ProductCard from "../../components/ProductCard";
 import Loader from "../../components/Loader";
+import Icon from "../../components/Icon";
 import useProductos from "../../hooks/useProductos";
 import useBolsas from "../../hooks/useBolsas";
 import { useAuth } from "../../context/AuthContext";
@@ -51,12 +52,12 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* Saludo con nombre real */}
-      <Text style={styles.saludo}>Hola, {nombre} 👋</Text>
+      <Text style={styles.saludo}>Hola, {nombre}</Text>
       <Text style={styles.saludoSub}>Descubre tu próxima pieza de la suerte</Text>
 
       {/* Búsqueda */}
       <View style={styles.buscador}>
-        <Text style={styles.lupa}>🔍</Text>
+        <Icon name="search" size={16} color={colors.textGray} style={styles.lupa} />
         <TextInput
           style={styles.buscadorInput}
           value={busqueda}
@@ -80,7 +81,10 @@ const HomeScreen = ({ navigation }) => {
             icon={cat.icon}
             index={i}
             onPress={() =>
-              navigation.navigate("Categorias", { slug: cat.slug, label: cat.label })
+              navigation.navigate("Categorias", {
+                screen: "CategoriasHome",
+                params: { slug: cat.slug, label: cat.label },
+              })
             }
           />
         ))}
@@ -128,7 +132,11 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <View style={styles.grid}>
           {productos.map((p) => (
-            <ProductCard key={p._id} producto={p} onPress={() => {}} />
+            <ProductCard
+              key={p._id}
+              producto={p}
+              onPress={() => navigation.navigate("ProductoDetalle", { producto: p })}
+            />
           ))}
         </View>
       )}

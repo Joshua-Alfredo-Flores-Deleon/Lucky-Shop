@@ -10,6 +10,7 @@
  */
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import Icon from "./Icon";
 import { colors } from "../theme/colors";
 
 const SocialButton = ({ proveedor = "google", onPress }) => {
@@ -20,7 +21,12 @@ const SocialButton = ({ proveedor = "google", onPress }) => {
       onPress={onPress}
       activeOpacity={0.85}
     >
-      <Text style={styles.icono}>{esApple ? "" : "G"}</Text>
+      <Icon
+        name={esApple ? "logo-apple" : "logo-google"}
+        size={18}
+        color={esApple ? colors.white : colors.textDark}
+        style={styles.icono}
+      />
       <Text style={[styles.texto, esApple && styles.textoApple]}>
         {esApple ? "Apple" : "Google"}
       </Text>
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
   },
   google: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border },
   apple: { backgroundColor: "#111111" },
-  icono: { fontSize: 16, fontWeight: "800", marginRight: 8, color: colors.textDark },
+  icono: { marginRight: 8 },
   texto: { fontSize: 15, fontWeight: "700", color: colors.textDark },
   textoApple: { color: colors.white },
 });

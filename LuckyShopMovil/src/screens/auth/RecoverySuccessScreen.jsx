@@ -8,6 +8,7 @@ import { View, Text, StyleSheet } from "react-native";
 
 import Logo from "../../components/Logo";
 import CustomButton from "../../components/CustomButton";
+import Icon from "../../components/Icon";
 import { colors } from "../../theme/colors";
 
 const RecoverySuccessScreen = ({ navigation }) => {
@@ -20,7 +21,7 @@ const RecoverySuccessScreen = ({ navigation }) => {
       <View style={styles.centro}>
         <View style={styles.tarjeta}>
           <View style={styles.iconoCirculo}>
-            <Text style={styles.icono}>✓</Text>
+            <Icon name="checkmark" size={36} color={colors.white} />
           </View>
 
           <Text style={styles.titulo}>Contraseña actualizada con éxito!</Text>

@@ -10,6 +10,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Logo from "../../components/Logo";
 import CustomButton from "../../components/CustomButton";
 import PinInput from "../../components/PinInput";
+import Icon from "../../components/Icon";
 import Notificacion from "../../components/Notificacion";
 import useNotificacion from "../../hooks/useNotificacion";
 import { useRecoveryContext } from "../../context/RecoveryContext";
@@ -48,7 +49,7 @@ const RecoveryPinScreen = ({ navigation }) => {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={styles.volver}>←</Text>
+          <Icon name="arrow-back" size={22} color={colors.greenLogo} />
         </TouchableOpacity>
         <Logo size={20} mostrarSubtitulo={false} />
         <View style={{ width: 20 }} />
@@ -57,7 +58,7 @@ const RecoveryPinScreen = ({ navigation }) => {
       <View style={styles.centro}>
         <View style={styles.tarjeta}>
           <View style={styles.iconoCirculo}>
-            <Text style={styles.icono}>🛡️</Text>
+            <Icon name="shield-checkmark" size={26} color={colors.greenLogo} />
           </View>
 
           <Text style={styles.titulo}>PIN de verificación</Text>
