@@ -7,7 +7,7 @@ import { sendEmail } from "../utils/sendMailMailjet.js"; // nuevo metodo de envi
 import { config } from "../../config.js";
 
 // Controlador para manejar la recuperación de contraseña de clientes
-import clientesModel from "../models/Clientes.js";
+import clientesModel from "../models/clientes.js";
 
 const recoveryPasswordController = {};
 
