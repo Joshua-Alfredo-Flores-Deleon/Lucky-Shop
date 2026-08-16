@@ -10,17 +10,21 @@ import Eliminar from '../assets/icons8-basura-50.png'
 const BASE_URL = 'http://localhost:4000/api'
 
 const Carrito = () => {
+  // Productos en el carrito y funciones para modificarlo (viene del contexto global)
   const { items, removeItem, updateCantidad, total, clearCart } = useCart()
   const { cliente } = useAuth()
+
   const [loading, setLoading]  = useState(false)
   const [error,   setError]    = useState('')
-  const [success, setSuccess]  = useState(false)
+  const [success, setSuccess]  = useState(false) // true cuando el pago se completó (pantalla de éxito)
 
+  // Costo de envío fijo, solo se cobra si hay productos en el carrito
   const COSTO_ENVIO = items.length > 0 ? 4.00 : 0
   const totalFinal  = total + COSTO_ENVIO
 
   // El flujo de compra se ha trasladado a la página dedicada de Pago (/pago)
 
+  // Pantalla de confirmación tras un pago exitoso
   if (success) return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -49,6 +53,7 @@ const Carrito = () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Carrito de compras</h1>
 
         {items.length === 0 ? (
+          // Carrito vacío: invita a explorar productos
           <div className="text-center py-20">
            
             <p className="text-gray-400 mb-6">Tu carrito está vacío</p>
@@ -59,20 +64,20 @@ const Carrito = () => {
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
 
-            {/* Lista de productos */}
+            {/* Lista de productos en el carrito */}
             <div className="flex-1">
               <div className="rounded-2xl border border-gray-100 overflow-hidden">
-                {/* Encabezado tabla */}
+                {/* Encabezado de la tabla de productos */}
                 <div className="grid grid-cols-4 bg-pink-100 px-5 py-3 text-sm font-semibold text-gray-700">
                   <span className="col-span-2">Productos</span>
                   <span className="text-center">Cantidad</span>
                   <span className="text-center">Acción</span>
                 </div>
 
-                {/* Items */}
+                {/* Una fila por cada producto en el carrito */}
                 {items.map((item) => (
                   <div key={item._id} className="grid grid-cols-4 items-center px-5 py-4 border-b border-gray-50 last:border-0">
-                    {/* Producto */}
+                    {/* Imagen, nombre y precio del producto */}
                     <div className="col-span-2 flex items-center gap-3">
                       <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">
                         {item.imagenPresentacion ? (
@@ -87,7 +92,7 @@ const Carrito = () => {
                       </div>
                     </div>
 
-                    {/* Cantidad */}
+                    {/* Control de cantidad: restar, mostrar cantidad, sumar */}
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad - 1)}
@@ -96,6 +101,7 @@ const Carrito = () => {
                       
                       </button>
                       <span className="w-8 text-center text-sm font-semibold">{item.cantidad}</span>
+                      {/* El botón de sumar se deshabilita si ya se alcanzó el stock disponible */}
                       <button
                         onClick={() => updateCantidad(item._id, item.cantidad + 1)}
                         disabled={item.cantidad >= item.stock}
@@ -110,7 +116,7 @@ const Carrito = () => {
                       </button>
                     </div>
 
-                    {/* Eliminar */}
+                    {/* Botón para quitar el producto del carrito */}
                     <div className="flex justify-center">
                       <button
                         onClick={() => removeItem(item._id)}
@@ -125,7 +131,7 @@ const Carrito = () => {
               </div>
             </div>
 
-            {/* Resumen */}
+            {/* Resumen del pedido: subtotal, envío, total y botón de pago */}
             <div className="lg:w-72">
               <div className="rounded-2xl border border-gray-100 p-5 sticky top-24">
                 <h3 className="font-bold text-gray-900 mb-4">Resumen de pedido</h3>
@@ -151,6 +157,7 @@ const Carrito = () => {
 
                 {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
 
+                {/* Lleva a la página de pago dedicada, donde se completa la compra */}
                 <Link
                   to="/pago"
                   className="block w-full text-center bg-[#1e293b] hover:bg-[#0f172a] text-white py-3 rounded-2xl font-semibold text-sm transition-all hover:shadow-lg active:scale-98"
@@ -168,4 +175,4 @@ const Carrito = () => {
   )
 }
 
-export default Carrito
+export default Carrito;

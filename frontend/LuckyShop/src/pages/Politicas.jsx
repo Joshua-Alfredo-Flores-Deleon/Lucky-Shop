@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import Logo from "../assets/icons8-trébol-50.png"
 
+// Estilos en línea usados en toda la página de Políticas
 const styles = {
   pageWrapper: {
     minHeight: "100vh",
@@ -14,6 +15,7 @@ const styles = {
     flex: 1,
     padding: "40px 60px",
   },
+  // Tarjeta gris que contiene todo el texto de los términos y condiciones
   card: {
     backgroundColor: "#D9D9D9",
     borderRadius: "16px",
@@ -37,6 +39,7 @@ const styles = {
     width: "48px",
     height: "48px",
   },
+  // Layout de dos columnas para repartir las secciones de texto
   twoCols: {
     display: "flex",
     gap: "60px",
@@ -73,6 +76,7 @@ const styles = {
     marginBottom: "6px",
     fontFamily: "sans-serif",
   },
+  // Decoración rosada en la esquina inferior derecha de la tarjeta
   pinkAccent: {
     position: "absolute",
     bottom: "40px",
@@ -83,6 +87,8 @@ const styles = {
   },
 };
 
+// Página de Términos y Condiciones, dividida en 8 secciones (aceptación, objeto,
+// registro, productos, precios, envíos, devoluciones y responsabilidad)
 export default function Politicas() {
   return (
     <div style={styles.pageWrapper}>
@@ -90,14 +96,14 @@ export default function Politicas() {
 
       <div style={styles.mainContainer}>
         <div style={styles.card}>
-          {/* Título */}
+          {/* Título principal con el ícono de trébol */}
           <div style={styles.headerWrapper}>
             <h1 style={styles.mainTitle}>Terminos y condiciones - LUCKYSHOP</h1>
             <img src={Logo} alt="" />
           </div>
 
           <div style={styles.twoCols}>
-            {/* Columna Izquierda */}
+            {/* Columna Izquierda: secciones 1 a 4 */}
             <div style={styles.col}>
               <div style={styles.section}>
                 <div style={styles.sectionTitle}>
@@ -167,7 +173,7 @@ export default function Politicas() {
               </div>
             </div>
 
-            {/* Columna Derecha */}
+            {/* Columna Derecha: secciones 5 a 8 */}
             <div style={styles.col}>
               <div style={styles.section}>
                 <div style={styles.sectionTitle}>5. Precios y pagos</div>

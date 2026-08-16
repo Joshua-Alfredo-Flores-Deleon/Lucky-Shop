@@ -1,3 +1,4 @@
+// Promociones.jsx — página pública con los productos que tienen descuento activo
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
@@ -7,9 +8,11 @@ import ProductCard from '../components/ProductCard.jsx'
 const BASE_URL = 'http://localhost:4000/api'
 
 const Promociones = () => {
-  const [productos, setProductos] = useState([])
+  const [productos, setProductos] = useState([])  // Productos con descuento activo, ya con el % incluido
   const [loading, setLoading]     = useState(true)
 
+  // Carga las promociones activas y arma cada producto con su porcentaje de descuento incluido,
+  // para poder pasárselo directo a ProductCard
   useEffect(() => {
     const fetchPromos = async () => {
       try {
@@ -60,14 +63,17 @@ const Promociones = () => {
         </h1>
 
         {loading ? (
+          // Estado de carga
           <div className="flex justify-center py-16">
             <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
           </div>
         ) : productos.length === 0 ? (
+          // Sin promociones activas en este momento
           <div className="flex flex-col items-center py-16 text-gray-400">
             <p className="text-sm font-medium">No hay promociones activas en este momento</p>
           </div>
         ) : (
+          // Grilla de productos en promoción (ProductCard ya sabe mostrar el precio tachado con el % de descuento)
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {productos.map((producto) => (
               <ProductCard key={producto._id} producto={producto} />
@@ -81,4 +87,4 @@ const Promociones = () => {
   )
 }
 
-export default Promociones
+export default Promociones;

@@ -16,11 +16,10 @@ const Pago = () => {
   const [metodoPago, setMetodoPago] = useState('tarjeta')
   const [direccionEnvio, setDireccionEnvio] = useState('misma')
 
-  // Estado para la edición de la dirección predeterminada en línea
   const [isEditingAddress, setIsEditingAddress] = useState(false)
   const [editedAddress, setEditedAddress] = useState(cliente?.direccion || 'Calle 4 de noviembre, colonia 5 de mayo, San Salvador')
+  const [nuevaDireccion, setNuevaDireccion] = useState('')
 
-  // Estado del formulario de tarjeta
   const [numeroTarjeta, setNumeroTarjeta] = useState('')
   const [nombreTarjeta, setNombreTarjeta] = useState('')
   const [fechaExpiracion, setFechaExpiracion] = useState('')
@@ -29,7 +28,6 @@ const Pago = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Costo de envío siempre $4.00 si hay items
   const COSTO_ENVIO = items.length > 0 ? 4.00 : 0
   const totalFinal = total + COSTO_ENVIO
 
@@ -40,11 +38,7 @@ const Pago = () => {
 
     try {
       if (metodoPago === 'tarjeta') {
-        // Integración con Wompi
-        const tokenRes = await fetch(`${BASE_URL}/wompi/token`, {
-          method: 'POST'
-        })
-        
+        const tokenRes = await fetch(`${BASE_URL}/wompi/token`, { method: 'POST' })
         if (!tokenRes.ok) throw new Error('Error de conexión con procesador de pagos (Token)')
         const tokenData = await tokenRes.json()
         const token = tokenData.access_token
@@ -62,15 +56,48 @@ const Pago = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token, formData })
         })
-
         if (!payRes.ok) throw new Error('Pago declinado por el procesador')
       } else if (metodoPago === 'paypal') {
-        // Simulación de PayPal (ya que no hay backend)
         await new Promise(resolve => setTimeout(resolve, 1500))
-        // Aquí normalmente habría un window.location.href hacia PayPal
       }
 
-      // Éxito: Limpiamos carrito y vamos a historial
+      // 1. Crear el carrito real en el backend
+      const carritoRes = await fetch(`${BASE_URL}/carrito`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          idCliente: cliente?._id,
+          productos: items.map((i) => ({
+            idProducto: i._id,
+            cantidad: i.cantidad,
+            subtotal: i.precio * i.cantidad,
+          })),
+          total: totalFinal,
+          estado: 'activo',
+        }),
+      })
+      if (!carritoRes.ok) throw new Error('No se pudo registrar el carrito')
+      const carritoCreado = await carritoRes.json()
+
+      // 2. Crear la venta, vinculada al carrito recién creado
+      const direccionFinal = direccionEnvio === 'misma' ? editedAddress : nuevaDireccion
+
+      const ventaRes = await fetch(`${BASE_URL}/venta`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          IdCarrito: carritoCreado._id,
+          direcion: direccionFinal,
+          metodoPago,
+          statusPago: metodoPago !== 'efectivo',
+          status: true,
+          fecha: new Date(),
+        }),
+      })
+      if (!ventaRes.ok) throw new Error('No se pudo registrar la venta')
+
       clearCart()
       navigate('/historial')
     } catch (err) {
@@ -103,10 +130,8 @@ const Pago = () => {
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Pago</h1>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Formulario de pago y envío */}
           <div className="flex-1 space-y-8">
             
-            {/* Sección Método de Pago */}
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Método de pago</h2>
               <div className="flex flex-wrap gap-4 mb-4">
@@ -124,7 +149,6 @@ const Pago = () => {
                 </label>
               </div>
 
-              {/* Contenedor de Tarjeta */}
               <div className={`border rounded-lg p-5 transition-all ${metodoPago === 'tarjeta' ? 'border-pink-300 bg-pink-50/30' : 'border-gray-200 opacity-70 grayscale'}`}>
                 <label className="flex items-center gap-2 mb-4 cursor-pointer">
                   <input type="radio" name="metodoPago" value="tarjeta" checked={metodoPago === 'tarjeta'} onChange={(e) => setMetodoPago(e.target.value)} className="text-pink-500 focus:ring-pink-500" />
@@ -167,7 +191,6 @@ const Pago = () => {
               </div>
             </section>
 
-            {/* Sección Dirección de Envío */}
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Dirección de envío</h2>
               
@@ -225,7 +248,13 @@ const Pago = () => {
                   </label>
                   {direccionEnvio === 'diferente' && (
                     <div className="mt-4 animate-fade-in">
-                      <input type="text" placeholder="Ingresa la nueva dirección..." className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400" />
+                      <input
+                        type="text"
+                        placeholder="Ingresa la nueva dirección..."
+                        value={nuevaDireccion}
+                        onChange={(e) => setNuevaDireccion(e.target.value)}
+                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400"
+                      />
                     </div>
                   )}
                 </div>
@@ -239,7 +268,6 @@ const Pago = () => {
             </div>
           </div>
 
-          {/* Resumen del pedido (Sidebar) */}
           <div className="lg:w-96">
             <div className="border border-gray-100 rounded-2xl p-6 shadow-sm sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Resumen de tu pedido</h3>
@@ -305,4 +333,4 @@ const Pago = () => {
   )
 }
 
-export default Pago
+export default Pago;

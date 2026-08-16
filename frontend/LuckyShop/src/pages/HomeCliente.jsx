@@ -5,14 +5,14 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import portadaJoyas from '../assets/portadaJoyas.jpg'
-import promoicones from "../pages/Promociones.jsx"
 
 const BASE_URL = 'http://localhost:4000/api'
 
 const HomeCliente = () => {
-  const [destacados, setDestacados] = useState([])
+  const [destacados, setDestacados] = useState([])  // Productos mostrados en "Lo más destacado"
   const [loading,    setLoading]    = useState(true)
 
+  // Carga los primeros 4 productos activos para la sección de destacados
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -34,7 +34,7 @@ const HomeCliente = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Hero con imagen de fondo */}
+      {/* Hero: imagen de portada con frase principal encima */}
       <section className="relative overflow-hidden">
         <div
           className="relative flex items-center min-h-[280px] sm:min-h-[340px]"
@@ -58,7 +58,7 @@ const HomeCliente = () => {
         </div>
       </section>
 
-      {/* Bienvenida */}
+      {/* Texto de bienvenida y presentación de la marca */}
       <section className="max-w-7xl mx-auto px-8 py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Bienvenido a tu lugar de confianza
@@ -80,20 +80,23 @@ const HomeCliente = () => {
         </div>
       </section>
 
-      {/* Lo más destacado */}
+      {/* Sección "Lo más destacado" con la grilla de productos */}
       <section className="max-w-7xl mx-auto px-8 pb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">
           Lo más destacado
         </h2>
         {loading ? (
+          // Estado de carga
           <div className="flex justify-center py-16">
             <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
           </div>
         ) : destacados.length === 0 ? (
+          // Sin productos disponibles
           <div className="flex flex-col items-center py-16 text-gray-400">
             <p className="text-sm font-medium">No hay productos disponibles</p>
           </div>
         ) : (
+          // Grilla de productos destacados (2 columnas en móvil, 4 en escritorio)
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {destacados.map((p) => (
               <ProductCard key={p._id} producto={p} />
@@ -102,9 +105,10 @@ const HomeCliente = () => {
         )}
       </section>
 
-      {/* Guía de regalo + Promociones */}
+      {/* Bloques promocionales: enlaces a la guía de regalo y a promociones */}
       <section className="max-w-7xl mx-auto px-8 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Bloque: Guía de regalo */}
           <div>
             <h3 className="text-2xl font-bold text-gray-900 mb-3">Guía de regalo</h3>
             <p className="text-gray-600 text-base leading-relaxed mb-4">
@@ -119,6 +123,7 @@ const HomeCliente = () => {
             </Link>
           </div>
 
+          {/* Bloque: Promociones */}
           <div>
             <h3 className="text-2xl font-bold text-gray-900 mb-3">Promociones</h3>
             <p className="text-gray-600 text-base leading-relaxed mb-4">

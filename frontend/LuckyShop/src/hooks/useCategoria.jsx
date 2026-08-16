@@ -15,6 +15,8 @@ export const useCategoria = (categoria) => {
   useEffect(() => {
     if (!categoria) return
 
+    // Permite cancelar la petición si el componente se desmonta o
+    // la categoría cambia antes de que termine la petición anterior
     const controller = new AbortController()
 
     const fetchProductos = async () => {
@@ -29,6 +31,7 @@ export const useCategoria = (categoria) => {
         const data = await res.json()
         setProductos(Array.isArray(data) ? data : [])
       } catch (err) {
+        // Si el error es porque se canceló la petición, se ignora
         if (err.name !== 'AbortError') {
           setError(err.message || 'No se pudieron cargar los productos')
         }
@@ -39,8 +42,9 @@ export const useCategoria = (categoria) => {
 
     fetchProductos()
 
+    // Cancela la petición en curso si el efecto se vuelve a ejecutar o el componente se desmonta
     return () => controller.abort()
-  }, [categoria])
+  }, [categoria]) // Se vuelve a ejecutar cada vez que cambia la categoría
 
   return { productos, loading, error }
 }

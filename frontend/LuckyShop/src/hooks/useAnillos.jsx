@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 const BASE_URL = 'http://localhost:4000/api/productos'
 
+// Hook para traer el listado de anillos activos, usado en la página de categoría
 export const useAnillos = () => {
   // Estados del hook
   const [anillos, setAnillos] = useState([])    // Almacena la lista de anillos
@@ -31,9 +32,11 @@ export const useAnillos = () => {
   return { anillos, loading, error }
 }
 
+// Hook para traer el detalle de un anillo específico por su id,
+// junto con productos relacionados de la misma categoría (para "ver más")
 export const useAnillo = (id) => {
-  const [anillo, setAnillo] = useState(null)
-  const [relacionados, setRelacionados] = useState([])
+  const [anillo, setAnillo] = useState(null)         // Datos del producto actual
+  const [relacionados, setRelacionados] = useState([]) // Productos de la misma categoría
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -57,6 +60,7 @@ export const useAnillo = (id) => {
           })
           if (resRel.ok) {
             const rel = await resRel.json()
+            // Se excluye el producto actual y se limita a 4 relacionados
             setRelacionados(Array.isArray(rel) ? rel.filter((p) => p._id !== id).slice(0, 4) : [])
           }
         }
@@ -67,7 +71,7 @@ export const useAnillo = (id) => {
       }
     }
     fetchAnillo()
-  }, [id])
+  }, [id]) // Se vuelve a ejecutar si cambia el id del producto
 
   return { anillo, relacionados, loading, error }
 }

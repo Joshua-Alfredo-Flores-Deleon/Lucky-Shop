@@ -5,6 +5,7 @@
 import bannerBg from '../assets/fondoCategoria.jpg'
 
 const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, subcatActiva }) => (
+  // Contenedor principal del banner, con imagen de fondo y degradado rosado encima
   <div
     className="relative overflow-hidden"
     style={{
@@ -16,9 +17,9 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
     }}
     id="category-banner"
   >
-    {/* Contenido */}
+    {/* Contenido del banner: texto a la izquierda y subcategorías a la derecha */}
     <div className="max-w-7xl mx-auto px-6 py-10 sm:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
-      {/* Texto */}
+      {/* Título y descripción de la categoría */}
       <div className="max-w-md">
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-wider mb-3">
           {titulo}
@@ -28,16 +29,18 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
         </p>
       </div>
 
-      {/* Subcategorías (si las hay) */}
+      {/* Lista de subcategorías (solo se muestra si vienen datos) */}
       {subcategorias.length > 0 && (
         <div className="flex gap-4 flex-wrap justify-start sm:justify-end">
           {subcategorias.map((s) => (
+            // Botón circular de cada subcategoría; al hacer clic activa/desactiva el filtro
             <button
               key={s.value}
               onClick={() => onSubcat?.(s.value === subcatActiva ? '' : s.value)}
               className="flex flex-col items-center gap-1.5 group"
               id={`subcat-${s.value}`}
             >
+              {/* Círculo con la imagen (o ícono) de la subcategoría, resaltado si está activa */}
               <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all duration-300 ${
                 subcatActiva === s.value
                   ? 'border-pink-500 shadow-lg shadow-pink-200/50 scale-105'
@@ -51,6 +54,7 @@ const CategoryBanner = ({ titulo, descripcion, subcategorias = [], onSubcat, sub
                   </div>
                 )}
               </div>
+              {/* Nombre de la subcategoría debajo del círculo */}
               <span className={`text-xs font-medium text-center leading-tight transition-colors ${
                 subcatActiva === s.value ? 'text-pink-600' : 'text-gray-700 group-hover:text-pink-500'
               }`}>

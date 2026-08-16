@@ -18,20 +18,23 @@ const ProductoDetalle = () => {
   const { addItem } = useCart()
   const { isAuthenticated } = useAuth()
 
+  // Trae el producto por id, junto con productos relacionados de la misma categoría
   const { anillo: producto, relacionados, loading, error } = useAnillo(id)
 
   const [cantidad,    setCantidad]    = useState(1)
-  const [imgActiva,   setImgActiva]   = useState(0)
+  const [imgActiva,   setImgActiva]   = useState(0)   // índice de la imagen mostrada en grande
   const [toast,       setToast]       = useState(false)
   const [descuento,   setDescuento]   = useState(0)    // porcentaje de promo activa para este producto
   const [fechaFin,    setFechaFin]    = useState(null) // hasta cuándo dura la promoción
 
+  // Si el producto no se encuentra (error al cargar), redirige al inicio
   useEffect(() => {
     if (error) {
       navigate('/')
     }
   }, [error, navigate])
 
+  // Al cambiar de producto (nuevo id en la URL), reinicia la imagen mostrada y la cantidad
   useEffect(() => {
     setImgActiva(0)
     setCantidad(1)
@@ -63,6 +66,8 @@ const ProductoDetalle = () => {
     ? Math.round(precioOriginal * (1 - descuento / 100) * 100) / 100
     : precioOriginal
 
+  // Agrega el producto al carrito con el precio ya rebajado (si aplica promo).
+  // Si no hay sesión, redirige a login primero.
   const handleAgregar = () => {
     if (!producto) return
     if (!isAuthenticated) {
@@ -76,6 +81,7 @@ const ProductoDetalle = () => {
     setTimeout(() => setToast(false), 2500)
   }
 
+  // Mientras se carga el producto, se muestra un spinner
   if (loading) return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -85,15 +91,17 @@ const ProductoDetalle = () => {
     </div>
   )
 
+  // Si no hay producto (y no está cargando), no se renderiza nada (ya se redirigió arriba si hubo error)
   if (!producto) return null
 
+  // Lista de imágenes a mostrar: las del array "imagenes", o si no hay, la imagen de presentación
   const imagenes = producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagenPresentacion].filter(Boolean)
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Toast */}
+      {/* Aviso flotante de "agregado al carrito" */}
       {toast && (
         <div className="fixed top-20 right-6 z-50 bg-pink-500 text-white px-5 py-3 rounded-2xl shadow-lg text-sm font-medium animate-bounce">
           ✓ Agregado al carrito
@@ -103,10 +111,10 @@ const ProductoDetalle = () => {
       <div className="container mx-auto px-6 py-10">
         <div className="flex flex-col md:flex-row gap-10 max-w-4xl mx-auto">
 
-          {/* Imagen */}
+          {/* Columna de imágenes: imagen grande + miniaturas */}
           <div className="flex-1">
             <div className="bg-gray-50 rounded-3xl overflow-hidden aspect-square flex items-center justify-center p-8 mb-3 relative">
-              {/* Badge de descuento */}
+              {/* Badge de descuento, solo si hay promoción activa */}
               {tienePromo && (
                 <span className="absolute top-4 left-4 z-10 bg-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm">
                   -{descuento}%
@@ -122,7 +130,7 @@ const ProductoDetalle = () => {
                 <span className="text-6xl"></span>
               )}
             </div>
-            {/* Miniaturas */}
+            {/* Miniaturas: solo se muestran si hay más de una imagen */}
             {imagenes.length > 1 && (
               <div className="flex gap-2 justify-center">
                 {imagenes.map((img, i) => (
@@ -140,11 +148,11 @@ const ProductoDetalle = () => {
             )}
           </div>
 
-          {/* Info */}
+          {/* Columna de información: nombre, precio, descripción y acciones */}
           <div className="flex-1 flex flex-col gap-4">
             <h1 className="text-2xl font-bold text-gray-900 leading-tight">{producto.nombre}</h1>
 
-            {/* Precio: con o sin descuento */}
+            {/* Precio: con descuento (tachado + ahorro) o precio normal */}
             {tienePromo ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
@@ -171,12 +179,12 @@ const ProductoDetalle = () => {
               <p className="text-sm text-gray-600 leading-relaxed">{producto.descripcion}</p>
             )}
 
-            {/* Stock */}
+            {/* Aviso de sin stock */}
             {producto.stock <= 0 && (
               <p className="text-sm text-red-500 font-medium">Sin stock disponible</p>
             )}
 
-            {/* Acciones */}
+            {/* Botón de agregar al carrito (deshabilitado si no hay stock) y botón de favorito */}
             <div className="flex items-center gap-4 mt-2">
               <button
                 onClick={handleAgregar}
@@ -192,7 +200,7 @@ const ProductoDetalle = () => {
           </div>
         </div>
 
-        {/* Relacionados */}
+        {/* Productos relacionados de la misma categoría */}
         {relacionados.length > 0 && (
           <div className="mt-14 max-w-4xl mx-auto">
             <h2 className="text-lg font-bold text-gray-900 mb-5">También te puede interesar</h2>
@@ -208,4 +216,4 @@ const ProductoDetalle = () => {
   )
 }
 
-export default ProductoDetalle
+export default ProductoDetalle;

@@ -8,7 +8,7 @@ const BASE_URL = 'http://localhost:4000/api'
 const RecuperarPassword = () => {
   const navigate = useNavigate()
 
-  const [step,            setStep]            = useState(1)
+  const [step,            setStep]            = useState(1)   // 1: pedir correo, 2: verificar PIN, 3: nueva contraseña
   const [email,           setEmail]           = useState('')
   const [code,            setCode]            = useState('')
   const [newPassword,     setNewPassword]     = useState('')
@@ -16,6 +16,7 @@ const RecuperarPassword = () => {
   const [error,           setError]           = useState('')
   const [loading,         setLoading]         = useState(false)
 
+  // ── Paso 1: solicitar el código de verificación al correo ingresado ──
   const handleRequestCode = async (e) => {
     e.preventDefault()
     setError('')
@@ -37,6 +38,7 @@ const RecuperarPassword = () => {
     }
   }
 
+  // Reenvía el código si el usuario no lo recibió (mismo endpoint que la solicitud inicial)
   const handleResendCode = async () => {
     setError('')
     setLoading(true)
@@ -56,6 +58,7 @@ const RecuperarPassword = () => {
     }
   }
 
+  // ── Paso 2: verificar el código PIN ingresado ──
   const handleVerifyCode = async (e) => {
     e.preventDefault()
     setError('')
@@ -77,6 +80,7 @@ const RecuperarPassword = () => {
     }
   }
 
+  // ── Paso 3: validar y guardar la nueva contraseña ──
   const handleNewPassword = async (e) => {
     e.preventDefault()
     setError('')
@@ -105,14 +109,14 @@ const RecuperarPassword = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 relative overflow-hidden">
 
-      {/* Fondo */}
+      {/* Imagen de fondo */}
       <img
         src={heroPng}
         alt=""
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
 
-      {/* Logo */}
+      {/* Logo (usa la misma imagen de fondo, probablemente por error de copiado) */}
       <div className="relative z-10 mb-5 text-center">
         <img
           src={heroPng}
@@ -122,7 +126,7 @@ const RecuperarPassword = () => {
         <div className="w-40 h-px bg-pink-500 mx-auto mt-2" />
       </div>
 
-      {/* Card */}
+      {/* Tarjeta blanca con el formulario, cambia de contenido según el paso actual */}
       <div className="relative z-10 bg-white rounded-2xl shadow-lg w-full max-w-sm px-8 py-7">
 
         {/* ── Paso 1: solicitar código ── */}
@@ -157,6 +161,7 @@ const RecuperarPassword = () => {
                 >
                   {loading ? 'Enviando...' : 'Enviar código'}
                 </button>
+                {/* Nota: este texto es estático (no llama a handleResendCode), a diferencia del paso 2 */}
                 <p className="text-xs text-gray-400">
                   ¿No recibiste el código?{' '}
                   <span className="text-pink-400 cursor-default">Reenviar PIN</span>
@@ -200,6 +205,7 @@ const RecuperarPassword = () => {
                 >
                   {loading ? 'Verificando...' : 'Verificar código'}
                 </button>
+                {/* Este sí reenvía el código de verdad, llamando a handleResendCode */}
                 <p className="text-xs text-gray-400">
                   ¿No recibiste el código?{' '}
                   <button
@@ -265,7 +271,7 @@ const RecuperarPassword = () => {
 
       </div>
 
-      {/* Link volver */}
+      {/* Link para volver al login */}
       <Link
         to="/login"
         className="relative z-10 mt-5 text-sm text-pink-700 hover:text-pink-900 transition-colors"
@@ -277,4 +283,4 @@ const RecuperarPassword = () => {
   )
 }
 
-export default RecuperarPassword
+export default RecuperarPassword;

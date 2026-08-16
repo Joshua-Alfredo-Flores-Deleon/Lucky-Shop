@@ -8,12 +8,14 @@ const BASE_URL = 'http://localhost:4000/api'
 
 const Historial = () => {
   const { cliente } = useAuth()
-  const [ventas, setVentas] = useState([])
+  const [ventas, setVentas] = useState([])           // Ventas del cliente
   const [loading, setLoading] = useState(true)
-  const [selectedVenta, setSelectedVenta] = useState(null)
+  const [selectedVenta, setSelectedVenta] = useState(null) // Venta seleccionada para ver su detalle
 
   const clienteId = cliente?._id
 
+  // Carga todas las ventas y filtra solo las del cliente actual,
+  // comparando por el idCliente guardado dentro del carrito de cada venta
   useEffect(() => {
     if (!clienteId) return
 
@@ -39,6 +41,7 @@ const Historial = () => {
     fetchVentas()
   }, [clienteId])
 
+  // Da formato legible a una fecha (ej: "15 de julio de 2026")
   const formatFecha = (fecha) => {
     if (!fecha) return '—'
     return new Date(fecha).toLocaleDateString('es-ES', {
@@ -70,7 +73,7 @@ const Historial = () => {
       <Navbar />
 
       <main className="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-10">
-        {/* Encabezado Principal */}
+        {/* Encabezado Principal: cambia el subtítulo según si hay un pedido seleccionado */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
@@ -82,6 +85,7 @@ const Historial = () => {
                 : 'Revisa el detalle de tus compras y pedidos realizados'}
             </p>
           </div>
+          {/* Botón para volver al listado general, solo visible al ver el detalle de un pedido */}
           {selectedVenta && (
             <button
               onClick={() => setSelectedVenta(null)}
@@ -93,11 +97,13 @@ const Historial = () => {
         </div>
 
         {loading ? (
+          // Estado de carga
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-400">
             <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
             <p className="text-sm font-medium">Cargando tu historial...</p>
           </div>
         ) : ventas.length === 0 ? (
+          // Sin compras registradas
           <div className="flex flex-col items-center justify-center py-20 text-gray-400 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
         
             <p className="text-base font-semibold text-gray-700">
@@ -123,6 +129,7 @@ const Historial = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
+                  {/* Una fila por cada venta del cliente */}
                   {ventas.map((venta) => {
                     const imgUrl = getVentaRepresentativaImage(venta)
                     const nombre = getVentaResumenNombre(venta)
@@ -131,7 +138,7 @@ const Historial = () => {
                         key={venta._id}
                         className="hover:bg-gray-50/30 transition-colors"
                       >
-                        {/* Producto (Imagen + Nombre) */}
+                        {/* Producto (Imagen + Nombre + Estado) */}
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-4">
                             <div className="w-16 h-16 rounded-xl bg-pink-50 border border-pink-100/70 p-2 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -156,17 +163,17 @@ const Historial = () => {
                           </div>
                         </td>
 
-                        {/* Fecha */}
+                        {/* Fecha de la venta */}
                         <td className="px-6 py-5 text-center text-sm font-medium text-gray-600">
                           {formatFecha(venta.fecha || venta.createdAt)}
                         </td>
 
-                        {/* Precio Total */}
+                        {/* Precio total del pedido (viene del carrito asociado a la venta) */}
                         <td className="px-6 py-5 text-center text-base font-bold text-gray-900">
-                          ${Number(venta.total || 0).toFixed(2)}
+                          ${Number(venta.IdCarrito?.total || 0).toFixed(2)}
                         </td>
 
-                        {/* Acciones */}
+                        {/* Botón para ver el detalle de esa venta */}
                         <td className="px-6 py-5 text-center">
                           <button
                             onClick={() => setSelectedVenta(venta)}
@@ -187,7 +194,7 @@ const Historial = () => {
           /* VISTA 2: DESGLOSE DE PRODUCTOS DEL PEDIDO                */
           /* ======================================================== */
           <div className="space-y-6">
-            {/* Detalles de envío/pago rápidos */}
+            {/* Detalles rápidos de envío, teléfono, método de pago y estado */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-pink-50/40 border border-pink-100/60 rounded-2xl p-5 text-sm">
               <div>
                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
@@ -209,7 +216,7 @@ const Historial = () => {
                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
                   Método de Pago
                 </p>
-                <p className="text-gray-800 font-medium mt-1">
+                <p className="text-gray-800 font-medium mt-1 capitalize">
                   {selectedVenta.metodoPago || '—'}
                 </p>
               </div>
@@ -226,7 +233,7 @@ const Historial = () => {
               </div>
             </div>
 
-            {/* Tabla de Artículos Comprados */}
+            {/* Tabla con cada producto comprado en este pedido */}
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -246,7 +253,7 @@ const Historial = () => {
                           key={item._id}
                           className="hover:bg-gray-50/20 transition-colors"
                         >
-                          {/* Productos (Imagen) */}
+                          {/* Imagen del producto */}
                           <td className="px-6 py-5">
                             <div className="flex justify-center">
                               <div className="w-16 h-16 rounded-xl bg-pink-50 border border-pink-100/70 p-2 flex items-center justify-center overflow-hidden">
@@ -263,7 +270,7 @@ const Historial = () => {
                             </div>
                           </td>
 
-                          {/* Descripción (Nombre/Detalle) */}
+                          {/* Nombre y descripción del producto */}
                           <td className="px-6 py-5">
                             <p className="text-sm font-semibold text-gray-800">
                               {prod.nombre || 'Producto no disponible'}
@@ -273,12 +280,12 @@ const Historial = () => {
                             </p>
                           </td>
 
-                          {/* Precio */}
+                          {/* Precio unitario (o calculado a partir del subtotal si no viene directo) */}
                           <td className="px-6 py-5 text-center text-sm font-bold text-gray-900">
                             ${Number(prod.precio || item.subtotal / item.cantidad || 0).toFixed(2)}
                           </td>
 
-                          {/* Cantidad */}
+                          {/* Cantidad comprada de ese producto */}
                           <td className="px-6 py-5 text-center text-sm font-semibold text-gray-700">
                             {item.cantidad || 0}
                           </td>
@@ -289,11 +296,11 @@ const Historial = () => {
                 </table>
               </div>
 
-              {/* Total final */}
+              {/* Total final del pedido (viene del carrito asociado a la venta) */}
               <div className="bg-gray-50/50 px-6 py-5 flex justify-end items-center gap-4 border-t border-gray-100">
                 <span className="text-sm text-gray-500 font-semibold">Total del pedido:</span>
                 <span className="text-xl font-extrabold text-gray-900">
-                  ${Number(selectedVenta.total || 0).toFixed(2)}
+                  ${Number(selectedVenta.IdCarrito?.total || 0).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -306,4 +313,4 @@ const Historial = () => {
   )
 }
 
-export default Historial
+export default Historial;

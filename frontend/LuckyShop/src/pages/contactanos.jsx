@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
+// Estilos en línea (objeto de estilos) usados en toda la página de Contáctanos
 const styles = {
   page: {
     minHeight: "100vh",
@@ -25,6 +26,7 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
     letterSpacing: "-1px",
   },
+  // Línea decorativa que acompaña al encabezado, del lado derecho
   topDecorLine: {
     padding: "40px 60px 10px",
     borderBottom: "10px solid #111",
@@ -63,6 +65,7 @@ const styles = {
     lineHeight: "1.7",
     maxWidth: "360px",
   },
+  // Tarjeta rosada que contiene el formulario de contacto
   formCard: {
     flex: 1,
     minWidth: "320px",
@@ -98,6 +101,7 @@ const styles = {
     outline: "none",
     boxSizing: "border-box",
   },
+  // Fila para colocar dos inputs lado a lado (teléfono y correo)
   inputRow: {
     display: "flex",
     gap: "14px",
@@ -137,6 +141,7 @@ const styles = {
     transition: "background 0.2s, transform 0.1s",
     boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
   },
+  // Aviso verde: mensaje enviado correctamente
   alertSuccess: {
     background: "#d1fae5",
     color: "#065f46",
@@ -146,6 +151,7 @@ const styles = {
     fontSize: "14px",
     textAlign: "center",
   },
+  // Aviso rojo: error al enviar el mensaje
   alertDanger: {
     background: "#fee2e2",
     color: "#991b1b",
@@ -157,7 +163,9 @@ const styles = {
   },
 };
 
+// Formulario de contacto: envía los datos a Formspree (servicio externo de envío de correos)
 function ContactForm() {
+  // Datos escritos por el usuario en el formulario
   const [form, setForm] = useState({
     nombre: "",
     correo: "",
@@ -165,13 +173,15 @@ function ContactForm() {
     descripcion: "",
   });
 
-  const [enviando, setEnviando] = useState(false);
-  const [mensajeEstado, setMensajeEstado] = useState({ texto: "", tipo: "" });
+  const [enviando, setEnviando] = useState(false) // true mientras se envía el formulario
+  const [mensajeEstado, setMensajeEstado] = useState({ texto: "", tipo: "" }); // Aviso de éxito o error
 
+  // Actualiza el campo correspondiente del formulario según lo que el usuario escribe
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Valida los campos obligatorios y envía el formulario a Formspree
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -186,7 +196,7 @@ function ContactForm() {
     setEnviando(true);
     setMensajeEstado({ texto: "", tipo: "" });
 
-    
+    // Endpoint de Formspree: servicio externo que recibe el formulario y lo reenvía por correo
     const formspreeEndpoint = "https://formspree.io/f/mvkpzygv"; 
 
     try {
@@ -209,6 +219,7 @@ function ContactForm() {
           texto: "¡Tu mensaje ha sido enviado! Te responderemos muy pronto.",
           tipo: "success",
         });
+        // Limpia el formulario tras un envío exitoso
         setForm({ nombre: "", correo: "", telefono: "", descripcion: "" });
       } else {
         throw new Error("Error en la respuesta del servidor");
@@ -228,6 +239,7 @@ function ContactForm() {
     <div style={styles.formCard}>
       <h2 style={styles.formTitle}>Formulario de contácto</h2>
 
+      {/* Muestra el aviso de éxito o error, si hay uno */}
       {mensajeEstado.texto && (
         <div
           style={
@@ -255,7 +267,7 @@ function ContactForm() {
           />
         </div>
 
-        {/* Teléfono y Correo en fila */}
+        {/* Teléfono y Correo en la misma fila */}
         <div style={styles.inputRow}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Teléfono</label>
@@ -315,6 +327,7 @@ function ContactForm() {
   );
 }
 
+// Página completa de "Contáctanos": encabezado, texto de presentación y el formulario
 export default function ContactPage() {
   return (
     <div style={styles.page}>
@@ -329,9 +342,9 @@ export default function ContactPage() {
       <div style={styles.topDecorLine}>
       </div>
 
-      {/* Contenido principal */}
+      {/* Contenido principal: texto a la izquierda, formulario a la derecha */}
       <div style={styles.contenedor}>
-        {/* Sección izquierda: texto */}
+        {/* Sección izquierda: texto de presentación */}
         <div style={styles.infoSection}>
           <h2 style={styles.mainTagline}>
             Somos tú{" "}
@@ -346,7 +359,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        {/* Formulario derecho */}
+        {/* Formulario de contacto */}
         <ContactForm />
       </div>
 

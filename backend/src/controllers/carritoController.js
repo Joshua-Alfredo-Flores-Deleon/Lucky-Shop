@@ -34,7 +34,6 @@ carritoController.getCarritoById = async (req, res) => {
 //POST - Insertar un nuevo carrito de compras
 carritoController.insertCarrito = async (req, res) => {
     try {
-
         const { idCliente, productos, total, estado } = req.body;
 
         const newCarrito = new carritoModel({
@@ -46,8 +45,7 @@ carritoController.insertCarrito = async (req, res) => {
 
         await newCarrito.save()
 
-        return res.status(200).json({message: "carrito Saved"})
-
+        return res.status(200).json(newCarrito) // 👈 ahora devuelve el carrito completo, con su _id
     } catch (error) {
         console.log("error"+error)
         return res.status(500).json({message: "Internal Server Error"})

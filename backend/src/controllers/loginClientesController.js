@@ -10,7 +10,7 @@ const loginClientesController = {};
 
 //POST - Iniciar sesión como cliente
 loginClientesController.login = async (req, res) => {
-  const { password } = req.body;
+  const { password, recordarme } = req.body;
   // Normalizamos el correo igual que en el registro (sin espacios, minusculas)
   // para que coincida sin importar como lo haya escrito el usuario
   const email = req.body.email?.trim().toLowerCase();
@@ -59,13 +59,18 @@ loginClientesController.login = async (req, res) => {
     clienteFound.loginAttemps = 0;
     clienteFound.timeOut = null;
 
+    // Si "recordarme" está marcado, la sesión dura 30 días; si no, solo 1 día.
+    //Esto es para cuando el cliente marque "Recordar contraseña se guarde"
+    const duracion = recordarme ? "30d" : "1d";
+    const maxAgeMs = recordarme ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
     const token = jsonwebtoken.sign(
       { id: clienteFound._id, userType: "Clientes" },
       config.JWT.secret,
-      { expiresIn: "30d" },
+      { expiresIn: duracion },
     );
 
-    res.cookie("authCookie", token);
+    res.cookie("authCookie", token, { maxAge: maxAgeMs });
 
     // La web usa la cookie de arriba. Para la app móvil devolvemos también el
     // token y los datos del cliente en el cuerpo de la respuesta, de modo que

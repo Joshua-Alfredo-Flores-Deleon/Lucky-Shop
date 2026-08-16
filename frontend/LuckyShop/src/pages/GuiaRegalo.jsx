@@ -8,9 +8,11 @@ import ProductCard from '../components/ProductCard.jsx'
 const BASE_URL = 'http://localhost:4000/api'
 
 const GuiaRegalo = () => {
-  const [productos, setProductos] = useState([])
+  const [productos, setProductos] = useState([])  // Productos sugeridos como ideas de regalo
   const [loading, setLoading]     = useState(true)
 
+  // Carga los primeros 8 productos activos, sin filtrar por categoría,
+  // para usarlos como sugerencias generales de regalo
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -44,7 +46,7 @@ const GuiaRegalo = () => {
         </Link>
       </div>
 
-      {/* Encabezado con frase motivadora */}
+      {/* Encabezado con frase motivadora e introducción */}
       <section className="max-w-7xl mx-auto px-8 pt-8 pb-4 text-center w-full">
        <p className="text-lg sm:text-xl text-black-500 italic max-w-2xl mx-auto leading-relaxed">
           ¡Sorprende a quien amas con un detalle que brille tanto como ella!
@@ -54,17 +56,20 @@ const GuiaRegalo = () => {
         </p>
       </section>
 
-      {/* Productos */}
+      {/* Grilla de productos sugeridos como ideas de regalo */}
       <section className="max-w-7xl mx-auto px-8 py-8 w-full flex-1">
         {loading ? (
+          // Estado de carga
           <div className="flex justify-center py-16">
             <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
           </div>
         ) : productos.length === 0 ? (
+          // Sin productos disponibles
           <div className="flex flex-col items-center py-16 text-gray-400">
             <p className="text-sm font-medium">No hay productos disponibles por ahora</p>
           </div>
         ) : (
+          // Grilla de tarjetas de producto (2 columnas en móvil, 4 en escritorio)
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {productos.map((producto) => (
               <ProductCard key={producto._id} producto={producto} />
@@ -78,4 +83,4 @@ const GuiaRegalo = () => {
   )
 }
 
-export default GuiaRegalo
+export default GuiaRegalo;

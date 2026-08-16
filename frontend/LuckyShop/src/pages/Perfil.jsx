@@ -9,18 +9,19 @@ import { useAuth } from '../context/AuthContext.jsx'
 const BASE_URL = 'http://localhost:4000/api'
 
 const Perfil = () => {
-  const { checkSession } = useAuth()
-  const fileInputRef = useRef(null)
+  const { checkSession } = useAuth() // se usa para refrescar el nombre en el Navbar tras editar el perfil
+  const fileInputRef = useRef(null)   // referencia al input de archivo (oculto) para la foto de perfil
 
-  const [perfil,        setPerfil]        = useState(null)
-  const [favoritos,     setFavoritos]     = useState([])
+  const [perfil,        setPerfil]        = useState(null)     // Datos del cliente cargados desde el backend
+  const [favoritos,     setFavoritos]     = useState([])       // Productos marcados como favoritos
   const [cargando,      setCargando]      = useState(true)
   const [guardando,     setGuardando]     = useState(false)
   const [error,         setError]         = useState('')
   const [exito,         setExito]         = useState('')
-  const [avatarFile,    setAvatarFile]    = useState(null)
-  const [avatarPreview, setAvatarPreview] = useState(null)
+  const [avatarFile,    setAvatarFile]    = useState(null)     // Archivo de imagen elegido (aún no subido)
+  const [avatarPreview, setAvatarPreview] = useState(null)     // Vista previa local de la nueva foto
 
+  // Manejo del formulario con react-hook-form
   const {
     register,
     handleSubmit,
@@ -29,6 +30,7 @@ const Perfil = () => {
   } = useForm({ mode: 'onBlur' })
 
   // ── Cargar datos del cliente ──
+  // Trae el perfil desde el backend y precarga el formulario con esos valores
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
@@ -67,6 +69,7 @@ const Perfil = () => {
     cargarFavoritos()
   }, [])
 
+  // Guarda el archivo elegido y genera una vista previa local (sin subirlo todavía)
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -74,6 +77,7 @@ const Perfil = () => {
     setAvatarPreview(URL.createObjectURL(file))
   }
 
+  // Envía los datos del formulario (y la foto, si se cambió) al backend como FormData
   const onSubmit = async (datos) => {
     setError('')
     setExito('')
@@ -104,11 +108,13 @@ const Perfil = () => {
     }
   }
 
+  // Clase de estilo reutilizable para los inputs del formulario, cambia el color del borde si hay error
   const inputClass = (hasError) =>
     `w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors ${
       hasError ? 'border-red-300 focus:border-red-400' : 'border-gray-200 focus:border-pink-400'
     }`
 
+  // Mientras se carga el perfil, se muestra un mensaje simple en vez del formulario
   if (cargando) {
     return (
       <div className="min-h-screen bg-pink-50">
@@ -123,7 +129,7 @@ const Perfil = () => {
     <div className="min-h-screen bg-pink-50">
       <Navbar />
 
-      {/* Banner */}
+      {/* Banner superior con el título de la página */}
       <div
         className="relative overflow-hidden px-6 md:px-16 py-10"
         style={{ background: 'linear-gradient(120deg, #ffd6e8 0%, #ffe9f2 50%, #ffd6e8 100%)' }}
@@ -139,9 +145,10 @@ const Perfil = () => {
       <div className="max-w-4xl mx-auto px-6 md:px-0 py-8 space-y-6">
 
         <div className="bg-white rounded-3xl shadow-sm ring-1 ring-pink-100 p-6 md:p-8">
-          {/* Encabezado con avatar */}
+          {/* Encabezado con avatar, nombre, correo y acceso al historial */}
           <div className="flex items-center gap-5 pb-6 border-b border-gray-100">
             <div className="relative">
+              {/* Avatar: muestra la vista previa nueva, la foto guardada, o las iniciales del nombre */}
               <div className="w-20 h-20 rounded-full overflow-hidden bg-pink-100 flex items-center justify-center">
                 {avatarPreview || perfil?.profileImage ? (
                   <img src={avatarPreview || perfil.profileImage} alt="Foto de perfil" className="w-full h-full object-cover" />
@@ -151,6 +158,7 @@ const Perfil = () => {
                   </span>
                 )}
               </div>
+              {/* Botón para abrir el selector de archivo y cambiar la foto */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
@@ -159,6 +167,7 @@ const Perfil = () => {
               >
                 
               </button>
+              {/* Input de archivo oculto, se activa por el botón de arriba */}
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
             </div>
             <div>
@@ -171,7 +180,7 @@ const Perfil = () => {
             </div>
           </div>
 
-          {/* Formulario */}
+          {/* Formulario de datos personales */}
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="pt-6">
             <div className="flex items-center gap-2 text-gray-700 font-medium mb-4">
               <span></span> Información personal
@@ -241,6 +250,7 @@ const Perfil = () => {
 
             </div>
 
+            {/* Mensajes de error o éxito al guardar */}
             {error && <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
             {exito && <div className="mt-4 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{exito}</div>}
 
@@ -256,7 +266,7 @@ const Perfil = () => {
           </form>
         </div>
 
-        {/* Favoritos */}
+        {/* Sección de productos favoritos del cliente */}
         <div className="bg-white rounded-3xl shadow-sm ring-1 ring-pink-100 p-6 md:p-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Favoritos</h2>
@@ -264,10 +274,12 @@ const Perfil = () => {
           </div>
 
           {favoritos.length === 0 ? (
+            // Sin favoritos guardados
             <p className="text-sm text-gray-400">
               Aún no tienes productos favoritos. Ve al catálogo y toca el ♡ en cualquier producto para guardarlo aquí.
             </p>
           ) : (
+            // Grilla de productos favoritos, cada uno enlaza a su página de detalle
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {favoritos.map((producto) => (
                 <Link
@@ -295,4 +307,4 @@ const Perfil = () => {
   )
 }
 
-export default Perfil
+export default Perfil;
