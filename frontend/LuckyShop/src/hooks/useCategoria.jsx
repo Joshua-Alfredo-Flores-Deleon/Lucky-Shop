@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const BASE_URL = 'http://localhost:4000/api/productos'
+const BASE_URL = import.meta.env.VITE_API_URL + '/productos'
 
 /**
  * Hook genérico para obtener productos de cualquier categoría.

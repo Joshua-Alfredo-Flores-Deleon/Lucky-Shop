@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-const BASE_URL = 'http://localhost:4000/api/videosCombo'
+const BASE_URL = import.meta.env.VITE_API_URL + '/videosCombo'
 
 /**
  * Hook para el panel admin: trae todos los combos, permite filtrar por

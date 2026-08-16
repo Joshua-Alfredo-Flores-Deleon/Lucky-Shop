@@ -9,7 +9,7 @@ import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useAnillo } from '../hooks/useAnillos.jsx'
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const ProductoDetalle = () => {
   const { id } = useParams()

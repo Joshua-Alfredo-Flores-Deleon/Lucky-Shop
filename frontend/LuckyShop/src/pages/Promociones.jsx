@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const Promociones = () => {
   const [productos, setProductos] = useState([])  // Productos con descuento activo, ya con el % incluido

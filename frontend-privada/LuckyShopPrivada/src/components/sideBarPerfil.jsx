@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react'
 import './SideBarPerfil.css'
 
 // URL base de la API backend para solicitudes de autenticación
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 // Componente de barra lateral simplificado para la pantalla de Perfil.
 // Incluye navegación directa al Panel Principal y cierre seguro de sesión.

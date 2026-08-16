@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 // URL base de la API del backend
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const BolsasSuerte = () => {
   // Para redirigir al usuario (ej. a /login si no tiene sesión)

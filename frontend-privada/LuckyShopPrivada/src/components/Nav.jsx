@@ -4,7 +4,7 @@ import { FaBell } from "react-icons/fa";
 import "./Nav.css";
 
 // URL base de la API backend
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = import.meta.env.VITE_API_URL + '';
 
 // Función auxiliar para obtener hasta dos iniciales en mayúsculas a partir del nombre completo
 function iniciales(nombre = '') {

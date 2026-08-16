@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import heroPng from '../assets/fondoderecoveryPassword.png'
 import logoLucky from '../assets/LogoNegro-removebg-preview.png' // 👈 logo correcto
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const RecuperarPassword = () => {
   const navigate = useNavigate()

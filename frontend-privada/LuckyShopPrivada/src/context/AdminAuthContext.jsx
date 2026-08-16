@@ -4,7 +4,7 @@
 // cada vez que se navega entre páginas.
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const AdminAuthContext = createContext(null)
 

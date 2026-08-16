@@ -4,7 +4,7 @@
 // para saber si hay una sesión activa al cargar la app o al refrescar.
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 // Contexto de autenticación del cliente, compartido en toda la app
 const AuthContext = createContext(null)

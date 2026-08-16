@@ -6,7 +6,7 @@ import Footer from '../components/Footer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import portadaJoyas from '../assets/portadaJoyas.jpg'
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
 const HomeCliente = () => {
   const [destacados, setDestacados] = useState([])  // Productos mostrados en "Lo más destacado"

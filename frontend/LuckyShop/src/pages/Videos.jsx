@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
-const BASE_URL = 'http://localhost:4000/api/videosCombo'
+const BASE_URL = import.meta.env.VITE_API_URL + '/videosCombo'
 
 const IconoCerrar = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
