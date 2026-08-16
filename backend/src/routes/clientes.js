@@ -1,5 +1,5 @@
 import express from "express"
-import clientesController from "../controllers/ClienteController.js";
+import clientesController from "../controllers/clientesController.js";
 
 //Utilizo Router() para definir los metodos (get, post, put)
 //para mi endpoint

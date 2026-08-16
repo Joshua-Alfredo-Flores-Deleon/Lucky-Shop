@@ -37,10 +37,16 @@ const enriquecerVenta = (venta) => {
   };
 };
 
-// Crea o actualiza la ganancia vinculada a una venta cuando esta queda "Completado"
+// Crea, actualiza o elimina la ganancia vinculada a una venta según su estado.
+// Si la venta está "Completado", crea/actualiza la ganancia con el monto y fecha actuales.
+// Si deja de estar "Completado" (se cancela, se pone pendiente), elimina la ganancia asociada
+// para que no siga sumando al balance en Finanzas.
 const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
   try {
-    if (estado !== "Completado") return;
+    if (estado !== "Completado") {
+      await gananciasModel.deleteOne({ "ventas.idVenta": ventaId });
+      return;
+    }
 
     await gananciasModel.findOneAndUpdate(
       { "ventas.idVenta": ventaId }, // busca si ya existe una ganancia para esta venta
@@ -48,10 +54,10 @@ const sincronizarGanancia = async (ventaId, estado, monto, fecha) => {
         $setOnInsert: {
           ventas: [{ idVenta: ventaId }],
           gastos: [],
-          fecha: fecha || new Date(),
         },
         $set: {
           totalGanancias: monto,
+          fecha: fecha || new Date(),
         },
       },
       { upsert: true, new: true }
@@ -99,6 +105,11 @@ ventaController.getVenta = async (req, res) => {
 ventaController.insertVenta = async (req, res) => {
   try {
     const { IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status } = req.body;
+
+    if (!IdCarrito) {
+      return res.status(400).json({ message: "IdCarrito es obligatorio para registrar una venta" });
+    }
+
     const newVenta = new ventaModel({ IdCarrito, direcion, referencia, metodoPago, statusPago, phone, fecha, status });
     await newVenta.save();
 
@@ -114,13 +125,16 @@ ventaController.insertVenta = async (req, res) => {
   }
 };
 
-//DELETE - Eliminar una venta por su ID
+//DELETE - Eliminar una venta por su ID y su ganancia asociada (si existe)
 ventaController.deleteVenta = async (req, res) => {
   try {
     const ventaEliminada = await ventaModel.findByIdAndDelete(req.params.id);
     if (!ventaEliminada) {
       return res.status(404).json({ message: "Venta no encontrada" });
     }
+
+    await gananciasModel.deleteOne({ "ventas.idVenta": req.params.id });
+
     return res.status(200).json({ message: "Venta deleted" });
   } catch (error) {
     console.error("deleteVenta error:", error);

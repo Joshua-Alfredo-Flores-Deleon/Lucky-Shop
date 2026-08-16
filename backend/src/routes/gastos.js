@@ -1,5 +1,5 @@
 import express from "express"
-import gastosController from "../controllers/GastosController.js";
+import gastosController from "../controllers/gastosController.js";
 
 //Utilizo Router() para definir los metodos (get, post, put)
 //para mi endpoint
