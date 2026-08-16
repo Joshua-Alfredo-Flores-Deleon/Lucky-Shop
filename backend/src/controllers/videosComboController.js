@@ -1,4 +1,4 @@
-import videosComboModel from "../models/VideosCombo.js";
+import videosComboModel from "../models/videosCombo.js";
 
 const videosComboController = {};
 
