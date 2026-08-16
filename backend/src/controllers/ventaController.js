@@ -1,6 +1,6 @@
 //Controlador para gestionar las ventas y pagos
 import ventaModel from "../models/venta.js";
-import gananciasModel from "../models/Ganancias.js";
+import gananciasModel from "../models/ganancias.js";
 
 const ventaController = {};
 

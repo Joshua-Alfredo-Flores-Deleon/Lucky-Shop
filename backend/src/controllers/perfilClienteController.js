@@ -1,5 +1,5 @@
 //Controlador para gestionar el perfil del cliente
-import clientsModel from "../models/Clientes.js";
+import clientsModel from "../models/clientes.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const perfilClienteController = {};

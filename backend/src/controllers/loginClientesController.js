@@ -1,5 +1,5 @@
 //Controlador para la autenticación de clientes
-import cleintesModel from "../models/Clientes.js";
+import cleintesModel from "../models/clientes.js";
 
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";

@@ -2,7 +2,7 @@ import crypto from "crypto"; //Generar codigo aleatorio
 import jsonwebtoken from "jsonwebtoken"; // Token
 import bcryptjs from "bcryptjs"; //Encriptar
 // Controlador para registrar nuevos clientes
-import clientsModel from "../models/Clientes.js";
+import clientsModel from "../models/clientes.js";
 import {config} from "../../config.js";
 import { sendEmail } from "../utils/sendMailMailjet.js"; //nuevo metodo de envio de correos
 

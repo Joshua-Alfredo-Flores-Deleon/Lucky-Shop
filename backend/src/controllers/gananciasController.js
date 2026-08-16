@@ -2,7 +2,7 @@
 const gananciasController = {};
 
 //importar el schema de la coleccion que vamos a utilizar
-import gananciasModel from "../models/Ganancias.js"
+import gananciasModel from "../models/ganancias.js"
 
 //GET - Obtener todas las ganancias con las ventas y datos del cliente
 gananciasController.getAllGanancias = async (req, res) => {
