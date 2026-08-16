@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import heroPng from '../assets/fondoderecoveryPassword.png'
+import logoLucky from '../assets/LogoNegro-removebg-preview.png' // 👈 logo correcto
 
 const BASE_URL = 'http://localhost:4000/api'
 
@@ -116,11 +117,11 @@ const RecuperarPassword = () => {
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
 
-      {/* Logo (usa la misma imagen de fondo, probablemente por error de copiado) */}
+      {/* Logo real de Lucky Shop */}
       <div className="relative z-10 mb-5 text-center">
         <img
-          src={heroPng}
-          alt="Luckyshop"
+          src={logoLucky}
+          alt="Lucky Shop"
           className="mx-auto h-16 object-contain"
         />
         <div className="w-40 h-px bg-pink-500 mx-auto mt-2" />

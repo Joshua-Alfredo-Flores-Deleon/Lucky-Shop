@@ -1,10 +1,9 @@
 import jsonwebtoken from "jsonwebtoken"; 
 import bcrypt from "bcryptjs"; 
 import crypto from "crypto"; 
-import nodemailer from "nodemailer";
 
 import HTMLRecoveryEmail from "../utils/sendMailRecovery.js";
-
+import { sendEmail } from "../utils/sendMailMailjet.js"; // nuevo metodo de envio de correos
 import { config } from "../../config.js";
 
 // Controlador para manejar la recuperación de contraseña de clientes
@@ -33,27 +32,17 @@ recoveryPasswordController.requestCode = async (req, res) => {
 
     res.cookie("recoveryCookie", token, { maxAge: 15 * 60 * 1000 });
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: config.email.user_email,
-        pass: config.email.user_password,
-      },
-    });
-
-    const mailOptions = {
-      from: config.email.user_email,
-      to: email,
-      subject: "Código de recuperación",
-      body: "El código expira en 15 minutos",
-      html: HTMLRecoveryEmail(randomCode),
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).json({ message: "Error sending email" });
-      }
-    });
+    // Enviamos el código de recuperación usando Mailjet
+    try {
+      await sendEmail(
+        email,
+        "Código de recuperación",
+        HTMLRecoveryEmail(randomCode)
+      );
+    } catch (mailError) {
+      console.log("error enviando correo: " + mailError);
+      return res.status(500).json({ message: "Error sending email" });
+    }
 
     // Devolvemos el token también en el body para la app móvil (sin cookies).
     return res.status(200).json({ message: "email sent", recoveryToken: token });

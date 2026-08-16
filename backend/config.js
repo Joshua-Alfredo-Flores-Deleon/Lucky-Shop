@@ -30,5 +30,12 @@ export const config = {
     audience: process.env.AUDIENCE,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET
-  }
+  },
+  //credenciales de mailjet para envio de correos
+    mailjet: {
+    apiKey:    process.env.API_KEY_MAILJET,
+    secretKey: process.env.API_SECRET_MAILJET,
+    fromEmail: process.env.MAILJET_FROM_EMAIL,
+    fromName:  process.env.MAILJET_FROM_NAME,
+  },
 };
