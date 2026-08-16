@@ -2,7 +2,7 @@
 const gastosController = {};
 
 //importar el schema de la coleccion que vamos a utilizar
-import gastosModel from "../models/Gastos.js"
+import gastosModel from "../models/gastos.js"
 
 //GET - Obtener todos los gastos ordenados del más reciente al más antiguo
 gastosController.getAllGastos = async (req, res) => {
