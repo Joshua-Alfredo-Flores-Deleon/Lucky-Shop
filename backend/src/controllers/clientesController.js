@@ -1,5 +1,5 @@
 //importamos el modelo de clientes y bcrypt para encriptar contraseñas
-import clientsModel from "../models/Clientes.js"
+import clientsModel from "../models/clientes.js"
 import bcrypt from "bcryptjs"
 
 
