@@ -2,7 +2,7 @@
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import logoNegro from '../assets/LogoNegro-removebg-preview.png'
-import '../AcercaDe.css'
+import '../acercaDe.css'
 import dueña from '../assets/dueña.jpeg'
 
 const AcercaDe = () => {
