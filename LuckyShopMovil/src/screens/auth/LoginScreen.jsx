@@ -67,7 +67,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.form}>
           <CustomInput
             label="Correo electrónico"
-            icon="✉️"
+            icon=""
             value={email}
             onChangeText={setEmail}
             placeholder="nombre@ejemplo.com"
@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
           />
           <CustomInput
             label="Contraseña"
-            icon="🔒"
+            icon=""
             value={password}
             onChangeText={setPassword}
             placeholder="••••••••"
