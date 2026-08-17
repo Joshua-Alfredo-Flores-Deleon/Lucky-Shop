@@ -5,7 +5,7 @@ import Nav from "../components/Nav";
 import NotificacionesModal from "../components/NotificationsModal";
 import '../productosPage.css'
 import '../ventasPage.css'
-import '../sideBar.css'
+import '../SideBar.css'
 
 const ESTADOS_FILTRO = ['Todos', 'Completado', 'Pendiente', 'Cancelado']
 

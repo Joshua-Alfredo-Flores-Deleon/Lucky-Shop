@@ -3,7 +3,7 @@ import Sidebar from '../components/SideBar'
 import Nav from '../components/Nav'
 import NotificacionesModal from '../components/NotificationsModal'
 import { useVideosCombos } from '../hooks/useVideosCombos'
-import '../sideBar.css'
+import '../SideBar.css'
 import '../productosPage.css'
 import '../videosCombosPage.css'
 
