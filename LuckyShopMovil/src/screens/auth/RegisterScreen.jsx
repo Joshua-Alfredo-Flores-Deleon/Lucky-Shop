@@ -103,7 +103,7 @@ const RegisterScreen = ({ navigation }) => {
         <View style={styles.form}>
           <CustomInput
             label="Nombre completo"
-            icon="👤"
+            icon=""
             value={nombreCompleto}
             onChangeText={setNombreCompleto}
             placeholder="Ej. Alex Fortune"
@@ -111,7 +111,7 @@ const RegisterScreen = ({ navigation }) => {
           />
           <CustomInput
             label="Correo electrónico"
-            icon="✉️"
+            icon=""
             value={email}
             onChangeText={setEmail}
             placeholder="alex@ejemplo.com"
@@ -119,7 +119,7 @@ const RegisterScreen = ({ navigation }) => {
           />
           <CustomInput
             label="Contraseña"
-            icon="🔒"
+            icon=""
             value={password}
             onChangeText={setPassword}
             placeholder="Mínimo 8 caracteres"
