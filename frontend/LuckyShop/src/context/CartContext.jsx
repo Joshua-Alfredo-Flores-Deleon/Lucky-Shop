@@ -7,15 +7,16 @@ export const CartProvider = ({ children }) => {
   // Lista de productos en el carrito, cada uno con su cantidad
   const [items, setItems] = useState([])
 
-  // Agrega un producto al carrito. Si ya existe, suma la cantidad;
+  // Agrega un producto al carrito. Si ya existe (mismo id y misma foto elegida), suma la cantidad;
   // si no existe, lo agrega como nuevo item. En ambos casos, la
   // cantidad final nunca puede superar el stock disponible.
   const addItem = (producto, cantidad = 1) => {
     setItems((prev) => {
-      const exists = prev.find((i) => i._id === producto._id)
+      // Un producto se considera igual si tiene el mismo _id y la misma imagenPresentacion (variante de foto)
+      const exists = prev.find((i) => i._id === producto._id && i.imagenPresentacion === producto.imagenPresentacion)
       if (exists) {
         return prev.map((i) => {
-          if (i._id === producto._id) {
+          if (i._id === producto._id && i.imagenPresentacion === producto.imagenPresentacion) {
             const nuevaCantidad = i.cantidad + cantidad;
             // Validar que no exceda el stock
             return { ...i, cantidad: nuevaCantidad > i.stock ? i.stock : nuevaCantidad };
@@ -29,15 +30,15 @@ export const CartProvider = ({ children }) => {
     })
   }
 
-  // Quita un producto del carrito por completo
-  const removeItem = (id) => setItems((prev) => prev.filter((i) => i._id !== id))
+  // Quita un producto del carrito por completo, considerando la variante de imagen
+  const removeItem = (id, imagenPresentacion) => setItems((prev) => prev.filter((i) => !(i._id === id && i.imagenPresentacion === imagenPresentacion)))
 
   // Actualiza la cantidad de un producto ya en el carrito.
   // Si la cantidad baja de 1, se elimina el producto del carrito.
-  const updateCantidad = (id, cantidad) => {
-    if (cantidad < 1) return removeItem(id)
+  const updateCantidad = (id, imagenPresentacion, cantidad) => {
+    if (cantidad < 1) return removeItem(id, imagenPresentacion)
     setItems((prev) => prev.map((i) => {
-      if (i._id === id) {
+      if (i._id === id && i.imagenPresentacion === imagenPresentacion) {
         // Validar que no exceda el stock
         const validCantidad = cantidad > i.stock ? i.stock : cantidad;
         return { ...i, cantidad: validCantidad };

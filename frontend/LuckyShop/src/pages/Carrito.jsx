@@ -95,7 +95,7 @@ const Carrito = () => {
                     {/* Control de cantidad: restar, mostrar cantidad, sumar */}
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => updateCantidad(item._id, item.cantidad - 1)}
+                        onClick={() => updateCantidad(item._id, item.imagenPresentacion, item.cantidad - 1)}
                         className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 transition-colors font-bold"
                       >
                       
@@ -103,7 +103,7 @@ const Carrito = () => {
                       <span className="w-8 text-center text-sm font-semibold">{item.cantidad}</span>
                       {/* El botón de sumar se deshabilita si ya se alcanzó el stock disponible */}
                       <button
-                        onClick={() => updateCantidad(item._id, item.cantidad + 1)}
+                        onClick={() => updateCantidad(item._id, item.imagenPresentacion, item.cantidad + 1)}
                         disabled={item.cantidad >= item.stock}
                         className={`w-7 h-7 rounded-full border flex items-center justify-center font-bold transition-colors ${
                           item.cantidad >= item.stock 
@@ -119,7 +119,7 @@ const Carrito = () => {
                     {/* Botón para quitar el producto del carrito */}
                     <div className="flex justify-center">
                       <button
-                        onClick={() => removeItem(item._id)}
+                        onClick={() => removeItem(item._id, item.imagenPresentacion)}
                         className="text-gray-400 hover:text-red-500 transition-colors text-xl"
                         title="Eliminar"
                       >

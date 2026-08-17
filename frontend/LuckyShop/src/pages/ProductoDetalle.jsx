@@ -76,7 +76,9 @@ const ProductoDetalle = () => {
     }
     // Agregamos el producto con el precio ya rebajado, para que el carrito
     // y el total usen el precio con descuento.
-    addItem({ ...producto, precio: precioFinal }, cantidad)
+    // Además, guardamos la imagen seleccionada como imagenPresentacion
+    // para que en el carrito aparezca la foto que el usuario eligió.
+    addItem({ ...producto, precio: precioFinal, imagenPresentacion: imagenes[imgActiva] }, cantidad)
     setToast(true)
     setTimeout(() => setToast(false), 2500)
   }
