@@ -1,13 +1,47 @@
-// ProtectedRoute.jsx — guard de rutas: lee la sesión ya validada del
-// AdminAuthContext, sin volver a llamar al backend en cada navegación.
+// ProtectedRoute.jsx — guard de rutas que valida sesión contra el backend
+// antes de mostrar el contenido protegido.
+import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAdminAuth } from '../context/AdminAuthContext.jsx'
 
-const ProtectedRoute = ({ children }) => {
-  const { autenticado, loading } = useAdminAuth()
+const BASE_URL = import.meta.env.VITE_API_URL + ''
 
-  // Vista temporal mientras se confirma el estado de la sesión (solo pasa una vez, al cargar la app)
-  if (loading) {
+const ProtectedRoute = ({ userType, children }) => {
+  const [status, setStatus] = useState('checking')
+
+  const checkEndpoint = userType === 'admin'
+    ? `${BASE_URL}/loginAdmin/checkSession`
+    : `${BASE_URL}/loginClientes/checkSession`
+
+  const redirectPath = userType === 'admin' ? '/' : '/login'
+
+  useEffect(() => {
+    let isMounted = true
+
+    const verifySession = async () => {
+      try {
+        const res = await fetch(checkEndpoint, {
+          method: 'GET',
+          credentials: 'include',
+        })
+
+        if (!isMounted) return
+
+        if (res.ok) {
+          setStatus('authorized')
+        } else {
+          setStatus('unauthorized')
+        }
+      } catch (error) {
+        if (isMounted) setStatus('unauthorized')
+      }
+    }
+
+    verifySession()
+
+    return () => { isMounted = false }
+  }, [checkEndpoint])
+
+  if (status === 'checking') {
     return (
       <div className="min-h-screen bg-pink-50 flex items-center justify-center">
         <p className="text-sm text-gray-400">Verificando sesión...</p>
@@ -15,12 +49,10 @@ const ProtectedRoute = ({ children }) => {
     )
   }
 
-  // Sin sesión válida: redirige al login
-  if (!autenticado) {
-    return <Navigate to="/" replace />
+  if (status === 'unauthorized') {
+    return <Navigate to={redirectPath} replace />
   }
 
-  // Con sesión válida: renderiza el contenido protegido
   return children
 }
 

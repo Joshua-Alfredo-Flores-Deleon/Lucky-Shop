@@ -1,5 +1,5 @@
 // Login.jsx — login del panel de administración de Lucky Shop
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import AdminLogo from '../components/AdminLogo.jsx'
 
@@ -12,11 +12,14 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError]           = useState('')
   const [loading, setLoading]       = useState(false)
-  const [mostrarPassword, setMostrarPassword] = useState(false) // controla si la contraseña se ve en texto plano
+  const [mostrarPassword, setMostrarPassword] = useState(false)
   const navigate = useNavigate()
 
-  // Envía las credenciales al backend. Si son correctas, el backend deja
-  // una cookie httpOnly (authCookie) con la duración según "rememberMe".
+  useEffect(() => {
+    const token = localStorage.getItem('luckyshop_token') || sessionStorage.getItem('luckyshop_token')
+    if (token) navigate('/home')
+  }, [navigate])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -32,8 +35,8 @@ const Login = () => {
       const res = await fetch(`${BASE_URL}/loginAdmin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // necesario para que el backend pueda setear la cookie authCookie
-        body: JSON.stringify({ email: email.trim(), password, recordarme: rememberMe }),
+        credentials: 'include',
+        body: JSON.stringify({ email: email.trim(), password }),
       })
 
       const data = await res.json()
@@ -42,7 +45,10 @@ const Login = () => {
         throw new Error(data.message || 'Email o contraseña incorrectos.')
       }
 
-      // La cookie httpOnly ya quedó seteada por el backend; navegamos al panel.
+      const storage = rememberMe ? localStorage : sessionStorage
+      storage.setItem('luckyshop_token', 'session-active')
+      storage.setItem('luckyshop_user', email.trim())
+
       navigate('/home')
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión.')
@@ -54,7 +60,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
 
-      {/* Panel izquierdo — imagen + frase */}
       <div
         className="relative w-full md:w-1/2 min-h-[260px] md:min-h-screen bg-cover bg-center flex items-end p-8 md:p-12"
         style={{ backgroundImage: `url(${CLOVER_BG})` }}
@@ -66,7 +71,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Panel derecho — formulario de inicio de sesión */}
       <div className="w-full md:w-1/2 min-h-screen flex flex-col items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-sm">
           <h2 className="text-4xl font-semibold text-gray-900 border-b border-gray-200 pb-3 mb-8 text-center">

@@ -1,0 +1,77 @@
+[33mcommit cdb7774c5316750a1eaf28de027ef966c9903b95[m
+Merge: 3d8e65a d47e55f
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Sun Aug 16 04:07:46 2026 -0600
+
+    merge: integra cambios de develope (Mailjet, sesión admin, Videos Combos)
+
+[33mcommit 4044bf5b8bc4c40a5c93ab45fc22b6c00cce3e78[m
+Merge: d3332f1 1e9f63c
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Sat Aug 15 22:33:43 2026 -0600
+
+    Merge branch 'develope' of https://github.com/Joshua-Alfredo-Flores-Deleon/Lucky-Shop into develope
+
+[33mcommit d3332f1dcb8a7e45abd29fbad40f1319d64db1b8[m
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Sat Aug 15 22:32:48 2026 -0600
+
+    refactor: renombrar archivos, comentar frontend y corregir funcionalidades
+
+[33mcommit cbdd849b8981f7e2dc601a62fee236efcfa73d6b[m
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Wed Aug 12 23:59:19 2026 -0600
+
+    docs: agregar comentarios explicativos en el código
+
+[33mcommit 5e32fa13ff43b21a1fb27c6c0cbac7b2f6974825[m
+Merge: 142f9f1 a37e208
+Author: david <20210008@ricaldone.edu.sv>
+Date:   Mon Aug 10 19:43:07 2026 -0600
+
+    fix: arreglo de cambios de categorias que dieron conflictos
+
+[33mcommit 4039e365bd0376f387f0fa91698b6aa49019a2ee[m
+Merge: c7a1378 79a2ba3
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Mon Aug 10 13:33:17 2026 -0600
+
+    fix: corregir varios problemas de layout en el panel privado, Ajustar padding superior de .pm-main (90px → 24px), arreglo de sintaxis y estilo de el apartado WEb publico
+
+[33mcommit c7a13784e682d3b5eece64070781bc5f4393e3cc[m
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Mon Aug 10 13:32:04 2026 -0600
+
+    fix: corregir varios problemas de layout en el panel privado, Ajustar padding superior de .pm-main (90px → 24px), arreglo de sintaxis y estilo de el apartado WEb publico
+
+[33mcommit 6c2de90eaec8112f23fb2832698b98b72c7429e0[m
+Author: Andriu07 <20240349@ricaldone.edu.sv>
+Date:   Mon Aug 10 02:14:40 2026 -0600
+
+    fix: pequeños ajustes de estilos y detalles visuales
+
+[33mcommit ffdbc242ac2f4cae6f43cbc5b15d70b3fa7b2c25[m
+Merge: e227509 7bc5535
+Author: BACF33 <20210181@ricaldone.edu.sv>
+Date:   Tue Jun 30 11:04:42 2026 -0600
+
+    Merge develope: resolve conflicts, keep registerAdmin + add Clientes route
+
+[33mcommit 7bc5535f922553b2e770b696f311b0b91958bfe3[m
+Merge: 996c1c0 b25581a
+Author: diegospapus21 <diegoghc7002@gmail.com>
+Date:   Mon Jun 29 15:33:47 2026 -0600
+
+    Merge branch 'develope' of https://github.com/Joshua-Alfredo-Flores-Deleon/Lucky-Shop into develope
+
+[33mcommit 996c1c03a6b806e984651decd722c3aab5aca222[m
+Author: diegospapus21 <diegoghc7002@gmail.com>
+Date:   Mon Jun 29 15:33:40 2026 -0600
+
+    Separacion del Frontend avances
+
+[33mcommit 74120cb12ae1353095e7f1e64a45ef1f37039be5[m
+Author: diegospapus21 <diegoghc7002@gmail.com>
+Date:   Sun Jun 14 17:44:29 2026 -0600
+
+    Avance de Backend y Frontend de Productos y Clientes
