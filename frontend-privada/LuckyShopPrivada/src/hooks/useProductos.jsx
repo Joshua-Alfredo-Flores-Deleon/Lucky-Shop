@@ -40,11 +40,20 @@ export function useProductos() {
     fetchProductos();
   }, [fetchProductos]);
 
-  const guardarProducto = useCallback(async ({ form, imageFile, productoId }) => {
+  const guardarProducto = useCallback(async ({ form, imageFiles, imagenesExistentes, productoId }) => {
     const esEditar = !!productoId;
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-    if (imageFile) fd.append("imagenes", imageFile);
+    
+    // Si hay imágenes nuevas, se agregan al FormData
+    if (imageFiles && imageFiles.length > 0) {
+      imageFiles.forEach(file => fd.append("imagenes", file));
+    }
+    
+    // Si estamos editando y conservamos imágenes existentes
+    if (esEditar && imagenesExistentes && imagenesExistentes.length > 0) {
+      imagenesExistentes.forEach(url => fd.append("imagenesExistentes", url));
+    }
 
     const url = esEditar ? `${BASE_URL}/productos/${productoId}` : `${BASE_URL}/productos`;
     const method = esEditar ? "PUT" : "POST";

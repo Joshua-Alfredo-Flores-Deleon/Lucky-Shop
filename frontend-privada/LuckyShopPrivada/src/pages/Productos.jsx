@@ -7,7 +7,7 @@ import { useProductos } from '../hooks/useProductos'
 import '../SideBar.css'
 import '../productosPage.css'
 
-const CATEGORIAS = ['Todo', 'Anillos', 'Pulseras', 'Aretes', 'Charms', 'Bolsas', 'Collares', 'Otros']
+const CATEGORIAS = ['Todo', 'Anillos', 'Pulseras', 'Aretes', 'Charms', 'Bolsas', 'Collares', 'Set', 'Otros']
 const SUBCATEGORIAS = ['Oro', 'Plata', 'Dorado', 'Plateado', 'Multicolor', 'Otro']
 const ESTADOS = ['activo', 'inactivo', 'agotado']
 
@@ -121,8 +121,8 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
     subCategoria: producto?.subCategoria || SUBCATEGORIAS[0],
     estado: producto?.estado || 'activo',
   })
-  const [imagenPreview, setImagenPreview] = useState(producto?.imagenPresentacion || null)
-  const [imageFile, setImageFile] = useState(null)
+  const [imagenPreviews, setImagenPreviews] = useState(producto?.imagenes?.length ? producto.imagenes : (producto?.imagenPresentacion ? [producto.imagenPresentacion] : []))
+  const [imageFiles, setImageFiles] = useState([])
   const fileRef = useRef()
 
   const handleChange = e => {
@@ -130,18 +130,20 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  // Guarda el archivo elegido y genera una vista previa local (sin subirlo todavía)
+  // Guarda los archivos elegidos y genera vistas previas locales
   const handleImageChange = e => {
-    const file = e.target.files[0]
-    if (!file) return
-    setImageFile(file)
-    setImagenPreview(URL.createObjectURL(file))
+    const files = Array.from(e.target.files)
+    if (!files.length) return
+    setImageFiles(prev => [...prev, ...files])
+    
+    const newPreviews = files.map(file => URL.createObjectURL(file))
+    setImagenPreviews(prev => [...prev, ...newPreviews])
   }
 
   // Valida lo mínimo (nombre y precio) y delega la confirmación al componente padre
   const handleSubmit = () => {
     if (!form.nombre.trim() || !form.precio) return
-    onConfirmRequest({ form, imageFile, productoId: producto?._id })
+    onConfirmRequest({ form, imageFiles, imagenesExistentes: producto?.imagenes || (producto?.imagenPresentacion ? [producto.imagenPresentacion] : []), productoId: producto?._id })
   }
 
   return (
@@ -152,24 +154,31 @@ const FormModal = ({ modo, producto, onClose, onConfirmRequest }) => {
           <h2>{modo === 'agregar' ? 'Nuevo producto' : 'Editar producto'}</h2>
         </div>
         <div className="pm-form-body">
-          {/* Columna imagen: haz clic para elegir un archivo */}
+          {/* Columna imagen: haz clic para elegir archivos */}
           <div className="pm-form-img-col">
-            <div
-              className="pm-form-img-box"
-              onClick={() => fileRef.current?.click()}
-            >
-              {imagenPreview
-                ? <img src={imagenPreview} alt="preview" />
-                : <span className="pm-img-plus">＋</span>}
+            <div className="pm-form-img-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
+              {imagenPreviews.map((preview, idx) => (
+                <div key={idx} className="pm-form-img-box" style={{ width: '80px', height: '80px', position: 'relative' }}>
+                  <img src={preview} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                </div>
+              ))}
+              <div
+                className="pm-form-img-box"
+                onClick={() => fileRef.current?.click()}
+                style={{ width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px dashed #ccc', borderRadius: '8px', cursor: 'pointer' }}
+              >
+                <span className="pm-img-plus">＋</span>
+              </div>
             </div>
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
+              multiple
               style={{ display: 'none' }}
               onChange={handleImageChange}
             />
-            <p className="pm-form-img-label">Agregar foto</p>
+            <p className="pm-form-img-label">Agregar fotos</p>
           </div>
 
           {/* Columna de campos del formulario */}
@@ -303,7 +312,7 @@ const Productos = () => {
   }
 
   // Se llama cuando el formulario (crear o editar) pide confirmación antes de guardar
-  const handleFormConfirmRequest = ({ form, imageFile, productoId }) => {
+  const handleFormConfirmRequest = ({ form, imageFiles, imagenesExistentes, productoId }) => {
     const esEditar = !!productoId
     pedirConfirmacion(
       esEditar
@@ -313,7 +322,7 @@ const Productos = () => {
         setModalConfirm(null)
         setModalForm(null)
         try {
-          await guardarProducto({ form, imageFile, productoId })
+          await guardarProducto({ form, imageFiles, imagenesExistentes, productoId })
           setModalSuccess(esEditar ? '¡Producto actualizado con éxito!' : '¡Producto agregado con éxito!')
         } catch (err) {
           alert('Error: ' + err.message)

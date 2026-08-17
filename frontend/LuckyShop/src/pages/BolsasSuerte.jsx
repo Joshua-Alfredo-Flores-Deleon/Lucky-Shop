@@ -28,7 +28,7 @@ const BolsasSuerte = () => {
   useEffect(() => {
     const fetchBolsas = async () => {
       try {
-        const res  = await fetch(`${BASE_URL}/productos?categoria=bolsas&estado=activo`, { credentials: 'include' })
+        const res  = await fetch(`${BASE_URL}/bolsas?estado=activo`, { credentials: 'include' })
         const data = await res.json()
         // Se asegura de guardar siempre un array, aunque la respuesta venga mal formada
         setBolsas(Array.isArray(data) ? data : [])

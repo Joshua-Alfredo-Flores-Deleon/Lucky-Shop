@@ -10,22 +10,22 @@ import loginAdminRoutes from "./src/routes/loginAdmin.js";
 import loginClientesRoutes from "./src/routes/loginClientes.js";
 import clientesRoutes from "./src/routes/clientes.js"
 import perfilClienteRoutes from "./src/routes/perfilCliente.js"
-import registerClientesRoutes from "./src/routes/registerClientesRoute.js"
+import registerClientesRoutes from "./src/routes/registerClientes.js"
 import logoutRoutes from "./src/routes/logout.js";
 import gastosRoutes from "./src/routes/gastos.js"
 import gananciasRoutes from "./src/routes/ganancias.js";
-import productosRoutes from "./src/routes/productosRoutes.js";
+import productosRoutes from "./src/routes/productos.js";
 import ventaRoutes from "./src/routes/venta.js";
-import carritoRoutes from "./src/routes/carritoRoutes.js";
-import bolsasRoutes from "./src/routes/bolsasRoute.js";
-import combosCompradosRoutes from "./src/routes/combosCompradosRoutes.js";
-import comboSuerteRoutes from "./src/routes/comboSuerteRoutes.js";
+import carritoRoutes from "./src/routes/carrito.js";
+import bolsasRoutes from "./src/routes/bolsas.js";
+import combosCompradosRoutes from "./src/routes/combosComprados.js";
+import comboSuerteRoutes from "./src/routes/comboSuerte.js";
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import recoveryPasswordAdminRoutes from "./src/routes/recoveryPasswordAdmin.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
 import wompiRoutes from "./src/routes/wompi.js"
 import promocionesRoutes from "./src/routes/promociones.js"
-import videosComboRoutes from "./src/routes/videosComboRoute.js";
+import videosComboRoutes from "./src/routes/videosCombo.js";
 
 // Inicialización de la aplicación Express
 const app = express();
