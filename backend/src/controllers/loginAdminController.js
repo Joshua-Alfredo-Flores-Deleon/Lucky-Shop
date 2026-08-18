@@ -61,7 +61,16 @@ loginAdminController.login = async (req, res) => {
       { expiresIn: "30d" },
     );
 
-    res.cookie("authCookie", token);
+    // FIX: Configuración obligatoria para despliegues entre dominios (Vercel <-> Backend)
+    const isProduction = process.env.NODE_ENV === 'production';
+    const maxAgeMs = 30 * 24 * 60 * 60 * 1000; // 30 días en ms
+
+    res.cookie("authCookie", token, {
+      maxAge: maxAgeMs,
+      httpOnly: true,
+      secure: isProduction,               // 'true' en producción para HTTPS
+      sameSite: isProduction ? 'none' : 'lax', // 'none' permite enviar cookies cross-site desde Vercel
+    });
 
     return res.status(200).json({ message: "Login exitoso" });
   } catch (error) {
@@ -94,12 +103,12 @@ loginAdminController.checkSession = async (req, res) => {
     return res.status(200).json({
       message: "Sesión activa",
       admin: {
-    id: adminFound._id,
-    name: adminFound.name,
-    lastName: adminFound.lastName,
-    email: adminFound.email,
-    telefono: adminFound.telefono,
-  },
+        id: adminFound._id,
+        name: adminFound.name,
+        lastName: adminFound.lastName,
+        email: adminFound.email,
+        telefono: adminFound.telefono,
+      },
     });
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });
@@ -107,4 +116,4 @@ loginAdminController.checkSession = async (req, res) => {
 };
 
 //Exportamos el controlador para usarlo en las rutas
-export default loginAdminController; 
+export default loginAdminController;

@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
+
 // importamos el middleware para limitar las peticiones
 import limiter from "./src/middlewares/limiter.js"
 
@@ -30,18 +31,22 @@ import videosComboRoutes from "./src/routes/videosCombo.js";
 // Inicialización de la aplicación Express
 const app = express();
 
+// Activar trust proxy para Vercel / HTTPS en producción
+app.set('trust proxy', 1);
+
 // Orígenes permitidos para la app web
-const webOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const webOrigins = ["http://localhost:5173", "http://localhost:5174", 'https://lucky-shop-la3y.vercel.app','https://lucky-shop-peach.vercel.app'];
 
 // Configuración de CORS para permitir peticiones desde el frontend
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || webOrigins.includes(origin)) {
+    // Permite peticiones sin origen (como móvil o Postman) o si está en la lista
+    if (!origin || webOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
-    return callback(null, true);
+    return callback(new Error('No permitido por CORS'));
   },
-  credentials: true, // Permitir envío de cookies en las peticiones
+  credentials: true,
 }));
 
 // Middlewares globales

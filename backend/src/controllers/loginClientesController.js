@@ -70,7 +70,15 @@ loginClientesController.login = async (req, res) => {
       { expiresIn: duracion },
     );
 
-    res.cookie("authCookie", token, { maxAge: maxAgeMs });
+    // FIX: Configuración de la cookie obligatoria para Vercel / Producción
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    res.cookie("authCookie", token, { 
+      maxAge: maxAgeMs,
+      httpOnly: true,
+      secure: isProduction,               // 'true' en producción (HTTPS obligatorio)
+      sameSite: isProduction ? 'none' : 'lax', // 'none' permite enviar cookies cross-site entre Vercel y tu backend
+    });
 
     // La web usa la cookie de arriba. Para la app móvil devolvemos también el
     // token y los datos del cliente en el cuerpo de la respuesta, de modo que
