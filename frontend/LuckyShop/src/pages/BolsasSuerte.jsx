@@ -20,15 +20,15 @@ const BolsasSuerte = () => {
   // Indica si el usuario tiene sesión activa
   const { isAuthenticated } = useAuth()
 
-  const [bolsas,  setBolsas]  = useState([])    // Lista de bolsas de la suerte activas traídas del backend
+  const [bolsas, setBolsas] = useState([])    // Lista de bolsas de la suerte activas traídas del backend
   const [loading, setLoading] = useState(true)   // true mientras se están cargando las bolsas
-  const [toast,   setToast]   = useState(false)  // Controla si se muestra el aviso de "agregado al carrito"
+  const [toast, setToast] = useState(false)  // Controla si se muestra el aviso de "agregado al carrito"
 
   // Al montar el componente, carga las bolsas de la suerte (categoría "bolsas") que estén activas
   useEffect(() => {
     const fetchBolsas = async () => {
       try {
-        const res  = await fetch(`${BASE_URL}/bolsas?estado=activo`, { credentials: 'include' })
+        const res = await fetch(`${BASE_URL}/bolsas?estado=activo`, { credentials: 'include' })
         const data = await res.json()
         // Se asegura de guardar siempre un array, aunque la respuesta venga mal formada
         setBolsas(Array.isArray(data) ? data : [])
@@ -108,8 +108,8 @@ const BolsasSuerte = () => {
                   <p className="text-sm font-bold text-gray-900 mb-3">${Number(bolsa.precio).toFixed(2)}</p>
                   {/* Al hacer clic, agrega la bolsa al carrito (o pide iniciar sesión primero) */}
                   <button
-                    onClick={() => handleAgregar(bolsa)}
-                    className="block w-full text-center bg-pink-100 hover:bg-pink-200 text-pink-600 text-sm font-medium py-2 rounded-full transition-colors"
+                    onClick={() => navigate(`/bolsa/${bolsa._id}`)}
+                    className="block w-full text-center bg-pink-100 hover:bg-pink-200 text-pink-600 text-sm font-medium py-2 rounded-full"
                   >
                     Ver más
                   </button>

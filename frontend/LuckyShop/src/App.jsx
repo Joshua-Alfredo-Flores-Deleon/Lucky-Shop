@@ -23,6 +23,8 @@ import Favoritos from './pages/Favoritos.jsx'
 import Promociones from './pages/Promociones.jsx'
 import GuiaRegalo from './pages/GuiaRegalo.jsx'
 import Videos from './pages/Videos.jsx'
+import NotFound from './pages/404.jsx'
+import BolsaDetalle from './pages/BolsaDetalle.jsx'
 
 // App.jsx — punto de entrada del sitio público de Lucky Shop.
 // Define todas las rutas: las públicas (catálogo, login, etc.) y las privadas
@@ -47,6 +49,7 @@ function App() {
             <Route path="/producto/:id"    element={<ProductoDetalle />} />
             <Route path="/anillos"         element={<Navigate to="/categoria/anillos" replace />} />
             <Route path="/bolsas-suerte"   element={<BolsasSuerte />} />
+            <Route path="/bolsa/:id"       element={<BolsaDetalle />} />
             <Route path="/acercaDe"        element={<AcercaDe />} />
             <Route path="/contactanos"     element={<Contactanos />} />
             <Route path="/politicas"       element={<Politicas />} />
@@ -64,6 +67,7 @@ function App() {
               <Route path="/videos"          element={<Videos />} />
               
             </Route>
+             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </CartProvider>

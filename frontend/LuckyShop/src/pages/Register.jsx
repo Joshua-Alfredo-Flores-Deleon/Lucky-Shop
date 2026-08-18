@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
+import logoLucky from '../assets/LogoNegro-removebg-preview.png'
 
 const BASE_URL = import.meta.env.VITE_API_URL + ''
 const FLATLAY_BG = 'https://images.unsplash.com/photo-1647559709189-a257be60e147?fm=jpg&q=80&w=1400&auto=format&fit=crop'
@@ -90,11 +91,14 @@ const Register = () => {
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo de la marca */}
-        <div className="text-center mb-4">
-          <h1 className="text-3xl font-serif tracking-tight text-gray-900">Luckyshop</h1>
-          <p className="text-gray-400 text-[10px] tracking-[0.25em] font-medium -mt-1">BY LESLY</p>
-          <div className="w-full h-px bg-white/70 mt-3" />
-        </div>
+        <div className="relative z-10 mb-5 text-center">
+                <img
+                  src={logoLucky}
+                  alt="Lucky Shop"
+                  className="mx-auto h-16 object-contain"
+                />
+                <div className="w-40 h-px bg-pink-500 mx-auto mt-2" />
+              </div>
 
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl ring-1 ring-pink-200 px-8 py-8">
 

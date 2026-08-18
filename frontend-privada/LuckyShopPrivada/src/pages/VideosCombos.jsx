@@ -28,7 +28,7 @@ const getNombreCliente = (idCliente) => {
 const getStatusInfo = (status) => {
   if (status === true)  return { label: 'Aceptada',  clase: 'aceptada' }
   if (status === false) return { label: 'Denegada',  clase: 'denegada' }
-  return                       { label: 'Pendiente', clase: 'pendiente' }
+  return                   { label: 'Pendiente', clase: 'pendiente' }
 }
 
 /* ── Iconos ── */
@@ -83,8 +83,8 @@ const VideoModal = ({ combo, onClose }) => {
   )
 }
 
-/*Modal: detalles + acciones de aceptar/denegar */
-const DetalleModal = ({ combo, onClose, onAceptar, onDenegar }) => {
+/* Modal: detalles + acción de aceptar */
+const DetalleModal = ({ combo, onClose, onAceptar }) => {
   if (!combo) return null
   const { label, clase } = getStatusInfo(combo.status)
 
@@ -122,11 +122,6 @@ const DetalleModal = ({ combo, onClose, onAceptar, onDenegar }) => {
 
         <div className="vc-detalle-actions">
           <button className="vc-btn-cerrar" onClick={onClose}>Cerrar</button>
-          {combo.status !== false && (
-            <button className="vc-btn-denegar" onClick={() => { onDenegar(combo._id); onClose() }}>
-              Denegar
-            </button>
-          )}
           {combo.status !== true && (
             <button className="vc-btn-aceptar" onClick={() => { onAceptar(combo._id); onClose() }}>
               Aceptar
@@ -176,13 +171,14 @@ const NuevoComboModal = ({ onClose, onCrear }) => {
   const [error, setError] = useState('')
   const fileRef = useRef()
 
-  // Carga la lista de clientes y de bolsas de la suerte para los selects
+  // Carga la lista de clientes y de bolsas de la suerte para los selects.
+  // Las bolsas vienen de su propio endpoint /api/bolsas (no de /productos).
   useEffect(() => {
     const cargarDatos = async () => {
       try {
         const [resClientes, resBolsas] = await Promise.all([
           fetch(`${BASE_URL}/clientes`, { credentials: 'include' }),
-          fetch(`${BASE_URL}/productos?categoria=bolsas`, { credentials: 'include' }),
+          fetch(`${BASE_URL}/bolsas`, { credentials: 'include' }),
         ])
         const dataClientes = await resClientes.json()
         const dataBolsas = await resBolsas.json()
@@ -518,7 +514,6 @@ const VideosCombos = () => {
           combo={modalDetalle}
           onClose={() => setModalDetalle(null)}
           onAceptar={handleAceptar}
-          onDenegar={handleDenegar}
         />
       )}
 

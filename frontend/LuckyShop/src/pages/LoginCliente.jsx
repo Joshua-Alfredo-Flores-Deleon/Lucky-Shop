@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import logoLucky from '../assets/LogoNegro-removebg-preview.png' //  logo correcto
 
 const BASE_URL = import.meta.env.VITE_API_URL + ''
 const JOYAS_BG = 'https://images.unsplash.com/photo-1631982690223-8aa4be0a2497?fm=jpg&q=80&w=1200&auto=format&fit=crop'
@@ -65,6 +66,17 @@ const LoginCliente = () => {
       {/* Panel derecho — formulario */}
       <div className="w-full md:w-1/2 min-h-screen flex flex-col items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-sm">
+
+           {/* Logo de la marca */}
+               <div className="relative z-10 mb-5 text-center">
+                       <img
+                         src={logoLucky}
+                         alt="Lucky Shop"
+                         className="mx-auto h-16 object-contain"
+                       />
+                       <div className="w-40 h-px bg-pink-500 mx-auto mt-2" />
+                     </div>
+                     
           <h1 className="text-3xl font-semibold text-gray-900 text-center mb-1">Inicio de sesión</h1>
           <p className="text-sm text-gray-500 text-center border-b border-gray-200 pb-4 mb-8">
             ¡Ingresa tus datos para descubrir tú suerte de hoy!
