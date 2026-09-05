@@ -114,7 +114,7 @@ export default function Finanzas() {
                   <p className="finanzas-tarjeta-titulo">Tendencia de ingresos mensuales</p>
                   <div className="finanzas-grafica">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={tendencia}>
+                      <LineChart data={[...tendencia].reverse()}>
                         <XAxis dataKey="mes" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                         <Tooltip formatter={(valor) => formatoMoneda(valor)} />
                         <Line type="monotone" dataKey="ingresos" stroke="#5aa06c" strokeWidth={2} dot={false} />
