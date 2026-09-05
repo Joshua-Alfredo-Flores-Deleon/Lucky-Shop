@@ -1,6 +1,7 @@
 //Pagina de Contactanos- Donde el cliente podra comunicarse con nosotros ante cualquier situacion o duda
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -11,6 +12,19 @@ const styles = {
     backgroundColor: "#fff",
     display: "flex",
     flexDirection: "column",
+  },
+  // Flecha para regresar al inicio
+  backLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "20px 60px 0",
+    color: "#111",
+    fontWeight: "700",
+    fontSize: "18px",
+    textDecoration: "none",
+    fontFamily: "'Inter', sans-serif",
+    width: "fit-content",
   },
   header: {
     padding: "40px 60px 10px",
@@ -332,6 +346,14 @@ export default function ContactPage() {
   return (
     <div style={styles.page}>
       <Navbar />
+
+      {/* Flecha para regresar al inicio */}
+      <Link to="/home" style={styles.backLink}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Volver al inicio
+      </Link>
 
       {/* Encabezado con línea inferior */}
         <div style={styles.header}>

@@ -1,4 +1,5 @@
 //Pagina de Politicas.jsx - Pagina donde se encuentran los terminos y condiciones 
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import Logo from "../assets/icons8-trébol-50.png"
@@ -10,6 +11,19 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#fff",
+  },
+  // Flecha para regresar al inicio
+  backLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "20px 60px 0",
+    color: "#111",
+    fontWeight: "700",
+    fontSize: "18px",
+    textDecoration: "none",
+    fontFamily: "sans-serif",
+    width: "fit-content",
   },
   mainContainer: {
     flex: 1,
@@ -93,6 +107,14 @@ export default function Politicas() {
   return (
     <div style={styles.pageWrapper}>
       <Navbar />
+
+      {/* Flecha para regresar al inicio */}
+      <Link to="/home" style={styles.backLink}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Volver al inicio
+      </Link>
 
       <div style={styles.mainContainer}>
         <div style={styles.card}>
