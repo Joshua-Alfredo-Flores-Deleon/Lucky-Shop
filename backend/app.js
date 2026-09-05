@@ -40,7 +40,6 @@ const webOrigins = ["http://localhost:5173", "http://localhost:5174", 'https://l
 // Configuración de CORS para permitir peticiones desde el frontend
 app.use(cors({
   origin: (origin, callback) => {
-    // Permite peticiones sin origen (como móvil o Postman) o si está en la lista
     if (!origin || webOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
